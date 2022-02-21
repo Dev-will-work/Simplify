@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="skip_button">Пропустить</string>
+    <string name="picture_description">Расстроенная женщина и мужчина, по разные стороны двери</string>
+    <string name="header1">Избавление от непониманий с другими людьми</string>
+    <string name="text1">Порой привычные способы коммуникации не работают и сложно оставаться спокойным и оптимистичным</string>
+    <string name="next_button">Далее</string>
+    <string name="crumbs1">Овалы, показывающие прогресс продвижения, сейчас первый экран</string>
+    <string name="crumbs2">Овалы, показывающие прогресс продвижения, сейчас второй экран</string>
+    <string name="crumbs3">Овалы, показывающие прогресс продвижения, сейчас третий, последний экран</string>
+    <string name="get_started_button">Начать работу</string>
+    <string name="header3">Доступно для всех</string>
+    <string name="text3">Интерфейс приложения спроектирован удобным для всех пользователей, даже для людей с ограниченными возможностями</string>
+    <string name="header2">Не нужно строчить длинные тексты</string>
+    <string name="text2">Вам не нужно писать даже средние блоки текста, просто сделайте его фото или проговорите его устно</string>
+    <string name="output_placeholder">Здесь будет упрощенный текст</string>
+    <string name="simplify_button">Упростить</string>
+    <string name="input_placeholder">Введите что-то...</string>
+</resources>

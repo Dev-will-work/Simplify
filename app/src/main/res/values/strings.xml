@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name" translatable="false">Simplify</string>
+    <string name="skip_button">Skip</string>
+    <string name="picture_description">dissapointed woman and the man separated by a door</string>
+    <string name="header1">Get rid of confusion with other people</string>
+    <string name="text1">Sometimes usual matters of communication doesn’t work and it’s hard to remain calm and happy...\nThis app will make your words simpler to others</string>
+    <string name="next_button">Next</string>
+    <string name="crumbs1">ellipses, showing current screen, now the first</string>
+    <string name="header2">No need to write long texts</string>
+    <string name="text2">You don’t have to write even average text blocks, just take a photo of what you need or tell it to voice assistant</string>
+    <string name="crumbs2">ellipses, showing current screen, now the second</string>
+    <string name="header3">Available for any person</string>
+    <string name="text3">Application interface designed to become friendly for any kind of users, even for people with disabilities</string>
+    <string name="get_started_button">Get started</string>
+    <string name="crumbs3">ellipses, showing current screen, now the third, last of them</string>
+    <string name="output_placeholder">There will be simplified text</string>
+    <string name="simplify_button">Simplify</string>
+    <string name="input_placeholder">Enter something ...</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="start_capture">Start Capture</string>
+    <string name="stop_capture">Stop Capture</string>
+</resources>

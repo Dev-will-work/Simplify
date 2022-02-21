@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress AndroidDomInspection -->
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/</item>
+    </array>
+</resources>
