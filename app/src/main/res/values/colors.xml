@@ -1,11 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="my_blue">#FFB4D2E7</color>
+    <color name="base_900">#FF000000</color>
+    <color name="base_800">#FF262626</color>
+    <color name="base_700">#FF434343</color>
+    <color name="base_600">#FF555555</color>
+    <color name="base_500">#FF7B7B7B</color>
+    <color name="base_400">#FF9D9D9D</color>
+    <color name="base_300">#FFC4C4C4</color>
+    <color name="base_200">#FFD9D9D9</color>
+    <color name="base_100">#FFE9E9E9</color>
+    <color name="base_50">#FFF5F5F5</color>
+    <color name="base_0">#FFFFFFFF</color>
+
+    <color name="main_900">#FF002F7A</color>
+    <color name="main_800">#FF004A97</color>
+    <color name="main_700">#FF005AA8</color>
+    <color name="main_600">#FF006AB9</color>
+    <color name="main_500">#FF0076C5</color>
+    <color name="main_400">#FF0088CB</color>
+    <color name="main_300">#FF4A9BD0</color>
+    <color name="main_200">#FF82B6DA</color>
+    <color name="main_100">#FFB4D2E7</color>
+    <color name="main_50">#FFE0EDF5</color>
+
+    <color name="completed_900">#FF001413</color>
+    <color name="completed_800">#FF00282E</color>
+    <color name="completed_700">#FF00363D</color>
+    <color name="completed_600">#FF00424B</color>
+    <color name="completed_500">#FF004C57</color>
+    <color name="completed_400">#FF006370</color>
+    <color name="completed_300">#FF007B87</color>
+    <color name="completed_200">#FF489FAA</color>
+    <color name="completed_100">#FF94C5CC</color>
+    <color name="completed_50">#FFD4D7EB</color>
+
+    <color name="error_900">#FF64004B</color>
+    <color name="error_800">#FF8A0057</color>
+    <color name="error_700">#FF9F005D</color>
+    <color name="error_600">#FFB40064</color>
+    <color name="error_500">#FFC50069</color>
+    <color name="error_400">#FFC92680</color>
+    <color name="error_300">#FFCF5196</color>
+    <color name="error_200">#FFDA83B4</color>
+    <color name="error_100">#FFE7B4D2</color>
+    <color name="error_50">#FFF5E1EC</color>
+
+    <color name="active_900">#FF39069B</color>
+    <color name="active_800">#FF4D18A7</color>
+    <color name="active_700">#FF5A1FAE</color>
+    <color name="active_600">#FF6728B7</color>
+    <color name="active_500">#FF702DBD</color>
+    <color name="active_400">#FF864FC7</color>
+    <color name="active_300">#FF9C6FD1</color>
+    <color name="active_200">#FFB899DE</color>
+    <color name="active_100">#FFD4C2EB</color>
+    <color name="active_50">#FFEEE6F7</color>
+
+    <color name="cancelled_900">#FF883D00</color>
+    <color name="cancelled_800">#FF9E4A00</color>
+    <color name="cancelled_700">#FFAA5200</color>
+    <color name="cancelled_600">#FFB65900</color>
+    <color name="cancelled_500">#FFBE5E00</color>
+    <color name="cancelled_400">#FFC77113</color>
+    <color name="cancelled_300">#FFD08747</color>
+    <color name="cancelled_200">#FFDBA77F</color>
+    <color name="cancelled_100">#FFE7C9B4</color>
+    <color name="cancelled_50">#FFF2E7E3</color>
 </resources>
