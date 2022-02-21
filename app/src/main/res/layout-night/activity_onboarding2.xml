@@ -8,15 +8,11 @@
 
     <Button
         android:id="@+id/skip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/text_button"
         android:layout_marginTop="38dp"
         android:layout_marginEnd="16dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:fontFamily="@font/signika_medium"
         android:text="@string/skip_button"
         android:textColor="@color/base_0"
-        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,17 +62,12 @@
 
     <Button
         android:id="@+id/get_started"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/primary_button"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="64dp"
-        android:backgroundTint="@color/main_100"
         android:drawableEnd="@drawable/ic_arrow_right"
-        android:fontFamily="@font/signika_medium"
         android:text="@string/next_button"
-        android:textColor="@color/base_900"
-        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_text" />
