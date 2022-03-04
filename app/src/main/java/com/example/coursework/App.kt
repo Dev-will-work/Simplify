@@ -10,7 +10,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         val gson = GsonBuilder().setLenient().create()
-        retrofit = Retrofit.Builder().baseUrl("http://192.168.176.204/")
+        retrofit = Retrofit.Builder().baseUrl("http://192.168.120.204/")
             .addConverterFactory(GsonConverterFactory.create(gson)).build()
         simplifierApi = retrofit?.create(SimplifierApi::class.java)
     }

@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.camera.view.PreviewView
-        android:id="@+id/viewFinder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:backgroundTint="@color/base_0" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="251dp"
@@ -23,10 +17,11 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/simpifyButton" />
+        app:layout_constraintTop_toBottomOf="@+id/simplifyButton" />
 
     <Button
-        android:id="@+id/simpifyButton"
+        android:id="@+id/simplifyButton"
+        style="@style/primary_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/simplify_button"
@@ -46,18 +41,19 @@
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toTopOf="@+id/simpifyButton"
+        app:layout_constraintBottom_toTopOf="@+id/simplifyButton"
         app:layout_constraintEnd_toStartOf="@+id/photo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/photo"
+        style="@style/secondary_button"
         android:layout_width="88dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="190dp"
         android:text="Photo"
-        app:layout_constraintBottom_toTopOf="@+id/simpifyButton"
+        app:layout_constraintBottom_toTopOf="@+id/simplifyButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/inputField"
         app:layout_constraintTop_toTopOf="parent" />
