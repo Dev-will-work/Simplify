@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Html
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             when(it.resultCode) {
                 1 -> {
                     val scanned = it.data?.getStringExtra("result")
-                    viewBinding.inputField.setText(scanned)
+                    viewBinding.inputFrame.textField.setText(scanned)
                 }
                 else -> {}
             }
@@ -62,68 +63,73 @@ class MainActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        viewBinding.photo.setOnClickListener {
+        viewBinding.buttons.camera.setOnClickListener {
             val i = Intent(this, PhotoActivity::class.java)
             launcher.launch(i)
         }
 
+        viewBinding.inputFrame.textField.setOnEditorActionListener {
+                textView, actionId, keyEvent ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    val input = viewBinding.inputFrame.textField.text.toString()
+                    App.api?.getSimplifiedText(input)?.enqueue(object : Callback<SimplifierData?> {
+                        override fun onResponse(
+                            call: Call<SimplifierData?>,
+                            response: Response<SimplifierData?>
+                        ) {
+                            when (response.code()) {
+                                404 -> {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Not found",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    return
+                                }
+                                400 -> {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Bad formed request",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    return
+                                }
+                                401 -> {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Bad API key, not authorized",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    return
+                                }
+                                200 -> {}
+                                else -> {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "Unknown server answer, try again",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    return
+                                }
+                            }
 
+                            viewBinding.outputFrame.textField.text = Html.fromHtml(response.body()?.output)
+                        }
 
-        viewBinding.simplifyButton.setOnClickListener {
-            val input = viewBinding.inputField.text.toString()
-            App.api?.getSimplifiedText(input)?.enqueue(object : Callback<SimplifierData?> {
-                override fun onResponse(
-                    call: Call<SimplifierData?>,
-                    response: Response<SimplifierData?>
-                ) {
-                    when (response.code()) {
-                        404 -> {
+                        override fun onFailure(call: Call<SimplifierData?>, t: Throwable) {
                             Toast.makeText(
                                 this@MainActivity,
-                                "Not found",
+                                "An error with network occured",
                                 Toast.LENGTH_LONG
                             ).show()
-                            return
                         }
-                        400 -> {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "Bad formed request",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            return
-                        }
-                        401 -> {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "Bad API key, not authorized",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            return
-                        }
-                        200 -> {}
-                        else -> {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "Unknown server answer, try again",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            return
-                        }
-                    }
 
-                    viewBinding.textView.text = Html.fromHtml(response.body()?.output)
+                    })
                 }
-
-                override fun onFailure(call: Call<SimplifierData?>, t: Throwable) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "An error with network occured",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-            })
+                else -> {}
+            }
+            return@setOnEditorActionListener true
         }
     }
 

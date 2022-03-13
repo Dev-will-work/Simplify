@@ -14,7 +14,6 @@
         android:layout_marginStart="109dp"
         android:layout_marginEnd="109dp"
         android:text="Simplify"
-        android:textColor="@color/base_900"
         app:layout_constraintBottom_toBottomOf="@+id/profile"
         app:layout_constraintEnd_toStartOf="@+id/settings"
         app:layout_constraintStart_toEndOf="@+id/profile"
