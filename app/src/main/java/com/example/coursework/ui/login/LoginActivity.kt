@@ -9,28 +9,60 @@ import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityLoginBinding
 
 import com.example.coursework.R
+import com.example.coursework.data.model.LoggedInUser
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
+import java.io.File
+import kotlin.random.Random
+
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
 
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        // Save the user's current game state
+        savedInstanceState.putParcelable("User", loginViewModel.getUserData())
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState)
+
+        // Restore state members from saved instance
+        val userData = savedInstanceState.getParcelable<LoggedInUser>("User")
+        if (userData != null) {
+            loginViewModel.setUserData(userData)
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        //binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_login, ViewGroup,true)
+//        binding = ActivityLoginBinding.inflate(layoutInflater)
+        //setContentView(binding.root)
 
-        val username = binding.username
-        val password = binding.password
+        val username = binding.username.textField1
+        val password = binding.password.textField1
         val login = binding.login
         val loading = binding.loading
+        val forget = binding.forgotPassword
+        val back = binding.back
 
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
@@ -65,6 +97,12 @@ class LoginActivity : AppCompatActivity() {
             finish()
         })
 
+        val prefix = getFilesDir()
+        if (File("$prefix/userdata.json").exists()) {
+            val userData = Json.decodeFromString<LoggedInUser>(File("$prefix/userdata.json").readText())
+            loginViewModel.setUserData(userData)
+        }
+
         username.afterTextChanged {
             loginViewModel.loginDataChanged(
                 username.text.toString(),
@@ -95,7 +133,28 @@ class LoginActivity : AppCompatActivity() {
                 loading.visibility = View.VISIBLE
                 loginViewModel.login(username.text.toString(), password.text.toString())
             }
+
+            forget.setOnClickListener {
+                val retrieved_password = loginViewModel.retrievePassword()
+                Toast.makeText(context, retrieved_password, Toast.LENGTH_SHORT).show()
+            }
+
+            back.setOnClickListener {
+                setResult(Activity.RESULT_CANCELED)
+
+                //Complete and destroy login activity if cancelled
+                finish()
+            }
+
+
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val jsonData = Json.encodeToString(loginViewModel.getUserData())
+        val prefix = getFilesDir()
+        File("$prefix/userdata.json").writeText(jsonData)
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {

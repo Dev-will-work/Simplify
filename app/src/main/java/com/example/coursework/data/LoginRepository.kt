@@ -43,4 +43,27 @@ class LoginRepository(val dataSource: LoginDataSource) {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
+
+    private fun customDecryption(password: String): String {
+        val result = password.mapIndexed {
+                i, b ->
+            if (i % 2 == 0) (b - 263).code.toByte() else (b + 257).code.toByte()
+        }.toByteArray().decodeToString()
+
+        return result
+    }
+
+    fun retrievePassword(): String {
+        val retrieved_password = user?.password
+        if (retrieved_password != null) {
+            return "Your password: " + customDecryption(retrieved_password)
+        } else {
+            return "No cached user found!"
+        }
+    }
+
+    fun setUserData(user: LoggedInUser) {
+        this.user = user
+    }
+
 }

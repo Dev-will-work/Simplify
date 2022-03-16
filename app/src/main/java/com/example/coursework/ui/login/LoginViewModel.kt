@@ -8,6 +8,8 @@ import com.example.coursework.data.LoginRepository
 import com.example.coursework.data.Result
 
 import com.example.coursework.R
+import com.example.coursework.data.model.LoggedInUser
+import kotlin.random.Random
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -23,7 +25,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
         if (result is Result.Success) {
             _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
+                LoginResult(success = LoggedInUserView(displayName = result.data.displayName!!))
         } else {
             _loginResult.value = LoginResult(error = R.string.login_failed)
         }
@@ -51,5 +53,17 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 5
+    }
+
+    fun retrievePassword(): String? {
+        return loginRepository.retrievePassword()
+    }
+
+    fun getUserData(): LoggedInUser? {
+        return loginRepository.user
+    }
+
+    fun setUserData(user: LoggedInUser) {
+        loginRepository.setUserData(user)
     }
 }
