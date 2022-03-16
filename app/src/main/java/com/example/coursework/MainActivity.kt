@@ -45,21 +45,45 @@ class MainActivity : AppCompatActivity() {
     //private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
+    private var adapter: LanguageAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        val launcher = registerForActivityResult(StartActivityForResult(), {
-            when(it.resultCode) {
+        val launcher = registerForActivityResult(StartActivityForResult()) {
+            when (it.resultCode) {
                 1 -> {
                     val scanned = it.data?.getStringExtra("result")
                     viewBinding.inputFrame.textField.setText(scanned)
                 }
                 else -> {}
             }
-        })
+        }
+
+        val launcher_language = registerForActivityResult(StartActivityForResult()) {
+            when (it.resultCode) {
+                RESULT_OK -> {
+                    adapter = it.data?.getParcelableExtra<LanguageAdapter>("adapter")!!
+                    val language = it.data?.getStringExtra("language")
+                    if (language != null) {
+                        viewBinding.language.text = language
+                    }
+                }
+                else -> {}
+            }
+        }
+
+        viewBinding.language.setOnClickListener {
+            val i = Intent(this, LanguageActivity::class.java)
+            if (adapter != null) {
+                i.putExtra("adapter", adapter)
+            }
+            val currentLanguage = viewBinding.language.text
+            i.putExtra("current_language", currentLanguage)
+            launcher_language.launch(i)
+        }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 

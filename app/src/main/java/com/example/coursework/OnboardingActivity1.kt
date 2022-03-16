@@ -18,7 +18,7 @@ class OnboardingActivity1 : AppCompatActivity() {
         skip.setOnClickListener {
             startActivity(
                 Intent(
-                    this@OnboardingActivity1, MainActivity::class.java
+                    this@OnboardingActivity1, StartActivity::class.java
                 )
             )
             finish()
