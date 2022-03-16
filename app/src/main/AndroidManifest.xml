@@ -23,6 +23,9 @@
         android:theme="@style/Theme.Coursework"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".LanguageActivity"
+            android:exported="true" />
+        <activity
             android:name=".StartActivity"
             android:exported="true" />
         <activity

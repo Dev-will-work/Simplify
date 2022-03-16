@@ -1,43 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <!--   <item name=""></item>                          -->
-    <style name="H1">
+    <style name="my_base_text">
+        <item name="android:textColor">@color/base_900</item>
+    </style>
+    <style name="H1" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_light</item>
         <item name="android:textSize">30sp</item>
         <item name="android:letterSpacing">-0.05</item>
     </style>
-    <style name="H2">
+    <style name="H2" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_light</item>
         <item name="android:textSize">24sp</item>
         <item name="android:letterSpacing">-0.020833333333333332</item>
     </style>
-    <style name="Subtitle">
+    <style name="Subtitle" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_regular</item>
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">0.009375</item>
     </style>
-    <style name="Body_1">
+    <style name="Body_1" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_regular</item>
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">0.03125</item>
     </style>
-    <style name="Body_2">
+    <style name="Body_2" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_regular</item>
         <item name="android:textSize">14sp</item>
         <item name="android:letterSpacing">0.017857142857142856</item>
     </style>
-    <style name="Button">
+    <style name="Button" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_medium</item>
         <item name="android:textSize">14sp</item>
         <item name="android:letterSpacing">0.08928571428571429</item>
         <item name="android:textAllCaps">true</item>
     </style>
-    <style name="Caption">
+    <style name="Caption" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_regular</item>
         <item name="android:textSize">12sp</item>
         <item name="android:letterSpacing">0.03333333333333333</item>
     </style>
-    <style name="Secondary">
+    <style name="Secondary" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_light</item>
         <item name="android:textSize">14sp</item>
         <item name="android:letterSpacing">0.017857142857142856</item>
@@ -45,6 +48,7 @@
 
     <style name="text_field" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/text_field_drawable</item>
+        <item name="android:textColor">@color/base_900</item>
 <!--        <item name="android:backgroundTint">@color/base_100</item>-->
     </style>
 
@@ -79,14 +83,17 @@
 
     <style name="input_frame">
         <item name="android:textColorHint">@color/base_500</item>
+        <item name="android:textColor">@color/base_900</item>
         <item name="android:fontFamily">@font/signika_regular</item>
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">0.03125</item>
     </style>
     <style name="output_frame">
         <item name="android:textColorHint">@color/base_500</item>
+        <item name="android:textColor">@color/base_900</item>
         <item name="android:fontFamily">@font/signika_regular</item>
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">0.03125</item>
     </style>
+
 </resources>

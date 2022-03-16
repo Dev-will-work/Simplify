@@ -78,17 +78,6 @@
             app:layout_constraintStart_toEndOf="@+id/speak"
             app:srcCompat="@drawable/ic_share" />
 
-        <ImageButton
-            android:id="@+id/remove"
-            style="@style/image_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="16dp"
-            app:tint="@color/base_900"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/share"
-            app:srcCompat="@drawable/ic_close" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
