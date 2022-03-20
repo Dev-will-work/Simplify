@@ -18,7 +18,7 @@
 
         <TextView
             android:id="@+id/title2"
-            style="@style/Body_2"
+            android:textAppearance="@style/Body_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text='@{title, default=Title}'
@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/helper_text"
-            style="@style/Caption"
+            android:textAppearance="@style/Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text='@{helper, default="Helper text"}'
@@ -42,23 +42,37 @@
             app:layout_constraintTop_toBottomOf="@+id/text_field1"
             app:layout_constraintVertical_bias="0.0" />
 
-        <EditText
+        <com.example.coursework.MyEditText
             android:id="@+id/text_field1"
             style="@style/text_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@{icon, default=@drawable/ic_template}"
+            android:drawableEnd="@android:color/transparent"
             android:ems="10"
             android:hint='@{hint, default="Text hint"}'
-            android:inputType="textPersonName"
+            android:inputType="textMultiLine"
+            android:maxLines="4"
             android:minHeight="48dp"
             android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+            android:paddingEnd="36dp"
             android:textColorHint="@color/base_500"
+            app:barrierMargin="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textAppearance="@style/Body_1"/>
+
+        <ImageView
+            android:id="@+id/eye"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@{icon, default=@drawable/ic_template}"
+            app:tint="@color/base_900"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

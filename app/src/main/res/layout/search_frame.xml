@@ -19,6 +19,7 @@
         <EditText
             android:id="@+id/editTextTextPersonName"
             style="@style/input_frame"
+            android:textAppearance="@style/Body_1"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
@@ -33,6 +34,7 @@
             android:hint='@{hint, default=Search}'
             android:imeOptions="actionDone"
             android:inputType="text"
+            android:textColorHint="@color/base_500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
