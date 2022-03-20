@@ -1,56 +1,48 @@
 package com.example.coursework
 
-import android.Manifest
-import android.content.ContentValues
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Html
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.Recorder
-import androidx.camera.video.Recording
-import androidx.camera.video.VideoCapture
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.coursework.databinding.ActivityMainBinding
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS
+import android.widget.Toast.LENGTH_SHORT
 
-class MainActivity : AppCompatActivity() {
+import android.content.*
+import android.content.Intent
+import android.speech.RecognizerIntent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.databinding.DataBindingUtil
+
+
+class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var viewBinding: ActivityMainBinding
 
     //private var videoCapture: VideoCapture<Recorder>? = null
     //private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
-    private var adapter: LanguageAdapter? = null
+    private var adapter: HistoryAdapter? = null
+    private var mTts: TextToSpeech? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(viewBinding.root)
+        viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val checkIntent = Intent()
+        checkIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
 
         val launcher = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
@@ -65,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         val launcher_language = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
                 RESULT_OK -> {
-                    adapter = it.data?.getParcelableExtra<LanguageAdapter>("adapter")!!
+                    adapter = it.data?.getParcelableExtra<HistoryAdapter>("adapter")
                     val language = it.data?.getStringExtra("language")
                     if (language != null) {
                         viewBinding.language.text = language
@@ -73,6 +65,107 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {}
             }
+        }
+
+        val launcher_voice = registerForActivityResult(StartActivityForResult()) {
+            when (it.resultCode) {
+                RESULT_OK ->
+                {
+                    if (it.data != null) {
+                        val result =
+                            it.data?.
+                            getStringArrayListExtra(
+                                RecognizerIntent.EXTRA_RESULTS)
+                        if (result != null) {
+                            viewBinding.inputFrame.textField.setText(result[0])
+                        }
+                    }
+                }
+            }
+        }
+
+        val launcher_tts = registerForActivityResult(StartActivityForResult()) {
+            when (it.resultCode) {
+                CHECK_VOICE_DATA_PASS -> {
+                    mTts = TextToSpeech(this, this)
+                }
+                else -> {
+                    // missing data, install it
+                    val installIntent = Intent()
+                    installIntent.action = TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA
+                    startActivity(installIntent)
+                }
+            }
+        }
+        launcher_tts.launch(checkIntent)
+
+        viewBinding.settings.setOnClickListener {
+            startActivity(
+                Intent(
+                    this@MainActivity, SettingsActivity::class.java
+                )
+            )
+            finish()
+        }
+
+        viewBinding.buttons.bookmarks.setOnClickListener {
+            startActivity(
+                Intent(
+                    this@MainActivity, HistoryActivity::class.java
+                )
+            )
+            finish()
+        }
+
+        viewBinding.profile?.setOnClickListener {
+            startActivity(
+                Intent(
+                    this@MainActivity, ProfileActivity::class.java
+                )
+            )
+            finish()
+        }
+
+        viewBinding.inputFrame.copy.setOnClickListener {
+            val clip = ClipData.newPlainText(null, viewBinding.inputFrame.textField.text.toString())
+            clipboard.setPrimaryClip(clip)
+        }
+
+        viewBinding.inputFrame.remove.setOnClickListener {
+            viewBinding.inputFrame.textField.setText(" ")
+        }
+
+        viewBinding.inputFrame.share.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, viewBinding.inputFrame.textField.text.toString())
+            startActivity(Intent.createChooser(shareIntent, "Share using"))
+        }
+
+        viewBinding.outputFrame.share.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_TEXT, viewBinding.outputFrame.textField.text.toString())
+            startActivity(Intent.createChooser(shareIntent, "Share using"))
+        }
+
+        viewBinding.outputFrame.copy.setOnClickListener {
+            val clip = ClipData.newPlainText(null, viewBinding.outputFrame.textField.text.toString())
+            clipboard.setPrimaryClip(clip)
+        }
+
+        viewBinding.inputFrame.speak.setOnClickListener {
+            mTts?.language = Locale.US
+            mTts?.speak(viewBinding.inputFrame.textField.text.toString(), TextToSpeech.QUEUE_ADD, null)
+        }
+
+        viewBinding.outputFrame.speak.setOnClickListener {
+            mTts?.language = Locale.US
+            mTts?.speak(viewBinding.outputFrame.textField.text.toString(), TextToSpeech.QUEUE_ADD, null)
+        }
+
+        viewBinding.buttons.microphone.setOnClickListener {
+            getSpeechInput(launcher_voice)
         }
 
         viewBinding.language.setOnClickListener {
@@ -84,8 +177,6 @@ class MainActivity : AppCompatActivity() {
             i.putExtra("current_language", currentLanguage)
             launcher_language.launch(i)
         }
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
 
         viewBinding.buttons.camera.setOnClickListener {
             val i = Intent(this, PhotoActivity::class.java)
@@ -138,7 +229,7 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
 
-                            viewBinding.outputFrame.textField.text = Html.fromHtml(response.body()?.output)
+                            viewBinding.outputFrame.textField.setText(Html.fromHtml(response.body()?.output))
                         }
 
                         override fun onFailure(call: Call<SimplifierData?>, t: Throwable) {
@@ -162,5 +253,34 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+        mTts?.shutdown()
+    }
+
+    override fun onInit(p0: Int) {
+        Toast.makeText(applicationContext, "Hello!", LENGTH_SHORT).show()
+    }
+
+    private fun getSpeechInput(launcher: ActivityResultLauncher<Intent>)
+    {
+        val intent = Intent(RecognizerIntent
+            .ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE,
+            Locale.getDefault())
+
+        if (intent.resolveActivity(packageManager) != null)
+        {
+            launcher.launch(intent)
+        } else
+        {
+            Toast.makeText(this,
+                "Your Device Doesn't Support Speech Input",
+                Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 }

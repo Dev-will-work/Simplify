@@ -10,6 +10,7 @@ import com.example.coursework.databinding.ActivityLanguageBinding
 
 import android.content.Intent
 import android.view.inputmethod.EditorInfo
+import java.util.ArrayList
 
 
 class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener {
@@ -35,8 +36,10 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
             adapter = LanguageAdapter(data)
         }
         adapter.setClickListener(this)
-        val currentLanguage = intent.getStringExtra("current_language")!!
-        adapter.setCurrentLanguage(currentLanguage)
+        val currentLanguage = intent.getStringExtra("current_language")
+        if (currentLanguage != null) {
+            adapter.setCurrentLanguage(currentLanguage)
+        }
         viewBinding.list.adapter = adapter
 
         viewBinding.back.setOnClickListener {
@@ -65,12 +68,14 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         }
     }
 
-    fun checkAlreadyCached(dataset: List<String>, s: String): Boolean {
-        for (cache in dataset) {
-            if (cache == "All languages") {
-                return false
-            } else if (s == cache) {
-                return true
+    fun checkAlreadyCached(dataset: List<String>?, s: String): Boolean {
+        if (dataset != null) {
+            for (cache in dataset) {
+                if (cache == "All languages") {
+                    return false
+                } else if (s == cache) {
+                    return true
+                }
             }
         }
         return false
@@ -90,24 +95,21 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
 
 
         if (full_data != null) {
-            val temp = full_data!![3]
+            val temp = full_data?.get(3)
             var removed = false
             if (adapter.added_size == 3) {
-                full_data!!.removeAt(3)
-//                adapter.notifyItemRemoved(3)
+                full_data?.removeAt(3)
                 adapter.added_size--
                 removed = true
             }
 
-            if (!checkAlreadyCached(full_data!!.slice(1..4), elementToAdd) &&
+            if (!checkAlreadyCached(full_data?.slice(1..4), elementToAdd) &&
                 !checkRestrictedChoices(elementToAdd)) {
-                full_data!!.add(1, elementToAdd)
-//                adapter.notifyDataSetChanged()
+                full_data?.add(1, elementToAdd)
                 adapter.added_size++
             }
-            if (adapter.added_size == 2 && removed) {
-                full_data!!.add(3, temp)
-//                adapter.notifyItemInserted(3)
+            if (adapter.added_size == 2 && removed && temp != null) {
+                full_data?.add(3, temp)
                 adapter.added_size++
             }
             adapter.dataSet = full_data as ArrayList<String>

@@ -8,8 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Parcel
 import android.os.Parcelable
-import android.view.ViewGroup.LayoutParams.FILL_PARENT
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 
 class LanguageAdapter(
     var dataSet: ArrayList<String>,
@@ -138,12 +136,12 @@ class LanguageAdapter(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<LanguageAdapter> {
-        override fun createFromParcel(parcel: Parcel): LanguageAdapter {
-            return LanguageAdapter(parcel)
+    companion object CREATOR : Parcelable.Creator<HistoryAdapter> {
+        override fun createFromParcel(parcel: Parcel): HistoryAdapter {
+            return HistoryAdapter(parcel)
         }
 
-        override fun newArray(size: Int): Array<LanguageAdapter?> {
+        override fun newArray(size: Int): Array<HistoryAdapter?> {
             return arrayOfNulls(size)
         }
     }

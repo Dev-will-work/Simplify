@@ -88,20 +88,25 @@ class PhotoActivity : AppCompatActivity() {
 
                     val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
                     var image: InputImage? = null
-                    try {
-                        image = InputImage.fromFilePath(this@PhotoActivity, output.savedUri!!)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
+                    val savedUri = output.savedUri
+                    if (savedUri != null) {
+                        try {
+                            image = InputImage.fromFilePath(this@PhotoActivity, savedUri)
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
                     }
-                    val result = recognizer.process(image!!)
-                        .addOnSuccessListener { visionText ->
-                            // Task completed successfully
-                            Toast.makeText(baseContext, visionText.text, Toast.LENGTH_SHORT).show()
-                            val res_intent = Intent()
-                            res_intent.putExtra("result", visionText.text)
-                            setResult(1, res_intent)
-                            finish()
-                            //                    val resultText = result.text
+                    if (image != null) {
+                        val result = recognizer.process(image)
+                            .addOnSuccessListener { visionText ->
+                                // Task completed successfully
+                                Toast.makeText(baseContext, visionText.text, Toast.LENGTH_SHORT)
+                                    .show()
+                                val res_intent = Intent()
+                                res_intent.putExtra("result", visionText.text)
+                                setResult(1, res_intent)
+                                finish()
+                                //                    val resultText = result.text
 //                    for (block in result.textBlocks) {
 //                        val blockText = block.text
 //                        val blockCornerPoints = block.cornerPoints
@@ -117,11 +122,12 @@ class PhotoActivity : AppCompatActivity() {
 //                            }
 //                        }
 //                    }
-                        }
-                        .addOnFailureListener { e ->
-                            // Task failed with an exception
-                            // ...
-                        }
+                            }
+                            .addOnFailureListener { e ->
+                                // Task failed with an exception
+                                // ...
+                            }
+                    }
                 }
             }
         )

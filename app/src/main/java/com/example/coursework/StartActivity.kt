@@ -43,7 +43,12 @@ class StartActivity : AppCompatActivity() {
         }
 
         viewBinding.signUp.setOnClickListener {
-
+            startActivity(
+                Intent(
+                    this@StartActivity, RegistrationActivity::class.java
+                )
+            )
+            finish()
         }
     }
 }

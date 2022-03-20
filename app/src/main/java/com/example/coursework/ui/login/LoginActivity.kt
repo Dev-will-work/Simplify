@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
+import android.text.InputType.*
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +57,25 @@ class LoginActivity : AppCompatActivity() {
         //binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_login, ViewGroup,true)
 //        binding = ActivityLoginBinding.inflate(layoutInflater)
         //setContentView(binding.root)
+
+        var show = true
+
+        binding.password.eye.setOnClickListener {
+            if (show) {
+                binding.password.textField1.inputType = (TYPE_CLASS_TEXT or
+                        TYPE_TEXT_VARIATION_PASSWORD or
+                        TYPE_TEXT_FLAG_CAP_SENTENCES or
+                        TYPE_TEXT_FLAG_MULTI_LINE)
+                binding.password.textField1.clearFocus()
+                show = false
+            } else {
+                binding.password.textField1.inputType = (TYPE_CLASS_TEXT or
+                        TYPE_TEXT_FLAG_CAP_SENTENCES or
+                        TYPE_TEXT_FLAG_MULTI_LINE)
+                binding.password.textField1.clearFocus()
+                show = true
+            }
+        }
 
         val username = binding.username.textField1
         val password = binding.password.textField1
