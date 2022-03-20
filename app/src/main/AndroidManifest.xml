@@ -14,6 +14,12 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -22,6 +28,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Coursework"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RegistrationActivity"
+            android:exported="true" />
         <activity
             android:name=".LanguageActivity"
             android:exported="true" />
@@ -58,6 +76,9 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <!-- <action -->
+                <!-- android:name="android.speech.action.RECOGNIZE_SPEECH" /> -->
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

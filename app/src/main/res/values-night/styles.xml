@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--   <item name=""></item>                          -->
-    <style name="my_base_text">
-        <item name="android:textColor">@color/base_0</item>
-    </style>
     <style name="H1" parent="my_base_text">
         <item name="android:fontFamily">@font/signika_light</item>
         <item name="android:textSize">30sp</item>
@@ -79,17 +76,9 @@
         <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
-        <item name="tint">@color/base_0</item>
     </style>
 
     <style name="input_frame">
-        <item name="android:textColorHint">@color/base_500</item>
-        <item name="android:textColor">@color/base_900</item>
-        <item name="android:fontFamily">@font/signika_regular</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:letterSpacing">0.03125</item>
-    </style>
-    <style name="output_frame">
         <item name="android:textColorHint">@color/base_500</item>
         <item name="android:textColor">@color/base_900</item>
         <item name="android:fontFamily">@font/signika_regular</item>

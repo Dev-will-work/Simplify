@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="adaptive_color">@color/base_0</color>
+    <color name="adaptive_900000">@color/base_0</color>
+    <color name="adaptive_700300">@color/base_300</color>
 </resources>

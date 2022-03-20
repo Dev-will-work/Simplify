@@ -67,6 +67,8 @@
     <color name="cancelled_100">#FFE7C9B4</color>
     <color name="cancelled_50">#FFF2E7E3</color>
 
-    <color name="adaptive_color">@color/base_900</color>
+    <color name="adaptive_900000">@color/base_900</color>
+    <color name="adaptive_700300">@color/base_700</color>
+
 
 </resources>
