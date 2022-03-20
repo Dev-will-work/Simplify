@@ -13,7 +13,8 @@
         android:layout_marginEnd="16dp"
         android:text="@string/skip_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textAppearance="@style/Button"/>
 
     <ImageView
         android:id="@+id/picture"
@@ -27,38 +28,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/skip"
         app:srcCompat="@drawable/people_picture"
-        app:tint="@color/base_700" />
+        app:tint="@color/adaptive_700300" />
 
     <TextView
         android:id="@+id/header"
-        style="@style/H1"
+        android:textAppearance="@style/H1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/signika_light"
         android:text="@string/header2"
-        android:textAlignment="textStart"
-        android:textColor="@android:color/primary_text_light"
-        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picture" />
 
     <TextView
         android:id="@+id/main_text"
-        style="@style/Body_1"
+        android:textAppearance="@style/Body_1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/signika_regular"
         android:text="@string/text2"
-        android:textAlignment="textStart"
         android:textColor="@color/base_500"
-        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/get_started"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +66,8 @@
         android:drawableEnd="@drawable/ic_arrow_right"
         android:text="@string/next_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textAppearance="@style/Button"/>
 
     <ImageView
         android:id="@+id/crumbs_center"

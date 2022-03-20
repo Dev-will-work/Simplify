@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/simplify"
-        style="@style/H2"
+        android:textAppearance="@style/H2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
@@ -41,7 +41,8 @@
         android:text="log in"
         app:layout_constraintBottom_toTopOf="@+id/sign_up"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="@style/Button"/>
 
     <Button
         android:id="@+id/sign_up"
@@ -55,7 +56,8 @@
         android:textColor="@color/main_500"
         app:layout_constraintBottom_toTopOf="@+id/continue_guest"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="@style/Button"/>
 
     <Button
         android:id="@+id/continue_guest"
@@ -69,5 +71,6 @@
         android:textColor="@color/main_500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:textAppearance="@style/Button"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
