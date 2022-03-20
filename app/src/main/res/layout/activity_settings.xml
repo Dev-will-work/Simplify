@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".SettingsActivity">
+
+        <ImageButton
+            android:id="@+id/back"
+            style="@style/image_button"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_left" />
+
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            app:layout_constraintBottom_toBottomOf="@+id/back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/back"
+            android:textAppearance="@style/Body_1"/>
+
+        <include
+            android:id="@+id/avatar_frame"
+            layout="@layout/chevron_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toTopOf="@+id/theme_frame"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/back"
+            app:firstText="@{&quot;Name Surname&quot;}"
+            app:secondText="@{&quot;Email&quot;}"
+            app:avatar1="@{@drawable/avatar}"
+            app:rightIcon1="@{@drawable/ic_logout_variant}"
+            app:visibility="@{android.view.View.VISIBLE}"/>
+
+        <include
+            android:id="@+id/theme_frame"
+            layout="@layout/chevron_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/toggle_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_frame"
+            app:firstText="@{&quot;Color theme&quot;}"
+            app:secondText="@{&quot;As in the system&quot;}"
+            app:avatar1="@{null}"
+            app:rightIcon1="@{@drawable/ic_chevron_right}"
+            app:visibility="@{android.view.View.GONE}"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/toggle_list"
+            android:layout_width="0dp"
+            android:layout_height="187dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/greeting_frame"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/theme_frame" />
+
+        <include
+            android:id="@+id/greeting_frame"
+            layout="@layout/chevron_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/slider_frame"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toggle_list"
+            app:firstText="@{&quot;Greeting content&quot;}"
+            app:secondText="@{&quot;Hello, Name! Have a nice day!&quot;}"
+            app:avatar1="@{null}"
+            app:rightIcon1="@{@drawable/ic_chevron_right}"
+            app:visibility="@{android.view.View.GONE}"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/simple_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slider_frame" />
+
+        <include
+            android:id="@+id/slider_frame"
+            layout="@layout/slider_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/simple_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/greeting_frame" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
