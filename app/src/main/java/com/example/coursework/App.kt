@@ -43,10 +43,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // temporary workaround to get assigned ip and automatically connect to shared wifi gateway
         val a = NetworkInterface.getByName("ap0").interfaceAddresses[1].address.toString().trim('/')
         val subnet = a.substringBeforeLast('.')
         val lastbyte = a.substringAfterLast('.').toInt()
-        var timeout = 0
 
         var pc_ip = ""
 
@@ -65,10 +65,6 @@ class App : Application() {
                 }.start()
             }
         }.start()
-
-//        while (pc_ip == "") {
-//            timeout++
-//        }
 
         val gson = GsonBuilder().setLenient().create()
         Thread {
