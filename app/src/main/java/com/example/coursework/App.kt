@@ -33,6 +33,7 @@ import java.io.InputStreamReader
 import java.lang.Exception
 import java.net.NetworkInterface
 import kotlinx.coroutines.*
+import java.net.SocketException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -43,28 +44,35 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // temporary workaround to get assigned ip and automatically connect to shared wifi gateway
-        val a = NetworkInterface.getByName("ap0").interfaceAddresses[1].address.toString().trim('/')
-        val subnet = a.substringBeforeLast('.')
-        val lastbyte = a.substringAfterLast('.').toInt()
-
         var pc_ip = ""
 
-        Thread {
-            val runtime = Runtime.getRuntime()
-            for (i in 1..255) {
-                Thread {
-                    val proc1 = runtime.exec("ping -w 1 $subnet.$i")
-                    val stdInput = BufferedReader(InputStreamReader(proc1.inputStream))
+        // temporary workaround to get assigned ip and automatically connect to shared wifi gateway
+        val connection_interface = NetworkInterface.getByName("ap0")
+        if (connection_interface == null) {
+            pc_ip = "127.0.0.1"
+            Toast.makeText(this, "No connection from other device found, simplification is not available!", LENGTH_LONG).show()
+        } else {
+            val full_address =
+                connection_interface.interfaceAddresses[1].address.toString().trim('/')
+            val subnet = full_address.substringBeforeLast('.')
+            val lastbyte = full_address.substringAfterLast('.').toInt()
 
-                    val v = "[0-9](?= rec)".toRegex().find(stdInput.readText())?.value
+            Thread {
+                val runtime = Runtime.getRuntime()
+                for (i in 1..255) {
+                    Thread {
+                        val proc1 = runtime.exec("ping -w 1 $subnet.$i")
+                        val stdInput = BufferedReader(InputStreamReader(proc1.inputStream))
 
-                    if (v == "1" && i != lastbyte) {
-                        pc_ip = "$subnet.$i"
-                    }
-                }.start()
-            }
-        }.start()
+                        val v = "[0-9](?= rec)".toRegex().find(stdInput.readText())?.value
+
+                        if (v == "1" && i != lastbyte) {
+                            pc_ip = "$subnet.$i"
+                        }
+                    }.start()
+                }
+            }.start()
+        }
 
         val gson = GsonBuilder().setLenient().create()
         Thread {
