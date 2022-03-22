@@ -22,7 +22,12 @@ import android.content.Intent
 import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.databinding.DataBindingUtil
-
+import com.example.coursework.data.model.LoggedInUser
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var viewBinding: ActivityMainBinding
@@ -44,6 +49,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val checkIntent = Intent()
         checkIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
 
+        val prefix = getFilesDir()
+        if (File("$prefix/statistics.json").exists()) {
+            var statisticsData: Dummy? = null
+            try {
+                statisticsData =
+                    Json.decodeFromString<Dummy>(File("$prefix/statistics.json").readText())
+                Counters.share_count = statisticsData.share_count
+                Counters.simplification_count = statisticsData.simplification_count
+            } catch (e: Exception) {
+                Toast.makeText(this, "Can't decode statistics data", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         val launcher = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
                 1 -> {
@@ -61,6 +79,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     val language = it.data?.getStringExtra("language")
                     if (language != null) {
                         viewBinding.language.text = language
+                        val embedding_activation_request = "language:" + language.take(2).lowercase(Locale.getDefault())
+                        retrofitRequest(embedding_activation_request, true)
                     }
                 }
                 else -> {}
@@ -140,6 +160,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, viewBinding.inputFrame.textField.text.toString())
             startActivity(Intent.createChooser(shareIntent, "Share using"))
+            Counters.share_count++
         }
 
         viewBinding.outputFrame.share.setOnClickListener {
@@ -147,6 +168,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, viewBinding.outputFrame.textField.text.toString())
             startActivity(Intent.createChooser(shareIntent, "Share using"))
+            Counters.share_count++
         }
 
         viewBinding.outputFrame.copy.setOnClickListener {
@@ -188,64 +210,71 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     val input = viewBinding.inputFrame.textField.text.toString()
-                    App.api?.getSimplifiedText(input)?.enqueue(object : Callback<SimplifierData?> {
-                        override fun onResponse(
-                            call: Call<SimplifierData?>,
-                            response: Response<SimplifierData?>
-                        ) {
-                            when (response.code()) {
-                                404 -> {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "Not found",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    return
-                                }
-                                400 -> {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "Bad formed request",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    return
-                                }
-                                401 -> {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "Bad API key, not authorized",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    return
-                                }
-                                200 -> {}
-                                else -> {
-                                    Toast.makeText(
-                                        this@MainActivity,
-                                        "Unknown server answer, try again",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    return
-                                }
-                            }
-
-                            viewBinding.outputFrame.textField.setText(Html.fromHtml(response.body()?.output))
-                        }
-
-                        override fun onFailure(call: Call<SimplifierData?>, t: Throwable) {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "An error with network occured",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-
-                    })
+                    retrofitRequest(input)
                 }
                 else -> {}
             }
             return@setOnEditorActionListener true
         }
+    }
+
+    private fun retrofitRequest(request: String, is_service_request: Boolean = false) {
+        App.api?.getSimplifiedText(request)?.enqueue(object : Callback<SimplifierData?> {
+            override fun onResponse(
+                call: Call<SimplifierData?>,
+                response: Response<SimplifierData?>
+            ) {
+                when (response.code()) {
+                    404 -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Not found",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
+                    400 -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Bad formed request",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
+                    401 -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Bad API key, not authorized",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
+                    200 -> {}
+                    else -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Unknown server answer, try again",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
+                }
+
+                if (!is_service_request) {
+                viewBinding.outputFrame.textField.setText(Html.fromHtml(response.body()?.output))
+                    Counters.simplification_count++
+                }
+            }
+
+            override fun onFailure(call: Call<SimplifierData?>, t: Throwable) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "An error with network occured",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        })
     }
 
     private fun captureVideo() {}
@@ -283,4 +312,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 .show()
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        val jsonData = Json.encodeToString(Dummy(Counters.simplification_count, Counters.share_count))
+        val prefix = getFilesDir()
+        File("$prefix/statistics.json").writeText(jsonData)
+    }
+}
+
+@Serializable
+data class Dummy(val simplification_count: Int, val share_count: Int)
+
+object Counters {
+    var simplification_count: Int = 0
+    var share_count: Int = 0
 }

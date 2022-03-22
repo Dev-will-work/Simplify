@@ -8,18 +8,18 @@ import android.os.Handler
 
 
 class SplashScreen : AppCompatActivity() {
-    private val SPLASH_TIME_OUT = 3000
+    private val splashTimeOut = 3000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash_screen)
-        Handler().postDelayed(Runnable {
+        Handler().postDelayed({
             startActivity(
                 Intent(
                     this@SplashScreen, OnboardingActivity1::class.java
                 )
             )
             finish()
-        }, SPLASH_TIME_OUT.toLong())
+        }, splashTimeOut.toLong())
     }
 }

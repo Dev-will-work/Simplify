@@ -7,10 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coursework.databinding.ActivityHistoryBinding
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 class HistoryActivity : AppCompatActivity(), HistoryAdapter.ItemClickListener {
     private lateinit var viewBinding: ActivityHistoryBinding
@@ -30,6 +31,7 @@ class HistoryActivity : AppCompatActivity(), HistoryAdapter.ItemClickListener {
         adapter.setClipboard(clipboard)
         adapter.setClickListener(this)
         viewBinding.list.adapter = adapter
+        val full_dataSet = data
 
         viewBinding.back1.setOnClickListener {
             startActivity(
@@ -38,6 +40,22 @@ class HistoryActivity : AppCompatActivity(), HistoryAdapter.ItemClickListener {
                 )
             )
             finish()
+        }
+
+        viewBinding.searchFrame.editTextTextPersonName.addTextChangedListener {
+            changed ->
+            if (changed != null) {
+                if (changed.toString() == "") {
+                    adapter.dataSet = full_dataSet
+                } else {
+                    adapter.dataSet = full_dataSet.filter {
+                        (it.date?.contains(changed.toString()) == true) or
+                                (it.request?.contains(changed.toString()) == true) or
+                                (it.response?.contains(changed.toString()) == true)
+                    } as ArrayList<HistoryData>
+                }
+                adapter.notifyDataSetChanged()
+            }
         }
 
     }
