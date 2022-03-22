@@ -1,6 +1,7 @@
 package com.example.coursework.data
 
 import com.example.coursework.data.model.LoggedInUser
+import java.util.zip.DataFormatException
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -27,15 +28,25 @@ class LoginRepository(val dataSource: LoginDataSource) {
         dataSource.logout()
     }
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
+    fun register(username: String, email: String, password: String): Result<LoggedInUser> {
         // handle login
-        val result = dataSource.login(username, password)
+        val result = dataSource.login(username, email, password)
 
         if (result is Result.Success) {
             setLoggedInUser(result.data)
         }
 
         return result
+    }
+
+    fun login(email: String, password: String): Result<LoggedInUser>  {
+        val decoded_email = this.user?.email!!
+        val decoded_password = customDecryption(this.user?.password!!)
+        return if (decoded_email == email && decoded_password == password) {
+            Result.Success(this.user!!)
+        } else {
+            Result.Error(DataFormatException("Entered credentials doesn't match saved account data!"))
+        }
     }
 
     private fun setLoggedInUser(loggedInUser: LoggedInUser) {

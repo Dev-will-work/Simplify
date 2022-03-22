@@ -35,12 +35,12 @@ class LoginDataSource {
         return result
     }
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
+    fun login(username: String, email: String, password: String): Result<LoggedInUser> {
         try {
             // TODO: handle loggedInUser authentication
             val encrypted_password = customEncryption(password)
             val customID = java.util.UUID.randomUUID().toString()
-            val User = LoggedInUser(customID, username, encrypted_password)
+            val User = LoggedInUser(customID, username, email, encrypted_password)
             return Result.Success(User)
         } catch (e: Throwable) {
             return Result.Error(IOException("Error logging in", e))

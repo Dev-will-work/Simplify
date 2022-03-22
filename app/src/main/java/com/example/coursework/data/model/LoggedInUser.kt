@@ -10,9 +10,11 @@ import kotlinx.serialization.Serializable
 data class LoggedInUser(
     val userId: String?,
     val displayName: String?,
+    val email: String?,
     val password: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString()
@@ -22,6 +24,7 @@ data class LoggedInUser(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(userId)
         parcel.writeString(displayName)
+        parcel.writeString(email)
         parcel.writeString(password)
     }
 

@@ -11,20 +11,20 @@ import com.example.coursework.R
 import com.example.coursework.data.model.LoggedInUser
 import kotlin.random.Random
 
-class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+class RegistrationViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
-    private val _loginForm = MutableLiveData<LoginFormState>()
-    val loginFormState: LiveData<LoginFormState> = _loginForm
+    private val _loginForm = MutableLiveData<RegistrationFormState>()
+    val registrationFormState: LiveData<RegistrationFormState> = _loginForm
 
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun login(username: String, password: String) {
+    fun login(username: String, email: String, password: String) {
         // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
+        val result = loginRepository.register(username, email, password)
 
         if (result is Result.Success) {
-            val displayName = loginRepository.user?.displayName
+            val displayName = result.data.displayName
             if (displayName != null) {
                 _loginResult.value =
                     LoginResult(success = LoggedInUserView(displayName = displayName))
@@ -34,13 +34,15 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         }
     }
 
-    fun loginDataChanged(username: String, password: String) {
+    fun loginDataChanged(username: String, email: String, password: String) {
         if (!isUserNameValid(username)) {
-            _loginForm.value = LoginFormState(emailError = R.string.invalid_email)
+            _loginForm.value = RegistrationFormState(usernameError = R.string.invalid_username)
+        } else if (!isEmailValid(email)) {
+            _loginForm.value = RegistrationFormState(emailError = R.string.invalid_email)
         } else if (!isPasswordValid(password)) {
-            _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
+            _loginForm.value = RegistrationFormState(passwordError = R.string.invalid_password)
         } else {
-            _loginForm.value = LoginFormState(isDataValid = true)
+            _loginForm.value = RegistrationFormState(isDataValid = true)
         }
     }
 

@@ -28,8 +28,8 @@ import kotlin.random.Random
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
+    lateinit var loginViewModel: LoginViewModel
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         // Save the user's current game state
@@ -66,18 +66,18 @@ class LoginActivity : AppCompatActivity() {
                         TYPE_TEXT_VARIATION_PASSWORD or
                         TYPE_TEXT_FLAG_CAP_SENTENCES or
                         TYPE_TEXT_FLAG_MULTI_LINE)
-                binding.password.textField1.clearFocus()
                 show = false
             } else {
                 binding.password.textField1.inputType = (TYPE_CLASS_TEXT or
                         TYPE_TEXT_FLAG_CAP_SENTENCES or
                         TYPE_TEXT_FLAG_MULTI_LINE)
-                binding.password.textField1.clearFocus()
                 show = true
             }
+            binding.password.textField1.maxLines = 4
+            binding.password.textField1.clearFocus()
         }
 
-        val username = binding.username.textField1
+        val email = binding.username.textField1
         val password = binding.password.textField1
         val login = binding.login
         val loading = binding.loading
@@ -93,8 +93,8 @@ class LoginActivity : AppCompatActivity() {
             // disable login button unless both username / password is valid
             login.isEnabled = loginState.isDataValid
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
+            if (loginState.emailError != null) {
+                email.error = getString(loginState.emailError)
             }
             if (loginState.passwordError != null) {
                 password.error = getString(loginState.passwordError)
@@ -107,6 +107,9 @@ class LoginActivity : AppCompatActivity() {
             loading.visibility = View.GONE
             if (loginResult.error != null) {
                 showLoginFailed(loginResult.error)
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+                return@Observer
             }
             if (loginResult.success != null) {
                 updateUiWithUser(loginResult.success)
@@ -119,13 +122,21 @@ class LoginActivity : AppCompatActivity() {
 
         val prefix = getFilesDir()
         if (File("$prefix/userdata.json").exists()) {
-            val userData = Json.decodeFromString<LoggedInUser>(File("$prefix/userdata.json").readText())
-            loginViewModel.setUserData(userData)
+            var userData: LoggedInUser? = null
+            try {
+                userData =
+                    Json.decodeFromString<LoggedInUser>(File("$prefix/userdata.json").readText())
+            } catch (e: Exception) {
+                Toast.makeText(this, "Can't decode user data", Toast.LENGTH_SHORT).show()
+            }
+            userData?.let {
+                loginViewModel.setUserData(it)
+            }
         }
 
-        username.afterTextChanged {
+        email.afterTextChanged {
             loginViewModel.loginDataChanged(
-                username.text.toString(),
+                email.text.toString(),
                 password.text.toString()
             )
         }
@@ -133,7 +144,7 @@ class LoginActivity : AppCompatActivity() {
         password.apply {
             afterTextChanged {
                 loginViewModel.loginDataChanged(
-                    username.text.toString(),
+                    email.text.toString(),
                     password.text.toString()
                 )
             }
@@ -142,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
                         loginViewModel.login(
-                            username.text.toString(),
+                            email.text.toString(),
                             password.text.toString()
                         )
                 }
@@ -151,7 +162,7 @@ class LoginActivity : AppCompatActivity() {
 
             login.setOnClickListener {
                 loading.visibility = View.VISIBLE
-                loginViewModel.login(username.text.toString(), password.text.toString())
+                loginViewModel.login(email.text.toString(), password.text.toString())
             }
 
             forget.setOnClickListener {
@@ -168,13 +179,6 @@ class LoginActivity : AppCompatActivity() {
 
 
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        val jsonData = Json.encodeToString(loginViewModel.getUserData())
-        val prefix = getFilesDir()
-        File("$prefix/userdata.json").writeText(jsonData)
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
