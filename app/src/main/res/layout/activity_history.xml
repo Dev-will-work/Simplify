@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
-            android:text="History"
+            android:text="@string/history"
             app:layout_constraintBottom_toBottomOf="@+id/back1"
             app:layout_constraintEnd_toStartOf="@+id/settings"
             app:layout_constraintStart_toEndOf="@+id/back1"
@@ -32,7 +32,8 @@
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_left" />
+            app:srcCompat="@drawable/ic_arrow_left"
+            android:contentDescription="@string/back" />
 
         <ImageButton
             android:id="@+id/settings"
@@ -42,7 +43,8 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_dots_vertical" />
+            app:srcCompat="@drawable/ic_dots_vertical"
+            android:contentDescription="@string/three_black_dots" />
 
         <ImageView
             android:id="@+id/separator"
@@ -51,7 +53,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/search_frame"
-            app:srcCompat="@drawable/separator_drawable" />
+            app:srcCompat="@drawable/separator_drawable"
+            android:contentDescription="@string/separator_line" />
 
         <include
             android:id="@+id/search_frame"

@@ -16,4 +16,17 @@
     <string name="output_placeholder">Здесь будет упрощенный текст</string>
     <string name="simplify_button">Упростить</string>
     <string name="input_placeholder">Введите что-то...</string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="action_sign_in_short">Регистрация</string>
+    <string name="action_sign_in">Вход</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="prompt_email">Эл. почта</string>
+    <string name="invalid_username">Некорректное имя пользователя, оно не должно быть пустым</string>
+    <string name="invalid_email">Некорректный email, он должен выглядеть как в шаблоне: слово123@слово.слово</string>
+    <string name="start_capture">Начать захват</string>
+    <string name="stop_capture">Остановить захват</string>
+    <string name="icon_description">Иконка приложения Simplify</string>
+    <string name="take_photo">Сделать фото</string>
+    <string name="login_failed">Вход невозможен</string>
+    <string name="invalid_password">Пароль должен содержать > 5 символов</string>
 </resources>

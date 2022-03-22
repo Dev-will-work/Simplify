@@ -19,14 +19,15 @@
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_left" />
+            app:srcCompat="@drawable/ic_arrow_left"
+            android:contentDescription="@string/back" />
 
         <TextView
             android:id="@+id/label"
             android:textAppearance="@style/Body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select language"
+            android:text="@string/select_language"
             app:layout_constraintBottom_toBottomOf="@+id/back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +53,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/search_frame"
-            app:srcCompat="@drawable/separator_drawable" />
+            app:srcCompat="@drawable/separator_drawable"
+            android:contentDescription="@string/separator_line" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"

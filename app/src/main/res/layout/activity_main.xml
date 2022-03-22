@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
-            android:text="Simplify"
+            android:text="@string/simplify"
             app:layout_constraintBottom_toBottomOf="@+id/profile"
             app:layout_constraintEnd_toStartOf="@+id/settings"
             app:layout_constraintStart_toEndOf="@+id/profile"
@@ -32,7 +32,8 @@
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_account" />
+            app:srcCompat="@drawable/ic_account"
+            android:contentDescription="@string/profile_icon" />
 
         <ImageButton
             android:id="@+id/settings"
@@ -42,7 +43,8 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_cog" />
+            app:srcCompat="@drawable/ic_cog"
+            android:contentDescription="@string/settings_icon" />
 
         <Button
             android:id="@+id/language"
@@ -51,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:drawableEnd="@drawable/ic_chevron_right"
-            android:text="English"
+            android:text="@string/english"
             android:textAlignment="textStart"
             android:textAllCaps="false"
             android:textAppearance="@style/Body_1"

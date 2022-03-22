@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable name="imeOptions" type="int" />
@@ -39,7 +37,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="32dp"
                 android:background="@null"
-                android:hint="Enter something here"
+                android:hint="@string/enter_something_here"
                 android:maxLines="4"
                 android:textColorHint="@color/base_500"
                 app:layout_constraintBottom_toTopOf="@+id/copy"
@@ -61,7 +59,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_content_copy"
-                app:tint="@color/base_900" />
+                app:tint="@color/base_900"
+                android:contentDescription="@string/copy_button" />
 
             <ImageButton
                 android:id="@+id/speak"
@@ -73,7 +72,8 @@
                 app:tint="@color/base_900"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/copy"
-                app:srcCompat="@drawable/ic_volume_high" />
+                app:srcCompat="@drawable/ic_volume_high"
+                android:contentDescription="@string/speak_button" />
 
             <ImageButton
                 android:id="@+id/share"
@@ -85,7 +85,8 @@
                 app:tint="@color/base_900"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/speak"
-                app:srcCompat="@drawable/ic_share" />
+                app:srcCompat="@drawable/ic_share"
+                android:contentDescription="@string/share_button" />
 
             <ImageButton
                 android:id="@+id/remove"
@@ -97,7 +98,8 @@
                 app:tint="@color/base_900"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/share"
-                app:srcCompat="@drawable/ic_close" />
+                app:srcCompat="@drawable/ic_close"
+                android:contentDescription="@string/clear_button" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -106,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="Input field"
+            android:text="@string/input_field"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

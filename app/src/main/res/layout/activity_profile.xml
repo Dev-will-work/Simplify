@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
-            android:text="My profile"
+            android:text="@string/my_profile"
             app:layout_constraintBottom_toBottomOf="@+id/back1"
             app:layout_constraintEnd_toStartOf="@+id/settings"
             app:layout_constraintStart_toEndOf="@+id/back1"
@@ -32,7 +32,8 @@
             android:layout_marginTop="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_left" />
+            app:srcCompat="@drawable/ic_arrow_left"
+            android:contentDescription="@string/back" />
 
         <ImageButton
             android:id="@+id/settings"
@@ -42,7 +43,8 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_dots_vertical" />
+            app:srcCompat="@drawable/ic_dots_vertical"
+            android:contentDescription="@string/settings_icon" />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
@@ -61,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Your simplification frequency"
+            android:text="@string/your_simplification_frequency"
             android:textAppearance="@style/Body_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
@@ -76,7 +78,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/back1"
-            app:srcCompat="@drawable/avatar" />
+            app:srcCompat="@drawable/avatar"
+            android:contentDescription="@string/avatar_image" />
 
         <Button
             android:id="@+id/change_info"
@@ -84,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Change info"
+            android:text="@string/change_info"
             android:textColor="@color/base_900"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Name Surname"
+            android:text="@string/name_surname"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/avatar"
@@ -107,7 +110,7 @@
             android:textAppearance="@style/Body_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
+            android:text="@string/email"
             android:textColor="@color/base_500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
