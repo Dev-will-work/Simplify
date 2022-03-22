@@ -35,6 +35,7 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         } else {
             adapter = LanguageAdapter(data)
         }
+
         adapter.setClickListener(this)
         val currentLanguage = intent.getStringExtra("current_language")
         if (currentLanguage != null) {
@@ -114,7 +115,7 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
             }
             adapter.dataSet = full_data as ArrayList<String>
             full_data = null
-            val resultIntent = Intent()
+            val resultIntent = Intent(this@LanguageActivity, MainActivity::class.java)
             resultIntent.putExtra("adapter", adapter)
             resultIntent.putExtra("language", elementToAdd)
             setResult(RESULT_OK, resultIntent)

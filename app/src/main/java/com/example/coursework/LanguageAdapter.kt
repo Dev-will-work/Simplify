@@ -136,12 +136,12 @@ class LanguageAdapter(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<HistoryAdapter> {
-        override fun createFromParcel(parcel: Parcel): HistoryAdapter {
-            return HistoryAdapter(parcel)
+    companion object CREATOR : Parcelable.Creator<LanguageAdapter> {
+        override fun createFromParcel(parcel: Parcel): LanguageAdapter {
+            return LanguageAdapter(parcel)
         }
 
-        override fun newArray(size: Int): Array<HistoryAdapter?> {
+        override fun newArray(size: Int): Array<LanguageAdapter?> {
             return arrayOfNulls(size)
         }
     }

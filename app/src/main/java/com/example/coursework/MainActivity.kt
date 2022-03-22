@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     //private var recording: Recording? = null
 
     private lateinit var cameraExecutor: ExecutorService
-    private var adapter: HistoryAdapter? = null
+    private var adapter: LanguageAdapter? = null
     private var mTts: TextToSpeech? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val launcher_language = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
                 RESULT_OK -> {
-                    adapter = it.data?.getParcelableExtra<HistoryAdapter>("adapter")
+                    adapter = it.data?.getParcelableExtra("adapter")
                     val language = it.data?.getStringExtra("language")
                     if (language != null) {
                         viewBinding.language.text = language

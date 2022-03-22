@@ -18,7 +18,6 @@
 
         <EditText
             android:id="@+id/editTextTextPersonName"
-            style="@style/input_frame"
             android:textAppearance="@style/Body_1"
             android:layout_width="0dp"
             android:layout_height="0dp"
