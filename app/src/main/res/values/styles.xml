@@ -83,6 +83,7 @@
     </style>
 
     <style name="io_frame">
+        <item name="android:textColor">@color/base_900</item>
         <item name="android:textColorHint">@color/base_500</item>
         <item name="android:imeOptions">actionDone</item>
     </style>

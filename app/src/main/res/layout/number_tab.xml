@@ -26,7 +26,6 @@
 
         <com.example.coursework.MyEditText
             android:id="@+id/myEditText"
-            style="@style/io_frame"
             android:layout_width="15dp"
             android:layout_height="31dp"
             android:layout_marginStart="22dp"
