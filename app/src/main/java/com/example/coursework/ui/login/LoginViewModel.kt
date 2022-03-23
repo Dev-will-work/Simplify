@@ -9,7 +9,6 @@ import com.example.coursework.data.Result
 
 import com.example.coursework.R
 import com.example.coursework.data.model.LoggedInUser
-import kotlin.random.Random
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -58,7 +57,7 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         return password.length > 5
     }
 
-    fun retrievePassword(): String? {
+    fun retrievePassword(): String {
         return loginRepository.retrievePassword()
     }
 

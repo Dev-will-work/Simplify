@@ -16,6 +16,7 @@ import com.jjoe64.graphview.series.LineGraphSeries
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.sin
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -35,7 +36,7 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        val prefix = getFilesDir()
+        val prefix = filesDir
         var userData: LoggedInUser? = null
         if (File("$prefix/userdata.json").exists()) {
             try {
@@ -57,15 +58,15 @@ class ProfileActivity : AppCompatActivity() {
         val dateArray = ArrayList<Date>()
         calendar.add(Calendar.DATE, -10)
         for (i in 10 downTo 0) {
-            val d: Date = calendar.getTime()
+            val d: Date = calendar.time
             dateArray.add(d)
             calendar.add(Calendar.DATE, 1)
         }
-        val d: Date = calendar.getTime()
-        dateArray.add(d)
+        val today: Date = calendar.time
+        dateArray.add(today)
         calendar.add(Calendar.DATE, 1)
         for (i in 0..10) {
-            val d: Date = calendar.getTime()
+            val d: Date = calendar.time
             dateArray.add(d)
             calendar.add(Calendar.DATE, 1)
         }
@@ -73,28 +74,28 @@ class ProfileActivity : AppCompatActivity() {
         try {
             val points = arrayOfNulls<DataPoint>(21)
             for (i in points.indices) {
-                points[i] = DataPoint(dateArray[i], Math.sin(i * 0.5) * 20 * (Math.random() * 10 + 1))
+                points[i] = DataPoint(dateArray[i], sin(i * 0.5) * 20 * (Math.random() * 10 + 1))
             }
             val series = LineGraphSeries(points)
 
-            viewBinding.graph.getGridLabelRenderer().setLabelFormatter(DateAsXAxisLabelFormatter(this));
-            viewBinding.graph.getGridLabelRenderer().setNumHorizontalLabels(2)
+            viewBinding.graph.gridLabelRenderer.labelFormatter = DateAsXAxisLabelFormatter(this)
+            viewBinding.graph.gridLabelRenderer.numHorizontalLabels = 2
 
-            viewBinding.graph.getViewport().setYAxisBoundsManual(true);
-            viewBinding.graph.getViewport().setMinY(-150.0);
-            viewBinding.graph.getViewport().setMaxY(150.0);
+            viewBinding.graph.viewport.isYAxisBoundsManual = true
+            viewBinding.graph.viewport.setMinY(-150.0)
+            viewBinding.graph.viewport.setMaxY(150.0)
 
-            viewBinding.graph.getViewport().setMinX(dateArray.first().getTime().toDouble());
-            viewBinding.graph.getViewport().setMaxX(dateArray.last().getTime().toDouble());
-            viewBinding.graph.getViewport().isXAxisBoundsManual = true;
+            viewBinding.graph.viewport.setMinX(dateArray.first().time.toDouble())
+            viewBinding.graph.viewport.setMaxX(dateArray.last().time.toDouble())
+            viewBinding.graph.viewport.isXAxisBoundsManual = true
 
 //            viewBinding.graph.getViewport().setScalable(true);
 //            viewBinding.graph.getViewport().setScalableY(true);
 
-            viewBinding.graph.getViewport().setScalable(true);
-            viewBinding.graph.getViewport().setScrollable(true); // enables horizontal scrolling
+            viewBinding.graph.viewport.isScalable = true
+            viewBinding.graph.viewport.isScrollable = true // enables horizontal scrolling
 
-            viewBinding.graph.getGridLabelRenderer().setHumanRounding(false);
+            viewBinding.graph.gridLabelRenderer.setHumanRounding(false)
 
             viewBinding.graph.addSeries(series)
 

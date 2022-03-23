@@ -16,7 +16,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
 
-        val toggle_data = arrayListOf(
+        val toggleData = arrayListOf(
             ToggleOptionsData("Autodetect language", false),
             ToggleOptionsData("Improve simplification", true),
             ToggleOptionsData("Disable input hints", false),
@@ -28,7 +28,7 @@ class SettingsActivity : AppCompatActivity() {
 
         viewBinding.toggleList.layoutManager = LinearLayoutManager(this)
         viewBinding.simpleList.layoutManager = LinearLayoutManager(this)
-        adapter1 = ToggleOptionsAdapter(toggle_data)
+        adapter1 = ToggleOptionsAdapter(toggleData)
         adapter2 = SimpleOptionsAdapter(data)
         viewBinding.toggleList.adapter = adapter1
         viewBinding.simpleList.adapter = adapter2

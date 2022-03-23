@@ -49,7 +49,6 @@ class LanguageAdapter(
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
-        val viewHolder: RecyclerView.ViewHolder
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.list_item, viewGroup, false)
 
@@ -59,16 +58,16 @@ class LanguageAdapter(
     private fun configure1(vh: ViewHolder, position: Int) {
         val param = vh.textView.layoutParams as ViewGroup.MarginLayoutParams
         val dpRatio: Float = vh.textView.context.getResources().getDisplayMetrics().density
-        val pixelForDp = (38 as Int * dpRatio).toInt()
+        val pixelForDp = (38 * dpRatio).toInt()
         param.topMargin = pixelForDp
         vh.textView.layoutParams = param
         vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
+        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0)
     }
 
     private fun configure2(vh: ViewHolder, position: Int) {
         vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
+        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0)
     }
 
     private fun configure3(vh: ViewHolder, position: Int) {
@@ -76,7 +75,7 @@ class LanguageAdapter(
         if (vh.textView.text.equals(currentLanguage)) {
             endDrawable = R.drawable.ic_check
         }
-        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, endDrawable, 0);
+        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, endDrawable, 0)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -84,7 +83,7 @@ class LanguageAdapter(
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val vh1 = viewHolder as ViewHolder
+        val vh1 = viewHolder
         viewHolder.textView.text = dataSet[position]
         when (viewHolder.itemViewType) {
             HEADER_DOWN -> {

@@ -1,16 +1,12 @@
 package com.example.coursework
 
-import android.content.ClipData
 import android.content.ClipboardManager
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.Switch
 import android.widget.TextView
-import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.switchmaterial.SwitchMaterial
 
@@ -21,8 +17,7 @@ data class ToggleOptionsData(
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readByte() != 0.toByte()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(option_name)
@@ -47,17 +42,12 @@ data class ToggleOptionsData(
 class ToggleOptionsAdapter(
     var dataSet: ArrayList<ToggleOptionsData>) :
     RecyclerView.Adapter<ToggleOptionsAdapter.ViewHolder>(), Parcelable {
-    private val FAVOURITE = 0
-    private val SIMPLE = 1
     private var mClickListener: ItemClickListener? = null
-    private var currentLanguage: String? = null
     lateinit var clipboardManager: ClipboardManager
 
     constructor(parcel: Parcel) : this(
         parcel.createTypedArrayList(ToggleOptionsData) as ArrayList<ToggleOptionsData>
-    ) {
-
-    }
+    )
 
     /**
      * Provide a reference to the type of views that you are using
@@ -83,7 +73,6 @@ class ToggleOptionsAdapter(
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
-        val viewHolder: RecyclerView.ViewHolder
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.toggle_item, viewGroup, false)
 
@@ -110,7 +99,6 @@ class ToggleOptionsAdapter(
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val vh1 = viewHolder as ViewHolder
         viewHolder.option_name.text = dataSet[position].option_name
 //        viewHolder.icon.setImageResource(if (dataSet[position].is_favourite) R.drawable.ic_bookmark else R.drawable.ic_bookmark_outline)
 //        when (viewHolder.itemViewType) {
@@ -152,18 +140,14 @@ class ToggleOptionsAdapter(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<HistoryAdapter> {
-        override fun createFromParcel(parcel: Parcel): HistoryAdapter {
-            return HistoryAdapter(parcel)
+    companion object CREATOR : Parcelable.Creator<ToggleOptionsAdapter> {
+        override fun createFromParcel(parcel: Parcel): ToggleOptionsAdapter {
+            return ToggleOptionsAdapter(parcel)
         }
 
-        override fun newArray(size: Int): Array<HistoryAdapter?> {
+        override fun newArray(size: Int): Array<ToggleOptionsAdapter?> {
             return arrayOfNulls(size)
         }
-    }
-
-    fun setCurrentLanguage(language: String) {
-        this.currentLanguage = language
     }
 
 }
@@ -172,17 +156,12 @@ class ToggleOptionsAdapter(
 class SimpleOptionsAdapter(
     var dataSet: ArrayList<String>) :
     RecyclerView.Adapter<SimpleOptionsAdapter.ViewHolder>(), Parcelable {
-    private val FAVOURITE = 0
-    private val SIMPLE = 1
     private var mClickListener: ItemClickListener? = null
-    private var currentLanguage: String? = null
     lateinit var clipboardManager: ClipboardManager
 
     constructor(parcel: Parcel) : this(
         parcel.createStringArrayList() as ArrayList<String>
-    ) {
-
-    }
+    )
 
     /**
      * Provide a reference to the type of views that you are using
@@ -206,7 +185,6 @@ class SimpleOptionsAdapter(
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
-        val viewHolder: RecyclerView.ViewHolder
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.list_item, viewGroup, false)
 
@@ -233,7 +211,6 @@ class SimpleOptionsAdapter(
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val vh1 = viewHolder as ViewHolder
         viewHolder.option_name.text = dataSet[position]
         viewHolder.option_name.setCompoundDrawables(null,null,null,null)
 
@@ -288,18 +265,14 @@ class SimpleOptionsAdapter(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<HistoryAdapter> {
-        override fun createFromParcel(parcel: Parcel): HistoryAdapter {
-            return HistoryAdapter(parcel)
+    companion object CREATOR : Parcelable.Creator<SimpleOptionsAdapter> {
+        override fun createFromParcel(parcel: Parcel): SimpleOptionsAdapter {
+            return SimpleOptionsAdapter(parcel)
         }
 
-        override fun newArray(size: Int): Array<HistoryAdapter?> {
+        override fun newArray(size: Int): Array<SimpleOptionsAdapter?> {
             return arrayOfNulls(size)
         }
-    }
-
-    fun setCurrentLanguage(language: String) {
-        this.currentLanguage = language
     }
 
 }

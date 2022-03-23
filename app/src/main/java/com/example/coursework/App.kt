@@ -1,41 +1,18 @@
 package com.example.coursework
 
 import android.app.Application
-import android.content.Context
-import android.net.wifi.WifiManager
-import android.text.format.Formatter.formatIpAddress
-import androidx.activity.ComponentActivity
-import com.google.android.gms.common.util.ArrayUtils
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Long.reverse
-import java.math.BigInteger
-import java.net.InetAddress
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.util.*
-import java.util.Collections.reverse
-import android.net.LinkProperties
-
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkRequest
 import android.os.Build
-import android.telephony.NetworkScan
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.RequiresApi
 import java.io.BufferedReader
-import java.io.FileReader
-import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.Exception
 import java.net.NetworkInterface
 import kotlinx.coroutines.*
-import java.net.SocketException
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 
 class App : Application() {

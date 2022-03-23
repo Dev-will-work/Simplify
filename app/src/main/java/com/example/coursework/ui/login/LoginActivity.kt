@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.InputType.*
 import android.text.TextWatcher
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
@@ -20,10 +18,8 @@ import com.example.coursework.databinding.ActivityLoginBinding
 import com.example.coursework.R
 import com.example.coursework.data.model.LoggedInUser
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.decodeFromString
 import java.io.File
-import kotlin.random.Random
 
 
 class LoginActivity : AppCompatActivity() {
@@ -80,7 +76,6 @@ class LoginActivity : AppCompatActivity() {
         val email = binding.username.textField1
         val password = binding.password.textField1
         val login = binding.login
-        val loading = binding.loading
         val forget = binding.forgotPassword
         val back = binding.back
 
@@ -104,7 +99,6 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
 
-            loading.visibility = View.GONE
             if (loginResult.error != null) {
                 showLoginFailed(loginResult.error)
                 setResult(Activity.RESULT_CANCELED)
@@ -120,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
             finish()
         })
 
-        val prefix = getFilesDir()
+        val prefix = filesDir
         if (File("$prefix/userdata.json").exists()) {
             var userData: LoggedInUser? = null
             try {
@@ -161,7 +155,6 @@ class LoginActivity : AppCompatActivity() {
             }
 
             login.setOnClickListener {
-                loading.visibility = View.VISIBLE
                 loginViewModel.login(email.text.toString(), password.text.toString())
             }
 

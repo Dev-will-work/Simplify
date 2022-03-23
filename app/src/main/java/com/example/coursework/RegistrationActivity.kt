@@ -1,6 +1,5 @@
 package com.example.coursework
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -110,7 +109,7 @@ class RegistrationActivity : AppCompatActivity() {
             if (loginResult.success != null) {
                 updateUiWithUser(loginResult.success)
                 val jsonData = Json.encodeToString(registrationViewModel.getUserData())
-                val prefix = getFilesDir()
+                val prefix = filesDir
                 File("$prefix/userdata.json").writeText(jsonData)
             }
 
@@ -124,7 +123,7 @@ class RegistrationActivity : AppCompatActivity() {
             finish()
         })
 
-        val prefix = getFilesDir()
+        val prefix = filesDir
         if (File("$prefix/userdata.json").exists()) {
             var userData: LoggedInUser? = null
             try {
@@ -188,6 +187,6 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, errorString, LENGTH_SHORT).show()
     }
 }

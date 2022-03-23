@@ -1,11 +1,16 @@
 package com.example.coursework
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.startActivity
 import com.example.coursework.databinding.ActivityStartBinding
 import com.example.coursework.ui.login.LoginActivity
+import kotlin.reflect.KClass
 
 class StartActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityStartBinding
@@ -33,22 +38,18 @@ class StartActivity : AppCompatActivity() {
             launcher.launch(i)
         }
 
-        viewBinding.continueGuest.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@StartActivity, MainActivity::class.java
-                )
-            )
-            finish()
-        }
+        setClickMoveToActivity(viewBinding.continueGuest, this@StartActivity, MainActivity::class)
+        setClickMoveToActivity(viewBinding.signUp, this@StartActivity, RegistrationActivity::class)
+    }
+}
 
-        viewBinding.signUp.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@StartActivity, RegistrationActivity::class.java
-                )
-            )
-            finish()
-        }
+fun setClickMoveToActivity(view: View, ctx: Context, dest: KClass<*>) {
+    view.setOnClickListener {
+        startActivity(ctx,
+            Intent(
+                ctx, dest.java
+            ), Bundle()
+        )
+        (ctx as Activity).finish()
     }
 }

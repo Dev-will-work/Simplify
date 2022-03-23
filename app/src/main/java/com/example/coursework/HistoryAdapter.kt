@@ -2,18 +2,14 @@ package com.example.coursework
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Parcel
 import android.os.Parcelable
 import android.widget.ImageButton
-import androidx.core.content.ContextCompat.getSystemService
-import com.example.coursework.HistoryData.*
 
 data class HistoryData(
     val date: String?,
@@ -58,7 +54,6 @@ class HistoryAdapter(
     private val FAVOURITE = 0
     private val SIMPLE = 1
     private var mClickListener: ItemClickListener? = null
-    private var currentLanguage: String? = null
     lateinit var clipboardManager: ClipboardManager
 
     constructor(parcel: Parcel) : this(
@@ -95,7 +90,6 @@ class HistoryAdapter(
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
-        val viewHolder: RecyclerView.ViewHolder
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.history_item, viewGroup, false)
 
@@ -122,7 +116,6 @@ class HistoryAdapter(
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val vh1 = viewHolder as ViewHolder
         viewHolder.date.text = dataSet[position].date
         viewHolder.request.setText(dataSet[position].request)
         viewHolder.response.setText(dataSet[position].response)
@@ -210,10 +203,6 @@ class HistoryAdapter(
         override fun newArray(size: Int): Array<HistoryAdapter?> {
             return arrayOfNulls(size)
         }
-    }
-
-    fun setCurrentLanguage(language: String) {
-        this.currentLanguage = language
     }
 
 }

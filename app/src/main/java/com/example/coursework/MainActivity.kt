@@ -2,7 +2,6 @@ package com.example.coursework
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Html
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -16,13 +15,13 @@ import java.util.concurrent.Executors
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS
 import android.widget.Toast.LENGTH_SHORT
-
 import android.content.*
 import android.content.Intent
+import android.os.Build
 import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
-import com.example.coursework.data.model.LoggedInUser
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -51,14 +50,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val prefix = getFilesDir()
         if (File("$prefix/statistics.json").exists()) {
-            var statisticsData: Dummy? = null
+            val statisticsData: Dummy?
             try {
                 statisticsData =
                     Json.decodeFromString<Dummy>(File("$prefix/statistics.json").readText())
                 Counters.share_count = statisticsData.share_count
                 Counters.simplification_count = statisticsData.simplification_count
             } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode statistics data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Can't decode statistics data", LENGTH_SHORT).show()
             }
         }
 
@@ -137,7 +136,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             finish()
         }
 
-        viewBinding.profile?.setOnClickListener {
+        viewBinding.profile.setOnClickListener {
             startActivity(
                 Intent(
                     this@MainActivity, ProfileActivity::class.java
@@ -178,12 +177,24 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         viewBinding.inputFrame.speak.setOnClickListener {
             mTts?.language = Locale.US
-            mTts?.speak(viewBinding.inputFrame.textField.text.toString(), TextToSpeech.QUEUE_ADD, null)
+            val text = viewBinding.inputFrame.textField.text.toString()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mTts?.speak(text,TextToSpeech.QUEUE_ADD,null,null)
+            } else {
+                mTts?.speak(text, TextToSpeech.QUEUE_ADD, null)
+            }
         }
 
         viewBinding.outputFrame.speak.setOnClickListener {
             mTts?.language = Locale.US
-            mTts?.speak(viewBinding.outputFrame.textField.text.toString(), TextToSpeech.QUEUE_ADD, null)
+            val text = viewBinding.outputFrame.textField.text.toString()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mTts?.speak(text,TextToSpeech.QUEUE_ADD,null,null)
+            } else {
+                mTts?.speak(text, TextToSpeech.QUEUE_ADD, null)
+            }
         }
 
         viewBinding.buttons.microphone.setOnClickListener {
@@ -261,7 +272,9 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 }
 
                 if (!is_service_request) {
-                viewBinding.outputFrame.textField.setText(Html.fromHtml(response.body()?.output))
+                    response.body()?.output?.let {
+                        viewBinding.outputFrame.textField.setText(HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY))
+                    }
                     Counters.simplification_count++
                 }
             }
@@ -308,7 +321,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         {
             Toast.makeText(this,
                 "Your Device Doesn't Support Speech Input",
-                Toast.LENGTH_SHORT)
+                LENGTH_SHORT)
                 .show()
         }
     }
