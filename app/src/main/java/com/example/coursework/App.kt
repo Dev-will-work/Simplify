@@ -21,6 +21,16 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        val ngrok_address = "http://839c-83-149-47-18.ngrok.io/"
+
+        val gson = GsonBuilder().setLenient().create()
+        retrofit = Retrofit.Builder().baseUrl(ngrok_address)
+            .addConverterFactory(GsonConverterFactory.create(gson)).build()
+        simplifierApi = retrofit?.create(SimplifierApi::class.java)
+
+    }
+
+    fun conectLocallyWithDHCPAssignedIP() {
         var pc_ip = ""
 
         // temporary workaround to get assigned ip and automatically connect to shared wifi gateway
