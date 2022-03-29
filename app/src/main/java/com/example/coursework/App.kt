@@ -28,6 +28,9 @@ class App : Application() {
             .addConverterFactory(GsonConverterFactory.create(gson)).build()
         simplifierApi = retrofit?.create(SimplifierApi::class.java)
 
+        val prefix = filesDir
+//        clearFile("$prefix/languagedata.json")
+
     }
 
     fun conectLocallyWithDHCPAssignedIP() {

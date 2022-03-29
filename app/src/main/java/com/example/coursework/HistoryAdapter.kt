@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import android.os.Parcel
 import android.os.Parcelable
 import android.widget.ImageButton
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class HistoryData(
     val date: String?,
     val request: String?,
@@ -22,8 +24,7 @@ data class HistoryData(
         parcel.readString(),
         parcel.readString(),
         parcel.readByte() != 0.toByte()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(date)
@@ -53,20 +54,17 @@ class HistoryAdapter(
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>(), Parcelable {
     private val FAVOURITE = 0
     private val SIMPLE = 1
-    private var mClickListener: ItemClickListener? = null
     lateinit var clipboardManager: ClipboardManager
 
     constructor(parcel: Parcel) : this(
         parcel.createTypedArrayList(HistoryData) as ArrayList<HistoryData>
-    ) {
-
-    }
+    )
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val date: TextView
         val request: MyEditText
         val response: MyEditText
@@ -77,13 +75,6 @@ class HistoryAdapter(
             date = view.findViewById(R.id.date)
             request = view.findViewById(R.id.request)
             response = view.findViewById(R.id.response)
-
-            // Define click listener for the ViewHolder's View.
-            // view.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View?) {
-            mClickListener?.onItemClick(view, adapterPosition)
         }
     }
 
@@ -95,21 +86,6 @@ class HistoryAdapter(
 
         return ViewHolder(view)
     }
-
-//    private fun configure1(vh: ViewHolder, position: Int) {
-//        val param = vh.textView.layoutParams as ViewGroup.MarginLayoutParams
-//        val dpRatio: Float = vh.textView.context.getResources().getDisplayMetrics().density
-//        val pixelForDp = (38 as Int * dpRatio).toInt()
-//        param.topMargin = pixelForDp
-//        vh.textView.layoutParams = param
-//        vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-//        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
-//    }
-//
-//    private fun configure2(vh: ViewHolder, position: Int) {
-//        vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-//        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
-//    }
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
@@ -148,14 +124,6 @@ class HistoryAdapter(
             }
             notifyDataSetChanged()
         }
-//        when (viewHolder.itemViewType) {
-//            FAVOURITE -> {
-//                configure1(vh1, position)
-//            }
-//            SIMPLE -> {
-//                configure2(vh1, position)
-//            }
-//        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -167,11 +135,6 @@ class HistoryAdapter(
         } else {
             return SIMPLE
         }
-    }
-
-    // allows clicks events to be caught
-    fun setClickListener(itemClickListener: ItemClickListener?) {
-        mClickListener = itemClickListener
     }
 
     fun setClipboard(clipboard: ClipboardManager) {
@@ -205,4 +168,11 @@ class HistoryAdapter(
         }
     }
 
+}
+
+@Serializable
+data class DummyHistoryAdapter(val dataset: ArrayList<HistoryData>)
+
+object HistoryAdapterObject {
+    lateinit var dataset: ArrayList<HistoryData>
 }

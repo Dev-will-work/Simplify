@@ -17,7 +17,6 @@ import android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS
 import android.widget.Toast.LENGTH_SHORT
 import android.content.*
 import android.content.Intent
-import android.icu.text.DateFormat.DAY
 import android.net.Uri
 import android.os.Build
 import android.speech.RecognizerIntent
@@ -32,23 +31,38 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import kotlinx.datetime.LocalDateTime
-import java.io.InputStream
-import java.time.Duration
-import java.time.temporal.ChronoUnit
 import kotlin.collections.ArrayList
 import java.util.Calendar.*
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.ExperimentalTime
 
 fun leftShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
-    var result = arr.takeLast(arr.size - diff) as ArrayList<Double>
+    val result = arr.takeLast(arr.size - diff) as ArrayList<Double>
     while (result.size < arr.size) {
         result.add(0.0)
     }
 
     return result
+}
+
+
+inline fun <reified T> readFile(context: Context, filename: String): T? {
+    return try {
+        Json.decodeFromString<T>(File(filename).readText())
+    } catch (e: Exception) {
+        Toast.makeText(context, "Can't decode $filename data", Toast.LENGTH_SHORT).show()
+        return null
+    }
+}
+
+inline fun <reified T> writeFile(filename: String, instance: T) {
+    val jsonData = Json.encodeToString(instance)
+    File(filename).writeText(jsonData)
+}
+
+fun clearFile(filename: String) {
+    if (File(filename).exists()) {
+        File(filename).delete()
+    }
 }
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
@@ -84,24 +98,36 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val prefix = filesDir
 
+
+        if (File("$prefix/historydata.json").exists()) {
+            val historyData = readFile<DummyHistoryAdapter>(this, "$prefix/historydata.json")
+            historyData?.dataset?.let {
+                HistoryAdapterObject.dataset = it
+            }
+        } else {
+            HistoryAdapterObject.dataset = arrayListOf()
+        }
+
+
+
         if (!File("$prefix/userdata.json").exists()) {
             val userData = LoggedInUser(UUID.randomUUID().toString(), "guest", "no email", "")
             val jsonData = Json.encodeToString(userData)
             File("$prefix/userdata.json").writeText(jsonData)
+            writeFile<LoggedInUser>("", userData)
         }
         if (!File("$prefix/imagedata.json").exists()) {
             val uri: Uri = Uri.parse("android.resource://com.example.coursework/drawable/avatar")
             ImageStore.image_uri = uri.toString()
-
             val jsonData = Json.encodeToString(Image(uri.toString()))
             File("$prefix/imagedata.json").writeText(jsonData)
         }
 
         if (File("$prefix/statistics.json").exists()) {
-            val statisticsData: Dummy?
+            val statisticsData: DummyCounters?
             try {
                 statisticsData =
-                    Json.decodeFromString<Dummy>(File("$prefix/statistics.json").readText())
+                    Json.decodeFromString<DummyCounters>(File("$prefix/statistics.json").readText())
                 Counters.share_count = statisticsData.share_count
                 Counters.simplification_count = statisticsData.simplification_count
                 val diff = Counters.current_timestamp - statisticsData.current_timestamp
@@ -328,6 +354,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
                 if (!is_service_request) {
                     response.body()?.output?.let {
+                        val historyItem = HistoryData(Clock.System.now().toString(), request, HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY).toString(), false)
+                        HistoryAdapterObject.dataset.add(0, historyItem)
+                        if (HistoryAdapterObject.dataset.size == 101) {
+                            HistoryAdapterObject.dataset.removeLast()
+                        }
                         viewBinding.outputFrame.textField.setText(HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY))
                     }
                     Counters.simplification_count++
@@ -385,15 +416,19 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     override fun onPause() {
         super.onPause()
-        val jsonData = Json.encodeToString(Dummy(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp))
         val prefix = filesDir
+
+        val jsonData = Json.encodeToString(DummyCounters(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp))
         File("$prefix/statistics.json").writeText(jsonData)
+
+        val historydata = DummyHistoryAdapter(HistoryAdapterObject.dataset)
+        writeFile("$prefix/historydata.json", historydata)
     }
 }
 
 @Serializable
-data class Dummy(val simplification_count: Int, val share_count: Int,
-val monthly_count: ArrayList<Double>, val current_timestamp: Instant)
+data class DummyCounters(val simplification_count: Int, val share_count: Int,
+                         val monthly_count: ArrayList<Double>, val current_timestamp: Instant)
 
 object Counters {
     var simplification_count: Int = 0

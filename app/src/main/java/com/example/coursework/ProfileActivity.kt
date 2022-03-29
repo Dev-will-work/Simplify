@@ -18,7 +18,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
 import com.jjoe64.graphview.series.LineGraphSeries
-import kotlinx.datetime.Clock
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -104,10 +103,10 @@ class ProfileActivity : AppCompatActivity() {
             viewBinding.avatar.setImageURI(imageData?.image_uri?.toUri())
         }
         if (File("$prefix/statistics.json").exists()) {
-            val statisticsData: Dummy?
+            val statisticsData: DummyCounters?
             try {
                 statisticsData =
-                    Json.decodeFromString<Dummy>(File("$prefix/statistics.json").readText())
+                    Json.decodeFromString<DummyCounters>(File("$prefix/statistics.json").readText())
                 Counters.share_count = statisticsData.share_count
                 Counters.simplification_count = statisticsData.simplification_count
                 val diff = Counters.current_timestamp - statisticsData.current_timestamp

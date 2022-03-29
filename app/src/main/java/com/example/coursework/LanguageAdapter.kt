@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.serialization.Serializable
 
 class LanguageAdapter(
     var dataSet: ArrayList<String>,
@@ -24,9 +25,7 @@ class LanguageAdapter(
         parcel.createStringArrayList() as ArrayList<String>,
         parcel.readInt(),
         parcel.readInt()
-    ) {
-
-    }
+    )
 
     /**
      * Provide a reference to the type of views that you are using
@@ -38,6 +37,7 @@ class LanguageAdapter(
         init {
             // Define click listener for the ViewHolder's View.
             textView = view.findViewById(R.id.textView)
+            val text = textView.text
             view.setOnClickListener(this)
         }
 
@@ -150,3 +150,8 @@ class LanguageAdapter(
     }
 
 }
+
+@Serializable
+data class DummyLanguageAdapter(val dataset: ArrayList<String>,
+                                val base_size: Int,
+                                val added_size: Int)

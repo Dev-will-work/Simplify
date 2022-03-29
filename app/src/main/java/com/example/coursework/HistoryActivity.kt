@@ -6,13 +6,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coursework.databinding.ActivityHistoryBinding
 import kotlin.collections.ArrayList
 
-class HistoryActivity : AppCompatActivity(), HistoryAdapter.ItemClickListener {
+class HistoryActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityHistoryBinding
     lateinit var adapter: HistoryAdapter
 
@@ -22,13 +23,18 @@ class HistoryActivity : AppCompatActivity(), HistoryAdapter.ItemClickListener {
 
         val sampleHistoryItem1 = HistoryData("13-March-2022  14:15", "Basketball star Brittney Griner is the latest American to be detained in Russia.", "Basketball star Brittney Griner is the latest American to be arrested in Russia.", true)
         val sampleHistoryItem2 = HistoryData("13-March-2022  14:15", "How a luxury watch brand has become the ultimate status symbol for young celebrities.", "How a fashion watch brand has become the ultimate status image for young people.", false)
-        val data = arrayListOf(sampleHistoryItem1, sampleHistoryItem2)
+
+        val data = try {
+            HistoryAdapterObject.dataset
+        } catch (e: Exception) {
+            Toast.makeText(this, "Static history adapter N/A", Toast.LENGTH_SHORT).show()
+            arrayListOf<HistoryData>()
+        }
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         viewBinding.list.layoutManager = LinearLayoutManager(this)
         adapter = HistoryAdapter(data)
         adapter.setClipboard(clipboard)
-        adapter.setClickListener(this)
         viewBinding.list.adapter = adapter
         val full_dataSet = data
 
@@ -59,66 +65,11 @@ class HistoryActivity : AppCompatActivity(), HistoryAdapter.ItemClickListener {
 
     }
 
-    override fun onItemClick(view: View?, position: Int) {
-//        val elementToAdd = adapter.getItem(position)
-//        Toast.makeText(
-//            this,
-//            "You clicked " + elementToAdd + " on row number " + position,
-//            Toast.LENGTH_SHORT
-//        ).show()
-//
-//
-//        if (full_data != null) {
-//            val temp = full_data?.get(3)
-//            var removed = false
-//            if (adapter.added_size == 3) {
-//                full_data?.removeAt(3)
-//                adapter.added_size--
-//                removed = true
-//            }
-//
-//            if (!checkAlreadyCached(full_data?.slice(1..4), elementToAdd) &&
-//                !checkRestrictedChoices(elementToAdd)) {
-//                full_data?.add(1, elementToAdd)
-//                adapter.added_size++
-//            }
-//            if (adapter.added_size == 2 && removed && temp != null) {
-//                full_data?.add(3, temp)
-//                adapter.added_size++
-//            }
-//            adapter.dataSet = full_data as ArrayList<String>
-//            full_data = null
-//            val resultIntent = Intent()
-//            resultIntent.putExtra("adapter", adapter)
-//            resultIntent.putExtra("language", elementToAdd)
-//            setResult(RESULT_OK, resultIntent)
-//            finish()
-//            return
-//        }
-//
-//        val temp = adapter.dataSet[3]
-//        var removed = false
-//        if (adapter.added_size == 3) {
-//            adapter.dataSet.removeAt(3)
-//            adapter.notifyItemRemoved(3)
-//            adapter.added_size--
-//            removed = true
-//        }
-//        if (!checkAlreadyCached(this.adapter.dataSet.slice(1..4), elementToAdd) &&
-//            !checkRestrictedChoices(elementToAdd)) {
-//            adapter.dataSet.add(1, elementToAdd)
-//            adapter.notifyDataSetChanged()
-//            adapter.added_size++
-//        }
-//        if (adapter.added_size == 2 && removed) {
-//            adapter.dataSet.add(3, temp)
-//            adapter.notifyItemInserted(3)
-//            adapter.added_size++
-//        }
-//        val resultIntent = Intent()
-//        resultIntent.putExtra("adapter", adapter)
-//        resultIntent.putExtra("language", elementToAdd)
-//        setResult(RESULT_OK, resultIntent)
-//        finish()
+    override fun onPause() {
+        super.onPause()
+        val prefix = filesDir
+
+        val historydata = DummyHistoryAdapter(HistoryAdapterObject.dataset)
+        writeFile("$prefix/historydata.json", historydata)
     }
 }

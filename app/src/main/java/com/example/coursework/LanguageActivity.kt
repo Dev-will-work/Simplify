@@ -10,31 +10,36 @@ import com.example.coursework.databinding.ActivityLanguageBinding
 
 import android.content.Intent
 import android.view.inputmethod.EditorInfo
+import androidx.core.widget.addTextChangedListener
+import java.io.File
 import java.util.ArrayList
 
 
 class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener {
     lateinit var adapter: LanguageAdapter
     private lateinit var viewBinding: ActivityLanguageBinding
-    var full_data: ArrayList<String>? = null
+    lateinit var full_data: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_language)
-
-        val data = arrayListOf("Recently used", "All languages", "Arabic", "Bulgarian", "Catalan", "Czech", "Danish", "Dutch",
+        val prefix = filesDir
+        val static_data = arrayListOf("Recently used", "All languages", "Arabic", "Bulgarian", "Catalan", "Czech", "Danish", "Dutch",
             "English", "Finnish", "French", "German", "Hungarian", "Indonesian", "Italian",
             "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Spanish", "Swedish",
             "Turkish", "Ukrainian")
 
+        val data: DummyLanguageAdapter =
+        if (File("$prefix/languagedata.json").exists()) {
+            readFile<DummyLanguageAdapter>(this, "$prefix/languagedata.json")
+                ?: DummyLanguageAdapter(static_data, 0, 0)
+        } else {
+            DummyLanguageAdapter(static_data, 0, 0)
+        }
+
         viewBinding.list.layoutManager = LinearLayoutManager(this)
 
-        val cached_adapter = intent.getParcelableExtra<LanguageAdapter>("adapter")
-        if (cached_adapter != null) {
-            adapter = cached_adapter
-        } else {
-            adapter = LanguageAdapter(data)
-        }
+        adapter = LanguageAdapter(data.dataset, data.base_size, data.added_size)
 
         adapter.setClickListener(this)
         val currentLanguage = intent.getStringExtra("current_language")
@@ -44,19 +49,31 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         viewBinding.list.adapter = adapter
 
         viewBinding.back.setOnClickListener {
-            val resultIntent = Intent()
-            resultIntent.putExtra("adapter", adapter)
-            setResult(RESULT_OK, resultIntent)
+            setResult(RESULT_OK)
             finish()
         }
 
         full_data = adapter.dataSet
 
+        viewBinding.searchFrame.editTextTextPersonName.addTextChangedListener {
+                changed ->
+            if (changed != null) {
+                if (changed.toString() == "") {
+                    adapter.dataSet = full_data
+                } else {
+                    adapter.dataSet = full_data.filter {
+                        it.contains(changed.toString())
+                    } as ArrayList<String>
+                }
+                adapter.notifyDataSetChanged()
+            }
+        }
+
         viewBinding.searchFrame.editTextTextPersonName.setOnEditorActionListener {
                 textView, actionID, keyEvent ->
             when (actionID) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    adapter.dataSet = ArrayList(full_data!!.filter {
+                    adapter.dataSet = ArrayList(full_data.filter {
                         it.matches(
                             viewBinding.searchFrame.editTextTextPersonName.text.toString()
                                 .toRegex()
@@ -86,66 +103,116 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         return listOf("All languages", "Recently used").contains(s)
     }
 
+    fun pickMostUsedLanguage(elementToAdd: String, position: Int, add_index: Int = 3) {
+        val real_length = full_data.slice(1..add_index).takeWhile { it != "All languages" }.size
+        val mostUsed = full_data.slice(1..real_length)
+
+        if (adapter.added_size == add_index && elementToAdd !in mostUsed) {
+            full_data.removeAt(add_index)
+            adapter.notifyItemRemoved(add_index)
+            adapter.added_size--
+        }
+
+        if (elementToAdd !in mostUsed) {
+            full_data.add(1, elementToAdd)
+            adapter.notifyItemInserted(1)
+            adapter.added_size++
+        } else {
+            full_data[1] = elementToAdd
+            adapter.notifyItemChanged(1)
+        }
+
+//        if (elementToAdd == full_data[position + 1]) {
+//            full_data.removeAt(position + 1)
+//            adapter.notifyItemRemoved(position + 1)
+//            adapter.added_size--
+//        }
+
+        var position = 2
+        mostUsed.map {
+            if (it != elementToAdd && position <= real_length) {
+                full_data[position] = it
+                adapter.notifyItemChanged(position)
+                position++
+            }
+        }
+
+        val resultIntent = Intent(this@LanguageActivity, MainActivity::class.java)
+        resultIntent.putExtra("language", elementToAdd)
+        setResult(RESULT_OK, resultIntent)
+        finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val prefix = filesDir
+
+        val languageData = DummyLanguageAdapter(full_data, adapter.base_size, adapter.added_size)
+        writeFile("$prefix/languagedata.json", languageData)
+    }
+
     override fun onItemClick(view: View?, position: Int) {
         val elementToAdd = adapter.getItem(position)
+        if (checkRestrictedChoices(elementToAdd)) {
+            return
+        }
+
         Toast.makeText(
             this,
             "You clicked " + elementToAdd + " on row number " + position,
             Toast.LENGTH_SHORT
         ).show()
 
+        pickMostUsedLanguage(elementToAdd, position)
+//            val temp = full_data?.get(3)
+//            var removed = false
+//            if (adapter.added_size == 3) {
+//                full_data?.removeAt(3)
+//                adapter.added_size--
+//                removed = true
+//            }
+//
+//            if (!checkAlreadyCached(full_data?.slice(1..4), elementToAdd) &&
+//                !checkRestrictedChoices(elementToAdd)) {
+//                full_data?.add(1, elementToAdd)
+//                adapter.added_size++
+//            }
+//            if (adapter.added_size == 2 && removed && temp != null) {
+//                full_data?.add(3, temp)
+//                adapter.added_size++
+//            }
+//            adapter.dataSet = full_data as ArrayList<String>
+//            full_data = null
+//            val resultIntent = Intent(this@LanguageActivity, MainActivity::class.java)
+//            resultIntent.putExtra("adapter", adapter)
+//            resultIntent.putExtra("language", elementToAdd)
+//            setResult(RESULT_OK, resultIntent)
+//            finish()
+//            return
 
-        if (full_data != null) {
-            val temp = full_data?.get(3)
-            var removed = false
-            if (adapter.added_size == 3) {
-                full_data?.removeAt(3)
-                adapter.added_size--
-                removed = true
-            }
-
-            if (!checkAlreadyCached(full_data?.slice(1..4), elementToAdd) &&
-                !checkRestrictedChoices(elementToAdd)) {
-                full_data?.add(1, elementToAdd)
-                adapter.added_size++
-            }
-            if (adapter.added_size == 2 && removed && temp != null) {
-                full_data?.add(3, temp)
-                adapter.added_size++
-            }
-            adapter.dataSet = full_data as ArrayList<String>
-            full_data = null
-            val resultIntent = Intent(this@LanguageActivity, MainActivity::class.java)
-            resultIntent.putExtra("adapter", adapter)
-            resultIntent.putExtra("language", elementToAdd)
-            setResult(RESULT_OK, resultIntent)
-            finish()
-            return
-        }
-
-        val temp = adapter.dataSet[3]
-        var removed = false
-        if (adapter.added_size == 3) {
-            adapter.dataSet.removeAt(3)
-            adapter.notifyItemRemoved(3)
-            adapter.added_size--
-            removed = true
-        }
-        if (!checkAlreadyCached(this.adapter.dataSet.slice(1..4), elementToAdd) &&
-            !checkRestrictedChoices(elementToAdd)) {
-            adapter.dataSet.add(1, elementToAdd)
-            adapter.notifyDataSetChanged()
-            adapter.added_size++
-        }
-        if (adapter.added_size == 2 && removed) {
-            adapter.dataSet.add(3, temp)
-            adapter.notifyItemInserted(3)
-            adapter.added_size++
-        }
-        val resultIntent = Intent()
-        resultIntent.putExtra("adapter", adapter)
-        resultIntent.putExtra("language", elementToAdd)
-        setResult(RESULT_OK, resultIntent)
-        finish()
+//        val temp = adapter.dataSet[3]
+//        var removed = false
+//        if (adapter.added_size == 3) {
+//            adapter.dataSet.removeAt(3)
+//            adapter.notifyItemRemoved(3)
+//            adapter.added_size--
+//            removed = true
+//        }
+//        if (!checkAlreadyCached(this.adapter.dataSet.slice(1..4), elementToAdd) &&
+//            !checkRestrictedChoices(elementToAdd)) {
+//            adapter.dataSet.add(1, elementToAdd)
+//            adapter.notifyDataSetChanged()
+//            adapter.added_size++
+//        }
+//        if (adapter.added_size == 2 && removed) {
+//            adapter.dataSet.add(3, temp)
+//            adapter.notifyItemInserted(3)
+//            adapter.added_size++
+//        }
+//        val resultIntent = Intent()
+//        resultIntent.putExtra("adapter", adapter)
+//        resultIntent.putExtra("language", elementToAdd)
+//        setResult(RESULT_OK, resultIntent)
+//        finish()
     }
 }
