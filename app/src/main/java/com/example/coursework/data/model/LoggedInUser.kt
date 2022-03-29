@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class LoggedInUser(
-    val userId: String?,
-    val displayName: String?,
-    val email: String?,
-    val password: String?
+    var userId: String?,
+    var displayName: String?,
+    var email: String?,
+    var password: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),

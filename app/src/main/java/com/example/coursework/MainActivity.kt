@@ -17,16 +17,39 @@ import android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS
 import android.widget.Toast.LENGTH_SHORT
 import android.content.*
 import android.content.Intent
+import android.icu.text.DateFormat.DAY
+import android.net.Uri
 import android.os.Build
 import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
+import com.example.coursework.data.model.LoggedInUser
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import kotlinx.datetime.LocalDateTime
+import java.io.InputStream
+import java.time.Duration
+import java.time.temporal.ChronoUnit
+import kotlin.collections.ArrayList
+import java.util.Calendar.*
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.ExperimentalTime
+
+fun leftShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
+    var result = arr.takeLast(arr.size - diff) as ArrayList<Double>
+    while (result.size < arr.size) {
+        result.add(0.0)
+    }
+
+    return result
+}
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var viewBinding: ActivityMainBinding
@@ -38,6 +61,17 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var adapter: LanguageAdapter? = null
     private var mTts: TextToSpeech? = null
 
+    fun clearSavedData() {
+        val prefix = filesDir
+        if (File("$prefix/statistics.json").exists()) {
+            File("$prefix/statistics.json").delete()
+        }
+        if (File("$prefix/userdata.json").exists()) {
+            File("$prefix/userdata.json").delete()
+        }
+    }
+
+    @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -48,7 +82,21 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         val checkIntent = Intent()
         checkIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
 
-        val prefix = getFilesDir()
+        val prefix = filesDir
+
+        if (!File("$prefix/userdata.json").exists()) {
+            val userData = LoggedInUser(UUID.randomUUID().toString(), "guest", "no email", "")
+            val jsonData = Json.encodeToString(userData)
+            File("$prefix/userdata.json").writeText(jsonData)
+        }
+        if (!File("$prefix/imagedata.json").exists()) {
+            val uri: Uri = Uri.parse("android.resource://com.example.coursework/drawable/avatar")
+            ImageStore.image_uri = uri.toString()
+
+            val jsonData = Json.encodeToString(Image(uri.toString()))
+            File("$prefix/imagedata.json").writeText(jsonData)
+        }
+
         if (File("$prefix/statistics.json").exists()) {
             val statisticsData: Dummy?
             try {
@@ -56,8 +104,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     Json.decodeFromString<Dummy>(File("$prefix/statistics.json").readText())
                 Counters.share_count = statisticsData.share_count
                 Counters.simplification_count = statisticsData.simplification_count
+                val diff = Counters.current_timestamp - statisticsData.current_timestamp
+                if (diff.inWholeDays > 0) {
+                    Counters.monthly_count = leftShift(statisticsData.monthly_count, diff.inWholeDays.toInt())
+                    Counters.current_timestamp = Counters.current_timestamp
+                } else {
+                    Counters.monthly_count = statisticsData.monthly_count
+                }
             } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode statistics data", LENGTH_SHORT).show()
+                Toast.makeText(this, "Can't decode statistics data", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -276,6 +331,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                         viewBinding.outputFrame.textField.setText(HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY))
                     }
                     Counters.simplification_count++
+                    val last_elem = Counters.monthly_count.last()
+                    Counters.monthly_count.set(Counters.monthly_count.size-1, last_elem + 1)
                 }
             }
 
@@ -326,18 +383,22 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        val jsonData = Json.encodeToString(Dummy(Counters.simplification_count, Counters.share_count))
-        val prefix = getFilesDir()
+    override fun onPause() {
+        super.onPause()
+        val jsonData = Json.encodeToString(Dummy(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp))
+        val prefix = filesDir
         File("$prefix/statistics.json").writeText(jsonData)
     }
 }
 
 @Serializable
-data class Dummy(val simplification_count: Int, val share_count: Int)
+data class Dummy(val simplification_count: Int, val share_count: Int,
+val monthly_count: ArrayList<Double>, val current_timestamp: Instant)
 
 object Counters {
     var simplification_count: Int = 0
     var share_count: Int = 0
+    var monthly_count = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0, 0.0)
+    var current_timestamp: Instant = Clock.System.now()
 }
