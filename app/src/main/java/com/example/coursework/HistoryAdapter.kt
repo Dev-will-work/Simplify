@@ -2,6 +2,7 @@ package com.example.coursework
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -173,6 +174,18 @@ class HistoryAdapter(
 @Serializable
 data class DummyHistoryAdapter(val dataset: ArrayList<HistoryData>)
 
-object HistoryAdapterObject {
+object HistoryAdapterObject : SharedObject<DummyHistoryAdapter> {
     lateinit var dataset: ArrayList<HistoryData>
+
+    override fun initialized(): Boolean {
+        return ::dataset.isInitialized
+    }
+
+    override fun set(ctx: Context, dummy: DummyHistoryAdapter) {
+        dataset = dummy.dataset
+    }
+
+    override fun defaultInitialization(ctx: Context) {
+        dataset = arrayListOf()
+    }
 }

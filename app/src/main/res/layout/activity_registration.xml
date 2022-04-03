@@ -20,13 +20,13 @@
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
             android:text="@string/join_our_community"
-            app:layout_constraintBottom_toBottomOf="@+id/back1"
+            app:layout_constraintBottom_toBottomOf="@+id/back"
             app:layout_constraintEnd_toStartOf="@+id/settings"
-            app:layout_constraintStart_toEndOf="@+id/back1"
-            app:layout_constraintTop_toTopOf="@+id/back1" />
+            app:layout_constraintStart_toEndOf="@+id/back"
+            app:layout_constraintTop_toTopOf="@+id/back" />
 
         <ImageButton
-            android:id="@+id/back1"
+            android:id="@+id/back"
             style="@style/image_button"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
@@ -47,7 +47,7 @@
             android:contentDescription="@string/three_black_dots" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/checkbox_advertisements"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -60,17 +60,17 @@
             android:textAppearance="@style/Subtitle"/>
 
         <Button
-            android:id="@+id/sign_up1"
+            android:id="@+id/sign_up"
             style="@style/primary_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:text="@string/sign_up"
-            app:layout_constraintBottom_toTopOf="@+id/login1"
+            app:layout_constraintBottom_toTopOf="@+id/login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkBox"
+            app:layout_constraintTop_toBottomOf="@+id/checkbox_advertisements"
             app:layout_constraintVertical_bias="1.0"
             android:textAppearance="@style/Button"/>
 
@@ -82,14 +82,14 @@
             android:layout_marginEnd="12dp"
             android:text="@string/already_have_an_account"
             android:textColor="@color/base_500"
-            app:layout_constraintBottom_toBottomOf="@+id/login1"
-            app:layout_constraintEnd_toStartOf="@+id/login1"
+            app:layout_constraintBottom_toBottomOf="@+id/login"
+            app:layout_constraintEnd_toStartOf="@+id/login"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/login1" />
+            app:layout_constraintTop_toTopOf="@+id/login" />
 
         <Button
-            android:id="@+id/login1"
+            android:id="@+id/login"
             style="@style/text_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/back1"
+            app:layout_constraintTop_toBottomOf="@+id/back"
             app:title="@{ &quot;Username&quot; }" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

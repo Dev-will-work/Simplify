@@ -1,38 +1,19 @@
 package com.example.coursework
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import androidx.databinding.DataBindingUtil
+import com.example.coursework.databinding.ActivityOnboarding3Binding
 
 class OnboardingActivity3 : AppCompatActivity() {
-    lateinit var skip: Button
-    lateinit var get_started: Button
+    private lateinit var viewBinding: ActivityOnboarding3Binding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_onboarding3)
-
-        skip = findViewById(R.id.skip)
-        get_started = findViewById(R.id.get_started)
-
-        skip.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@OnboardingActivity3, StartActivity::class.java
-                )
-            )
-            finish()
-        }
-
-        get_started.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@OnboardingActivity3, StartActivity::class.java
-                )
-            )
-            finish()
+        viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_onboarding3)
+        with (viewBinding) {
+            setClickMoveToActivity(skip, this@OnboardingActivity3, StartActivity::class)
+            setClickMoveToActivity(getStarted, this@OnboardingActivity3, StartActivity::class)
         }
     }
-
-
 }

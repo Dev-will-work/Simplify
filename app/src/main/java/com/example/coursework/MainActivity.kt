@@ -23,6 +23,7 @@ import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
+import com.example.coursework.data.model.CachedUser
 import com.example.coursework.data.model.LoggedInUser
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -35,55 +36,13 @@ import kotlin.collections.ArrayList
 import java.util.Calendar.*
 import kotlin.time.ExperimentalTime
 
-fun leftShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
-    val result = arr.takeLast(arr.size - diff) as ArrayList<Double>
-    while (result.size < arr.size) {
-        result.add(0.0)
-    }
-
-    return result
-}
-
-
-inline fun <reified T> readFile(context: Context, filename: String): T? {
-    return try {
-        Json.decodeFromString<T>(File(filename).readText())
-    } catch (e: Exception) {
-        Toast.makeText(context, "Can't decode $filename data", Toast.LENGTH_SHORT).show()
-        return null
-    }
-}
-
-inline fun <reified T> writeFile(filename: String, instance: T) {
-    val jsonData = Json.encodeToString(instance)
-    File(filename).writeText(jsonData)
-}
-
-fun clearFile(filename: String) {
-    if (File(filename).exists()) {
-        File(filename).delete()
-    }
-}
-
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var viewBinding: ActivityMainBinding
-
-    //private var videoCapture: VideoCapture<Recorder>? = null
-    //private var recording: Recording? = null
-
     private lateinit var cameraExecutor: ExecutorService
     private var adapter: LanguageAdapter? = null
     private var mTts: TextToSpeech? = null
-
-    fun clearSavedData() {
-        val prefix = filesDir
-        if (File("$prefix/statistics.json").exists()) {
-            File("$prefix/statistics.json").delete()
-        }
-        if (File("$prefix/userdata.json").exists()) {
-            File("$prefix/userdata.json").delete()
-        }
-    }
+    //private var videoCapture: VideoCapture<Recorder>? = null
+    //private var recording: Recording? = null
 
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,98 +51,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val checkIntent = Intent()
-        checkIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
-
         val prefix = filesDir
 
+        checkObjectInitialization(HistoryAdapterObject, this, "$prefix/historydata.json")
+        checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")
+        checkObjectInitialization(ImageStore, this, "$prefix/imagedata.json")
+        checkObjectInitialization(Counters, this, "$prefix/statistics.json")
 
-        if (File("$prefix/historydata.json").exists()) {
-            val historyData = readFile<DummyHistoryAdapter>(this, "$prefix/historydata.json")
-            historyData?.dataset?.let {
-                HistoryAdapterObject.dataset = it
-            }
-        } else {
-            HistoryAdapterObject.dataset = arrayListOf()
-        }
-
-
-
-        if (!File("$prefix/userdata.json").exists()) {
-            val userData = LoggedInUser(UUID.randomUUID().toString(), "guest", "no email", "")
-            val jsonData = Json.encodeToString(userData)
-            File("$prefix/userdata.json").writeText(jsonData)
-            writeFile<LoggedInUser>("", userData)
-        }
-        if (!File("$prefix/imagedata.json").exists()) {
-            val uri: Uri = Uri.parse("android.resource://com.example.coursework/drawable/avatar")
-            ImageStore.image_uri = uri.toString()
-            val jsonData = Json.encodeToString(Image(uri.toString()))
-            File("$prefix/imagedata.json").writeText(jsonData)
-        }
-
-        if (File("$prefix/statistics.json").exists()) {
-            val statisticsData: DummyCounters?
-            try {
-                statisticsData =
-                    Json.decodeFromString<DummyCounters>(File("$prefix/statistics.json").readText())
-                Counters.share_count = statisticsData.share_count
-                Counters.simplification_count = statisticsData.simplification_count
-                val diff = Counters.current_timestamp - statisticsData.current_timestamp
-                if (diff.inWholeDays > 0) {
-                    Counters.monthly_count = leftShift(statisticsData.monthly_count, diff.inWholeDays.toInt())
-                    Counters.current_timestamp = Counters.current_timestamp
-                } else {
-                    Counters.monthly_count = statisticsData.monthly_count
-                }
-            } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode statistics data", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        val launcher = registerForActivityResult(StartActivityForResult()) {
-            when (it.resultCode) {
-                1 -> {
-                    val scanned = it.data?.getStringExtra("result")
-                    viewBinding.inputFrame.textField.setText(scanned)
-                }
-                else -> {}
-            }
-        }
-
-        val launcher_language = registerForActivityResult(StartActivityForResult()) {
-            when (it.resultCode) {
-                RESULT_OK -> {
-                    adapter = it.data?.getParcelableExtra("adapter")
-                    val language = it.data?.getStringExtra("language")
-                    if (language != null) {
-                        viewBinding.language.text = language
-                        val embedding_activation_request = "language:" + language.take(2).lowercase(Locale.getDefault())
-                        retrofitRequest(embedding_activation_request, true)
-                    }
-                }
-                else -> {}
-            }
-        }
-
-        val launcher_voice = registerForActivityResult(StartActivityForResult()) {
-            when (it.resultCode) {
-                RESULT_OK ->
-                {
-                    if (it.data != null) {
-                        val result =
-                            it.data?.
-                            getStringArrayListExtra(
-                                RecognizerIntent.EXTRA_RESULTS)
-                        if (result != null) {
-                            viewBinding.inputFrame.textField.setText(result[0])
-                        }
-                    }
-                }
-            }
-        }
-
+        val checkIntent = Intent()
+        checkIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
         val launcher_tts = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
                 CHECK_VOICE_DATA_PASS -> {
@@ -199,33 +75,11 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
         launcher_tts.launch(checkIntent)
 
-        viewBinding.settings.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@MainActivity, SettingsActivity::class.java
-                )
-            )
-            finish()
-        }
+        setClickMoveToActivity(viewBinding.settings, this, SettingsActivity::class)
+        setClickMoveToActivity(viewBinding.buttons.bookmarks, this, HistoryActivity::class)
+        setClickMoveToActivity(viewBinding.profile, this, ProfileActivity::class)
 
-        viewBinding.buttons.bookmarks.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@MainActivity, HistoryActivity::class.java
-                )
-            )
-            finish()
-        }
-
-        viewBinding.profile.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@MainActivity, ProfileActivity::class.java
-                )
-            )
-            finish()
-        }
-
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         viewBinding.inputFrame.copy.setOnClickListener {
             val clip = ClipData.newPlainText(null, viewBinding.inputFrame.textField.text.toString())
             clipboard.setPrimaryClip(clip)
@@ -278,10 +132,40 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         }
 
+        val launcher_voice = registerForActivityResult(StartActivityForResult()) {
+            when (it.resultCode) {
+                RESULT_OK ->
+                {
+                    if (it.data != null) {
+                        val result =
+                            it.data?.
+                            getStringArrayListExtra(
+                                RecognizerIntent.EXTRA_RESULTS)
+                        if (result != null) {
+                            viewBinding.inputFrame.textField.setText(result[0])
+                        }
+                    }
+                }
+            }
+        }
         viewBinding.buttons.microphone.setOnClickListener {
             getSpeechInput(launcher_voice)
         }
 
+        val launcher_language = registerForActivityResult(StartActivityForResult()) {
+            when (it.resultCode) {
+                RESULT_OK -> {
+                    adapter = it.data?.getParcelableExtra("adapter")
+                    val language = it.data?.getStringExtra("language")
+                    if (language != null) {
+                        viewBinding.language.text = language
+                        val embedding_activation_request = "language:" + language.take(2).lowercase(Locale.getDefault())
+                        retrofitRequest(this, embedding_activation_request, CachedUser.retrieveID() , null, true)
+                    }
+                }
+                else -> {}
+            }
+        }
         viewBinding.language.setOnClickListener {
             val i = Intent(this, LanguageActivity::class.java)
             if (adapter != null) {
@@ -292,6 +176,15 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             launcher_language.launch(i)
         }
 
+        val launcher = registerForActivityResult(StartActivityForResult()) {
+            when (it.resultCode) {
+                1 -> {
+                    val scanned = it.data?.getStringExtra("result")
+                    viewBinding.inputFrame.textField.setText(scanned)
+                }
+                else -> {}
+            }
+        }
         viewBinding.buttons.camera.setOnClickListener {
             val i = Intent(this, PhotoActivity::class.java)
             launcher.launch(i)
@@ -302,80 +195,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     val input = viewBinding.inputFrame.textField.text.toString()
-                    retrofitRequest(input)
+                    retrofitRequest(this, input, CachedUser.retrieveID(), viewBinding.outputFrame.textField)
                 }
                 else -> {}
             }
             return@setOnEditorActionListener true
         }
-    }
-
-    private fun retrofitRequest(request: String, is_service_request: Boolean = false) {
-        App.api?.getSimplifiedText(request)?.enqueue(object : Callback<SimplifierData?> {
-            override fun onResponse(
-                call: Call<SimplifierData?>,
-                response: Response<SimplifierData?>
-            ) {
-                when (response.code()) {
-                    404 -> {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Not found",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return
-                    }
-                    400 -> {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Bad formed request",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return
-                    }
-                    401 -> {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Bad API key, not authorized",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return
-                    }
-                    200 -> {}
-                    else -> {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Unknown server answer, try again",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return
-                    }
-                }
-
-                if (!is_service_request) {
-                    response.body()?.output?.let {
-                        val historyItem = HistoryData(Clock.System.now().toString(), request, HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY).toString(), false)
-                        HistoryAdapterObject.dataset.add(0, historyItem)
-                        if (HistoryAdapterObject.dataset.size == 101) {
-                            HistoryAdapterObject.dataset.removeLast()
-                        }
-                        viewBinding.outputFrame.textField.setText(HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY))
-                    }
-                    Counters.simplification_count++
-                    val last_elem = Counters.monthly_count.last()
-                    Counters.monthly_count.set(Counters.monthly_count.size-1, last_elem + 1)
-                }
-            }
-
-            override fun onFailure(call: Call<SimplifierData?>, t: Throwable) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "An error with network occured",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-        })
     }
 
     private fun captureVideo() {}
@@ -387,7 +212,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 
     override fun onInit(p0: Int) {
-        Toast.makeText(applicationContext, "Hello!", LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, "Initialized!", LENGTH_SHORT).show()
     }
 
     private fun getSpeechInput(launcher: ActivityResultLauncher<Intent>)
@@ -430,10 +255,34 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 data class DummyCounters(val simplification_count: Int, val share_count: Int,
                          val monthly_count: ArrayList<Double>, val current_timestamp: Instant)
 
-object Counters {
+object Counters : SharedObject<DummyCounters> {
     var simplification_count: Int = 0
     var share_count: Int = 0
-    var monthly_count = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0, 0.0)
-    var current_timestamp: Instant = Clock.System.now()
+    lateinit var monthly_count: ArrayList<Double>
+    lateinit var current_timestamp: Instant
+
+    override fun initialized(): Boolean {
+        return ::monthly_count.isInitialized && ::current_timestamp.isInitialized
+    }
+
+    override fun defaultInitialization(ctx: Context) {
+        simplification_count = 0
+        share_count = 0
+        monthly_count = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0, 0.0)
+        current_timestamp = Clock.System.now()
+    }
+
+    @ExperimentalTime
+    override fun set(ctx: Context, dummy: DummyCounters) {
+        simplification_count = dummy.simplification_count
+        share_count = dummy.share_count
+        current_timestamp = Clock.System.now()
+        val diff = current_timestamp - dummy.current_timestamp
+        if (diff.inWholeDays > 0) {
+            monthly_count = leftShift(dummy.monthly_count, diff.inWholeDays.toInt())
+        } else {
+            monthly_count = dummy.monthly_count
+        }
+    }
 }

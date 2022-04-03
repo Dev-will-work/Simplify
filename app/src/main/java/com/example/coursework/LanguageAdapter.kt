@@ -1,5 +1,6 @@
 package com.example.coursework
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -155,3 +156,28 @@ class LanguageAdapter(
 data class DummyLanguageAdapter(val dataset: ArrayList<String>,
                                 val base_size: Int,
                                 val added_size: Int)
+
+object LanguageObject : SharedObject<DummyLanguageAdapter> {
+    lateinit var dataset: ArrayList<String>
+    var base_size: Int = 24
+    var added_size: Int = 0
+    override fun defaultInitialization(ctx: Context) {
+        dataset = arrayListOf("Recently used", "All languages", "Arabic", "Bulgarian", "Catalan", "Czech", "Danish", "Dutch",
+            "English", "Finnish", "French", "German", "Hungarian", "Indonesian", "Italian",
+            "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Spanish", "Swedish",
+            "Turkish", "Ukrainian")
+        added_size = 0
+        base_size = 24
+
+    }
+
+    override fun set(ctx: Context, dummy: DummyLanguageAdapter) {
+        this.base_size = dummy.base_size
+        this.added_size = dummy.added_size
+        this.dataset = dummy.dataset
+    }
+
+    override fun initialized(): Boolean {
+        return this::dataset.isInitialized
+    }
+}

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -24,42 +23,42 @@
             android:layout_marginBottom="16dp"
             android:enabled="false"
             android:text="@string/action_sign_in"
+            android:textAppearance="@style/Button"
             app:layout_constraintBottom_toTopOf="@+id/forgot_password"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textAppearance="@style/Button"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <include
-            android:id="@+id/username"
+            android:id="@+id/email"
             layout="@layout/text_field"
-            app:title="@{ &quot;Email&quot; }"
-            app:hint="@{ &quot;Email&quot; }"
-            app:helper="@{&quot;&quot;}"
-            app:icon="@{null}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="90dp"
             android:layout_marginEnd="16dp"
+            app:helper="@{&quot;&quot;}"
+            app:hint="@{ &quot;Email&quot; }"
+            app:icon="@{null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/back" />
+            app:layout_constraintTop_toBottomOf="@+id/back"
+            app:title="@{ &quot;Email&quot; }" />
 
         <include
             android:id="@+id/password"
             layout="@layout/text_field"
-            app:title="@{ &quot;Password&quot; }"
-            app:hint="@{ &quot;Password&quot; }"
-            app:helper="@{&quot;&quot;}"
-            app:icon="@{@drawable/ic_eye_outline}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            app:helper="@{&quot;&quot;}"
+            app:hint="@{ &quot;Password&quot; }"
+            app:icon="@{@drawable/ic_eye_outline}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username" />
+            app:layout_constraintTop_toBottomOf="@+id/email"
+            app:title="@{ &quot;Password&quot; }" />
 
         <Button
             android:id="@+id/forgot_password"
@@ -70,11 +69,11 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="48dp"
             android:text="@string/forgot_password"
+            android:textAppearance="@style/Button"
             android:textColor="@color/main_500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textAppearance="@style/Button"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/back"
@@ -85,9 +84,9 @@
             android:layout_marginTop="12dp"
             android:drawableLeft="@drawable/ic_arrow_left"
             android:text="@string/log_in"
+            android:textAppearance="@style/Button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textAppearance="@style/Button"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
+import com.example.coursework.data.model.CachedUser
 import com.example.coursework.data.model.LoggedInUser
 import com.example.coursework.databinding.ActivityProfileBinding
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
@@ -30,37 +31,22 @@ class ProfileActivity : AppCompatActivity() {
     @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
+        val prefix = filesDir
 
         val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
                 RESULT_OK -> {
-                    val prefix = filesDir
-                    val userData: LoggedInUser
-                    var imageData: Image? = null
-                    if (File("$prefix/userdata.json").exists()) {
-                        try {
-                            userData =
-                                Json.decodeFromString<LoggedInUser>(File("$prefix/userdata.json").readText())
-                            viewBinding.nameSurname.text = userData.displayName
-                            viewBinding.email.text = userData.email
-                        } catch (e: Exception) {
-                            Toast.makeText(this, "Can't decode user data", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    if (File("$prefix/imagedata.json").exists()) {
-                        try {
-                            imageData =
-                                Json.decodeFromString<Image>(File("$prefix/imagedata.json").readText())
-                        } catch (e: Exception) {
-                            Toast.makeText(this, "Can't decode image data", Toast.LENGTH_SHORT).show()
-                        }
-                        viewBinding.avatar.setImageURI(imageData?.image_uri?.toUri())
-                        viewBinding.avatar.clipToOutline = true
-                        viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
-                        viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
-                    }
+                    checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")
+                    checkObjectInitialization(ImageStore, this, "$prefix/imagedata.json")
+
+                    viewBinding.nameSurname.text = CachedUser.retrieveUsername()
+                    viewBinding.email.text = CachedUser.retrieveEmail()
+
+                    viewBinding.avatar.setImageURI(ImageStore.image_uri.toUri())
+                    viewBinding.avatar.clipToOutline = true
+                    viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
+                    viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
                 }
                 else -> {}
             }
@@ -80,46 +66,17 @@ class ProfileActivity : AppCompatActivity() {
             launcher.launch(i)
         }
 
-        val prefix = filesDir
-        val userData: LoggedInUser
-        var imageData: Image? = null
-        if (File("$prefix/userdata.json").exists()) {
-            try {
-                userData =
-                    Json.decodeFromString<LoggedInUser>(File("$prefix/userdata.json").readText())
-                viewBinding.nameSurname.text = userData.displayName
-                viewBinding.email.text = userData.email
-            } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode user data", Toast.LENGTH_SHORT).show()
-            }
-        }
-        if (File("$prefix/imagedata.json").exists()) {
-            try {
-                imageData =
-                    Json.decodeFromString<Image>(File("$prefix/imagedata.json").readText())
-            } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode image data", Toast.LENGTH_SHORT).show()
-            }
-            viewBinding.avatar.setImageURI(imageData?.image_uri?.toUri())
-        }
-        if (File("$prefix/statistics.json").exists()) {
-            val statisticsData: DummyCounters?
-            try {
-                statisticsData =
-                    Json.decodeFromString<DummyCounters>(File("$prefix/statistics.json").readText())
-                Counters.share_count = statisticsData.share_count
-                Counters.simplification_count = statisticsData.simplification_count
-                val diff = Counters.current_timestamp - statisticsData.current_timestamp
-                if (diff.inWholeDays > 0) {
-                    Counters.monthly_count = leftShift(statisticsData.monthly_count, diff.inWholeDays.toInt())
-                    Counters.current_timestamp = Counters.current_timestamp
-                } else {
-                    Counters.monthly_count = statisticsData.monthly_count
-                }
-            } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode statistics data", Toast.LENGTH_SHORT).show()
-            }
-        }
+        checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")
+        checkObjectInitialization(ImageStore, this, "$prefix/imagedata.json")
+        checkObjectInitialization(Counters, this, "$prefix/statistics.json")
+
+        viewBinding.nameSurname.text = CachedUser.retrieveUsername()
+        viewBinding.email.text = CachedUser.retrieveEmail()
+
+        viewBinding.avatar.setImageURI(ImageStore.image_uri.toUri())
+        viewBinding.avatar.clipToOutline = true
+        viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
+        viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
 
         viewBinding.numberTabLeft.myEditText.setText(Counters.simplification_count.toString())
         viewBinding.numberTabRight.myEditText.setText(Counters.share_count.toString())

@@ -1,10 +1,7 @@
 package com.example.coursework.ui.login
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.InputType.*
@@ -14,47 +11,33 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityLoginBinding
-
 import com.example.coursework.R
+import com.example.coursework.checkObjectInitialization
+import com.example.coursework.data.model.CachedUser
 import com.example.coursework.data.model.LoggedInUser
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
+import com.example.coursework.readFile
 import java.io.File
 
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    lateinit var loginViewModel: LoginViewModel
-
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        // Save the user's current game state
-        savedInstanceState.putParcelable("User", loginViewModel.getUserData())
-        // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        // Always call the superclass so it can restore the view hierarchy
-        super.onRestoreInstanceState(savedInstanceState)
-
-        // Restore state members from saved instance
-        val userData = savedInstanceState.getParcelable<LoggedInUser>("User")
-        if (userData != null) {
-            loginViewModel.setUserData(userData)
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        //binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_login, ViewGroup,true)
-//        binding = ActivityLoginBinding.inflate(layoutInflater)
-        //setContentView(binding.root)
+
+        val email = binding.email.textField1
+        val password = binding.password.textField1
+        val login = binding.login
+        val forget = binding.forgotPassword
+        val back = binding.back
 
         var show = true
+        var loginState: Boolean
+
+        val prefix = filesDir
+        checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")
 
         binding.password.eye.setOnClickListener {
             if (show) {
@@ -73,134 +56,61 @@ class LoginActivity : AppCompatActivity() {
             binding.password.textField1.clearFocus()
         }
 
-        val email = binding.username.textField1
-        val password = binding.password.textField1
-        val login = binding.login
-        val forget = binding.forgotPassword
-        val back = binding.back
-
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
-
-        loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
-            val loginState = it ?: return@Observer
-
-            // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
-
-            if (loginState.emailError != null) {
-                email.error = getString(loginState.emailError)
-            }
-            if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
-            }
-        })
-
-        loginViewModel.loginResult.observe(this@LoginActivity, Observer {
-            val loginResult = it ?: return@Observer
-
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
-                setResult(Activity.RESULT_CANCELED)
+        binding.login.setOnClickListener {
+            val inputEmail = binding.email.textField1.text?.toString()
+            val inputPassword = binding.password.textField1.text?.toString()
+            if (inputEmail != null && inputPassword != null) {
+                loginState = CachedUser.login(
+                    inputEmail,
+                    inputPassword
+                )
+                if (loginState) {
+                    setResult(Activity.RESULT_OK)
+                } else {
+                    setResult(Activity.RESULT_CANCELED)
+                }
                 finish()
-                return@Observer
-            }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
-            }
-            setResult(Activity.RESULT_OK)
-
-            //Complete and destroy login activity once successful
-            finish()
-        })
-
-        val prefix = filesDir
-        if (File("$prefix/userdata.json").exists()) {
-            var userData: LoggedInUser? = null
-            try {
-                userData =
-                    Json.decodeFromString<LoggedInUser>(File("$prefix/userdata.json").readText())
-            } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode user data", Toast.LENGTH_SHORT).show()
-            }
-            userData?.let {
-                loginViewModel.setUserData(it)
             }
         }
 
         email.afterTextChanged {
-            loginViewModel.loginDataChanged(
-                email.text.toString(),
-                password.text.toString()
-            )
+            email.error = if (!CachedUser.validator.isEmailValid(it)) {
+                "Bad email!"
+            } else {
+                null
+            }
         }
 
         password.apply {
             afterTextChanged {
-                loginViewModel.loginDataChanged(
-                    email.text.toString(),
-                    password.text.toString()
-                )
+                password.error = if (!CachedUser.validator.isPasswordValid(it)) {
+                    "Bad password!"
+                } else {
+                    null
+                }
             }
 
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        loginViewModel.login(
-                            email.text.toString(),
-                            password.text.toString()
-                        )
+                        CachedUser.login(email.text.toString(), password.text.toString())
                 }
                 false
             }
 
             login.setOnClickListener {
-                loginViewModel.login(email.text.toString(), password.text.toString())
+                CachedUser.login(email.text.toString(), password.text.toString())
             }
 
             forget.setOnClickListener {
-                val retrieved_password = loginViewModel.retrievePassword()
-                Toast.makeText(context, retrieved_password, Toast.LENGTH_SHORT).show()
+                val retrievedPassword = CachedUser.retrievePassword()
+                Toast.makeText(context, retrievedPassword, Toast.LENGTH_SHORT).show()
             }
 
             back.setOnClickListener {
                 setResult(Activity.RESULT_CANCELED)
-
-                //Complete and destroy login activity if cancelled
                 finish()
             }
-
-
         }
     }
-
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
-    }
-}
-
-/**
- * Extension function to simplify setting an afterTextChanged action to EditText components.
- */
-fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun afterTextChanged(editable: Editable?) {
-            afterTextChanged.invoke(editable.toString())
-        }
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-    })
 }

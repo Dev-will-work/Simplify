@@ -1,6 +1,7 @@
 package com.example.coursework
 
 import android.content.ClipboardManager
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -8,62 +9,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.coursework.data.model.CachedUser
 import com.google.android.material.switchmaterial.SwitchMaterial
+import kotlinx.serialization.Serializable
+import kotlin.properties.Delegates
 
+@Serializable
 data class ToggleOptionsData(
-    val option_name: String?,
-    val toggle_state: Boolean
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readByte() != 0.toByte()
-    )
+    val option_name: String,
+    var toggle_state: Boolean
+)
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(option_name)
-        parcel.writeByte(if (toggle_state) 1 else 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ToggleOptionsData> {
-        override fun createFromParcel(parcel: Parcel): ToggleOptionsData {
-            return ToggleOptionsData(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ToggleOptionsData?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
-class ToggleOptionsAdapter(
-    var dataSet: ArrayList<ToggleOptionsData>) :
-    RecyclerView.Adapter<ToggleOptionsAdapter.ViewHolder>(), Parcelable {
+class ToggleOptionsAdapter :
+    RecyclerView.Adapter<ToggleOptionsAdapter.ViewHolder>() {
     private var mClickListener: ItemClickListener? = null
     lateinit var clipboardManager: ClipboardManager
-
-    constructor(parcel: Parcel) : this(
-        parcel.createTypedArrayList(ToggleOptionsData) as ArrayList<ToggleOptionsData>
-    )
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-        val option_name: TextView
-        val switch: SwitchMaterial
-
-        init {
-            option_name = view.findViewById(R.id.option_name)
-            switch = view.findViewById(R.id.switch1)
-
-            // Define click listener for the ViewHolder's View.
-            // view.setOnClickListener(this)
-        }
+        val optionName: TextView = view.findViewById(R.id.option_name)
+        val switch: SwitchMaterial = view.findViewById(R.id.switch1)
 
         override fun onClick(view: View?) {
             mClickListener?.onItemClick(view, adapterPosition)
@@ -79,40 +47,41 @@ class ToggleOptionsAdapter(
         return ViewHolder(view)
     }
 
-//    private fun configure1(vh: ViewHolder, position: Int) {
-//        val param = vh.textView.layoutParams as ViewGroup.MarginLayoutParams
-//        val dpRatio: Float = vh.textView.context.getResources().getDisplayMetrics().density
-//        val pixelForDp = (38 as Int * dpRatio).toInt()
-//        param.topMargin = pixelForDp
-//        vh.textView.layoutParams = param
-//        vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-//        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
-//    }
-//
-//    private fun configure2(vh: ViewHolder, position: Int) {
-//        vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-//        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
-//    }
-
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.option_name.text = dataSet[position].option_name
-//        viewHolder.icon.setImageResource(if (dataSet[position].is_favourite) R.drawable.ic_bookmark else R.drawable.ic_bookmark_outline)
-//        when (viewHolder.itemViewType) {
-//            FAVOURITE -> {
-//                configure1(vh1, position)
-//            }
-//            SIMPLE -> {
-//                configure2(vh1, position)
-//            }
-//        }
+        viewHolder.optionName.text = SettingsObject.toggleData[position].option_name
+
+        if (SettingsObject.toggleData[position].toggle_state) {
+            viewHolder.switch.toggle()
+        }
+
+        if (SettingsObject.toggleData[position].option_name.contains("Improve") && SettingsObject.toggleData[position].toggle_state) {
+            viewHolder.switch.setOnCheckedChangeListener { _, is_checked ->
+                val useEmbeddingsRequest = if (!is_checked) {
+                    "_without_embeddings"
+                } else {
+                    "_with_embeddings"
+                }
+                retrofitRequest(
+                    viewHolder.switch.context,
+                    useEmbeddingsRequest,
+                    CachedUser.retrieveID(),
+                    null,
+                    true
+                )
+            }
+        } else {
+            viewHolder.switch.setOnCheckedChangeListener { compoundButton, is_checked ->
+                SettingsObject.toggleData[position].toggle_state = is_checked
+            }
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = dataSet.size
+    override fun getItemCount() = SettingsObject.toggleData.size
 
     // allows clicks events to be caught
     fun setClickListener(itemClickListener: ItemClickListener?) {
@@ -124,44 +93,21 @@ class ToggleOptionsAdapter(
     }
 
     fun getItem(id: Int): ToggleOptionsData {
-        return dataSet.get(id)
+        return SettingsObject.toggleData.get(id)
     }
 
     // parent activity will implement this method to respond to click events
     interface ItemClickListener {
         fun onItemClick(view: View?, position: Int)
     }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeTypedList(dataSet)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ToggleOptionsAdapter> {
-        override fun createFromParcel(parcel: Parcel): ToggleOptionsAdapter {
-            return ToggleOptionsAdapter(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ToggleOptionsAdapter?> {
-            return arrayOfNulls(size)
-        }
-    }
-
 }
 
 
 class SimpleOptionsAdapter(
     var dataSet: ArrayList<String>) :
-    RecyclerView.Adapter<SimpleOptionsAdapter.ViewHolder>(), Parcelable {
+    RecyclerView.Adapter<SimpleOptionsAdapter.ViewHolder>() {
     private var mClickListener: ItemClickListener? = null
     lateinit var clipboardManager: ClipboardManager
-
-    constructor(parcel: Parcel) : this(
-        parcel.createStringArrayList() as ArrayList<String>
-    )
 
     /**
      * Provide a reference to the type of views that you are using
@@ -191,21 +137,6 @@ class SimpleOptionsAdapter(
         return ViewHolder(view)
     }
 
-//    private fun configure1(vh: ViewHolder, position: Int) {
-//        val param = vh.textView.layoutParams as ViewGroup.MarginLayoutParams
-//        val dpRatio: Float = vh.textView.context.getResources().getDisplayMetrics().density
-//        val pixelForDp = (38 as Int * dpRatio).toInt()
-//        param.topMargin = pixelForDp
-//        vh.textView.layoutParams = param
-//        vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-//        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
-//    }
-//
-//    private fun configure2(vh: ViewHolder, position: Int) {
-//        vh.textView.setTextColor(ContextCompat.getColor(vh.textView.context, R.color.base_500))
-//        vh.textView.setCompoundDrawablesWithIntrinsicBounds(android.R.color.transparent, 0, 0, 0);
-//    }
-
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
@@ -213,27 +144,6 @@ class SimpleOptionsAdapter(
         // contents of the view with that element
         viewHolder.option_name.text = dataSet[position]
         viewHolder.option_name.setCompoundDrawables(null,null,null,null)
-
-//        viewHolder.icon.setOnClickListener {
-//            dataSet[position].is_favourite = dataSet[position].is_favourite.xor(true)
-//            if (dataSet[position].is_favourite) {
-//                viewHolder.icon.setImageResource(R.drawable.ic_bookmark)
-//            } else {
-//                viewHolder.icon.setImageResource(R.drawable.ic_bookmark_outline)
-//            }
-//            dataSet.sortByDescending {
-//                it.is_favourite
-//            }
-//            notifyDataSetChanged()
-//        }
-//        when (viewHolder.itemViewType) {
-//            FAVOURITE -> {
-//                configure1(vh1, position)
-//            }
-//            SIMPLE -> {
-//                configure2(vh1, position)
-//            }
-//        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -256,23 +166,45 @@ class SimpleOptionsAdapter(
     interface ItemClickListener {
         fun onItemClick(view: View?, position: Int)
     }
+}
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeStringList(dataSet)
+@Serializable
+data class DummySettingsAdapters(
+        var toggleData: ArrayList<ToggleOptionsData>,
+        var simpleData: ArrayList<String>,
+        var greeting: String)
+
+object SettingsObject : SharedObject<DummySettingsAdapters> {
+    lateinit var toggleData: ArrayList<ToggleOptionsData>
+    lateinit var simpleData: ArrayList<String>
+    lateinit var greeting: String
+
+    override fun initialized(): Boolean {
+        return this::toggleData.isInitialized && this::simpleData.isInitialized && this::greeting.isInitialized
     }
 
-    override fun describeContents(): Int {
-        return 0
+    override fun defaultInitialization(ctx: Context) {
+        toggleData = arrayListOf(
+            ToggleOptionsData("Autodetect language", false),
+            ToggleOptionsData("Improve simplification", true),
+            ToggleOptionsData("Disable input hints", false),
+            ToggleOptionsData("Disable onboarding preview", false),
+            ToggleOptionsData("Disable notifications", false),
+            ToggleOptionsData("Disable greeting", true)
+        )
+        simpleData = arrayListOf("About us", "Feedback", "Help", "Rate our app")
+        greeting = "Hello, User! Have a nice day!"
     }
 
-    companion object CREATOR : Parcelable.Creator<SimpleOptionsAdapter> {
-        override fun createFromParcel(parcel: Parcel): SimpleOptionsAdapter {
-            return SimpleOptionsAdapter(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SimpleOptionsAdapter?> {
-            return arrayOfNulls(size)
-        }
+    override fun set(ctx: Context, dummy: DummySettingsAdapters) {
+        greeting = dummy.greeting
+        toggleData = dummy.toggleData
+        simpleData = dummy.simpleData
     }
 
+    fun isPropertyToggled(partOptionName: String): Boolean {
+        return this.toggleData.filter {
+            it.option_name.contains(partOptionName)
+        }[0].toggle_state
+    }
 }

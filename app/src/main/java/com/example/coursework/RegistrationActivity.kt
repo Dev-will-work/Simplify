@@ -5,29 +5,25 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.example.coursework.data.model.LoggedInUser
+import com.example.coursework.data.model.CachedUser
 import com.example.coursework.databinding.ActivityRegistrationBinding
 import com.example.coursework.ui.login.*
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.io.File
 
 class RegistrationActivity : AppCompatActivity() {
 
     private lateinit var viewBinding: ActivityRegistrationBinding
-    lateinit var registrationViewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_registration)
+
+        val username = viewBinding.username.textField1
+        val email = viewBinding.email.textField1
+        val password = viewBinding.password.textField1
+        var registrationState: Boolean
+        var show = true
 
         val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
@@ -43,7 +39,7 @@ class RegistrationActivity : AppCompatActivity() {
             }
         }
 
-        viewBinding.back1.setOnClickListener {
+        viewBinding.back.setOnClickListener {
             startActivity(
                 Intent(
                     this@RegistrationActivity, StartActivity::class.java
@@ -52,15 +48,13 @@ class RegistrationActivity : AppCompatActivity() {
             finish()
         }
 
-        viewBinding.login1.setOnClickListener {
+        viewBinding.login.setOnClickListener {
             startActivity(
                 Intent(
                     this@RegistrationActivity, LoginActivity::class.java
                 )
             )
         }
-
-        var show = true
 
         viewBinding.password.eye.setOnClickListener {
             if (show) {
@@ -79,114 +73,71 @@ class RegistrationActivity : AppCompatActivity() {
             viewBinding.password.textField1.clearFocus()
         }
 
-        registrationViewModel = ViewModelProvider(this, RegistrationViewModelFactory())
-            .get(RegistrationViewModel::class.java)
-
-        registrationViewModel.registrationFormState.observe(this@RegistrationActivity, Observer {
-            val loginState = it ?: return@Observer
-
-            // disable login button unless both username / password is valid
-            viewBinding.signUp1.isEnabled = loginState.isDataValid
-
-            if (loginState.usernameError != null) {
-                viewBinding.username.textField1.error = getString(loginState.usernameError)
-            }
-            if (loginState.emailError != null) {
-                viewBinding.email.textField1.error = getString(loginState.emailError)
-            }
-            if (loginState.passwordError != null) {
-                viewBinding.password.textField1.error = getString(loginState.passwordError)
-            }
-        })
-
-        registrationViewModel.loginResult.observe(this@RegistrationActivity, Observer {
-            val loginResult = it ?: return@Observer
-
-            //viewBinding.loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                showLoginFailed(loginResult.error)
-            }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
-                val jsonData = Json.encodeToString(registrationViewModel.getUserData())
-                val prefix = filesDir
-                File("$prefix/userdata.json").writeText(jsonData)
-            }
-
-            startActivity(
-                Intent(
-                    this@RegistrationActivity, MainActivity::class.java
+        viewBinding.signUp.setOnClickListener {
+            val inputUsername = viewBinding.username.textField1.text?.toString()
+            val inputEmail = viewBinding.email.textField1.text?.toString()
+            val inputPassword = viewBinding.password.textField1.text?.toString()
+            if (inputEmail != null && inputPassword != null && inputUsername != null) {
+                registrationState = CachedUser.register(
+                    this,
+                    inputUsername,
+                    inputEmail,
+                    inputPassword
                 )
-            )
-
-            //Complete and destroy login activity once successful
-            finish()
-        })
-
-        val prefix = filesDir
-        if (File("$prefix/userdata.json").exists()) {
-            var userData: LoggedInUser? = null
-            try {
-                userData =
-                    Json.decodeFromString<LoggedInUser>(File("$prefix/userdata.json").readText())
-            } catch (e: Exception) {
-                Toast.makeText(this, "Can't decode user data", LENGTH_SHORT).show()
-            }
-            userData?.let {
-                registrationViewModel.setUserData(it)
+                if (registrationState) {
+                    startActivity(
+                        Intent(
+                            this@RegistrationActivity, MainActivity::class.java
+                        )
+                    )
+                }
+                finish()
             }
         }
 
         viewBinding.username.textField1.afterTextChanged {
-            registrationViewModel.loginDataChanged(
-                viewBinding.username.textField1.text.toString(),
-                viewBinding.email.textField1.text.toString(),
-                viewBinding.password.textField1.text.toString()
-            )
+            email.error = if (!CachedUser.validator.isUserNameValid(it)) {
+                "Bad username!"
+            } else {
+                null
+            }
+        }
+
+        email.afterTextChanged {
+            email.error = if (!CachedUser.validator.isEmailValid(it)) {
+                "Bad email!"
+            } else {
+                null
+            }
         }
 
         viewBinding.password.textField1.apply {
             afterTextChanged {
-                registrationViewModel.loginDataChanged(
-                    viewBinding.username.textField1.text.toString(),
-                    viewBinding.email.textField1.text.toString(),
-                    viewBinding.password.textField1.text.toString()
-                )
+                password.error = if (!CachedUser.validator.isPasswordValid(it)) {
+                    "Bad password!"
+                } else {
+                    null
+                }
             }
 
             setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_DONE ->
-                        registrationViewModel.login(
-                            viewBinding.username.textField1.text.toString(),
-                            viewBinding.email.textField1.text.toString(),
-                            viewBinding.password.textField1.text.toString()
+                        CachedUser.register(
+                            this@RegistrationActivity,
+                            username.text.toString(),
+                            email.text.toString(),
+                            password.text.toString()
                         )
                 }
                 false
             }
 
-            viewBinding.login1.setOnClickListener {
-                //loading.visibility = View.VISIBLE
+            viewBinding.login.setOnClickListener {
                 val i = Intent(this@RegistrationActivity, LoginActivity::class.java)
                 launcher.launch(i)
             }
 
         }
-    }
-
-    private fun updateUiWithUser(model: LoggedInUserView) {
-        val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
-        Toast.makeText(
-            applicationContext,
-            "$welcome $displayName",
-            Toast.LENGTH_LONG
-        ).show()
-    }
-
-    private fun showLoginFailed(@StringRes errorString: Int) {
-        Toast.makeText(applicationContext, errorString, LENGTH_SHORT).show()
     }
 }

@@ -7,7 +7,7 @@
         <import type="android.graphics.drawable.Drawable"/>
         <variable name="firstText" type="String" />
         <variable name="secondText" type="String" />
-        <variable name="avatar1" type="Drawable" />
+        <variable name="avatar1" type="String" />
         <variable name="rightIcon1" type="Drawable" />
         <variable name="visibility" type="int" />
 
@@ -22,11 +22,11 @@
             style="@style/image_button"
             android:layout_width="wrap_content"
             android:layout_marginEnd="16dp"
+            android:contentDescription="@string/right_icon"
             android:src="@{rightIcon1, default=@drawable/ic_chevron_right}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/right_icon" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/avatar"
@@ -44,29 +44,33 @@
 
         <TextView
             android:id="@+id/name_surname"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginTop="10dp"
             android:text='@{firstText, default="Name Surname"}'
+            android:textAppearance="@style/Body_1"
             android:textColor="@color/adaptive_900000"
             app:layout_constraintBottom_toTopOf="@+id/email"
+            app:layout_constraintEnd_toStartOf="@+id/right_icon"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/avatar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            android:textAppearance="@style/Body_1"/>
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/email"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginBottom="10dp"
             android:text="@{secondText, default=Email}"
+            android:textAppearance="@style/Body_2"
             android:textColor="@color/base_500"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/right_icon"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/avatar"
-            app:layout_constraintTop_toBottomOf="@+id/name_surname"
-            android:textAppearance="@style/Body_2"/>
+            app:layout_constraintTop_toBottomOf="@+id/name_surname" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

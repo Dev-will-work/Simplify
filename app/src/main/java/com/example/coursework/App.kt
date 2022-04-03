@@ -9,6 +9,7 @@ import android.os.Build
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.RequiresApi
+import com.example.coursework.data.model.CachedUser
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.NetworkInterface
@@ -21,7 +22,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val ngrok_address = "http://839c-83-149-47-18.ngrok.io/"
+        val ngrok_address = "http://5ee0-178-178-87-188.ngrok.io/"
 
         val gson = GsonBuilder().setLenient().create()
         retrofit = Retrofit.Builder().baseUrl(ngrok_address)

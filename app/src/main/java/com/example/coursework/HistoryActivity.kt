@@ -20,23 +20,19 @@ class HistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_history)
+        val prefix = filesDir
 
         val sampleHistoryItem1 = HistoryData("13-March-2022  14:15", "Basketball star Brittney Griner is the latest American to be detained in Russia.", "Basketball star Brittney Griner is the latest American to be arrested in Russia.", true)
         val sampleHistoryItem2 = HistoryData("13-March-2022  14:15", "How a luxury watch brand has become the ultimate status symbol for young celebrities.", "How a fashion watch brand has become the ultimate status image for young people.", false)
 
-        val data = try {
-            HistoryAdapterObject.dataset
-        } catch (e: Exception) {
-            Toast.makeText(this, "Static history adapter N/A", Toast.LENGTH_SHORT).show()
-            arrayListOf<HistoryData>()
-        }
+        checkObjectInitialization(HistoryAdapterObject, this, "$prefix/historydata.json")
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         viewBinding.list.layoutManager = LinearLayoutManager(this)
-        adapter = HistoryAdapter(data)
+        adapter = HistoryAdapter(HistoryAdapterObject.dataset)
         adapter.setClipboard(clipboard)
         viewBinding.list.adapter = adapter
-        val full_dataSet = data
+        val full_dataSet = HistoryAdapterObject.dataset
 
         viewBinding.back1.setOnClickListener {
             startActivity(

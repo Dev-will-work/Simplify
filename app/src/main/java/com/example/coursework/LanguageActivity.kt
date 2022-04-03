@@ -24,22 +24,12 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_language)
         val prefix = filesDir
-        val static_data = arrayListOf("Recently used", "All languages", "Arabic", "Bulgarian", "Catalan", "Czech", "Danish", "Dutch",
-            "English", "Finnish", "French", "German", "Hungarian", "Indonesian", "Italian",
-            "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Spanish", "Swedish",
-            "Turkish", "Ukrainian")
 
-        val data: DummyLanguageAdapter =
-        if (File("$prefix/languagedata.json").exists()) {
-            readFile<DummyLanguageAdapter>(this, "$prefix/languagedata.json")
-                ?: DummyLanguageAdapter(static_data, 0, 0)
-        } else {
-            DummyLanguageAdapter(static_data, 0, 0)
-        }
+        checkObjectInitialization(LanguageObject, this, "$prefix/languagedata.json")
 
         viewBinding.list.layoutManager = LinearLayoutManager(this)
 
-        adapter = LanguageAdapter(data.dataset, data.base_size, data.added_size)
+        adapter = LanguageAdapter(LanguageObject.dataset, LanguageObject.base_size, LanguageObject.added_size)
 
         adapter.setClickListener(this)
         val currentLanguage = intent.getStringExtra("current_language")
@@ -122,12 +112,6 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
             adapter.notifyItemChanged(1)
         }
 
-//        if (elementToAdd == full_data[position + 1]) {
-//            full_data.removeAt(position + 1)
-//            adapter.notifyItemRemoved(position + 1)
-//            adapter.added_size--
-//        }
-
         var position = 2
         mostUsed.map {
             if (it != elementToAdd && position <= real_length) {
@@ -164,55 +148,5 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         ).show()
 
         pickMostUsedLanguage(elementToAdd, position)
-//            val temp = full_data?.get(3)
-//            var removed = false
-//            if (adapter.added_size == 3) {
-//                full_data?.removeAt(3)
-//                adapter.added_size--
-//                removed = true
-//            }
-//
-//            if (!checkAlreadyCached(full_data?.slice(1..4), elementToAdd) &&
-//                !checkRestrictedChoices(elementToAdd)) {
-//                full_data?.add(1, elementToAdd)
-//                adapter.added_size++
-//            }
-//            if (adapter.added_size == 2 && removed && temp != null) {
-//                full_data?.add(3, temp)
-//                adapter.added_size++
-//            }
-//            adapter.dataSet = full_data as ArrayList<String>
-//            full_data = null
-//            val resultIntent = Intent(this@LanguageActivity, MainActivity::class.java)
-//            resultIntent.putExtra("adapter", adapter)
-//            resultIntent.putExtra("language", elementToAdd)
-//            setResult(RESULT_OK, resultIntent)
-//            finish()
-//            return
-
-//        val temp = adapter.dataSet[3]
-//        var removed = false
-//        if (adapter.added_size == 3) {
-//            adapter.dataSet.removeAt(3)
-//            adapter.notifyItemRemoved(3)
-//            adapter.added_size--
-//            removed = true
-//        }
-//        if (!checkAlreadyCached(this.adapter.dataSet.slice(1..4), elementToAdd) &&
-//            !checkRestrictedChoices(elementToAdd)) {
-//            adapter.dataSet.add(1, elementToAdd)
-//            adapter.notifyDataSetChanged()
-//            adapter.added_size++
-//        }
-//        if (adapter.added_size == 2 && removed) {
-//            adapter.dataSet.add(3, temp)
-//            adapter.notifyItemInserted(3)
-//            adapter.added_size++
-//        }
-//        val resultIntent = Intent()
-//        resultIntent.putExtra("adapter", adapter)
-//        resultIntent.putExtra("language", elementToAdd)
-//        setResult(RESULT_OK, resultIntent)
-//        finish()
     }
 }

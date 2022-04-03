@@ -1,6 +1,7 @@
 package com.example.coursework
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -65,6 +66,9 @@ class ChangeProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Can't decode image data", Toast.LENGTH_SHORT).show()
             }
             viewBinding.avatar.setImageURI(imageData?.image_uri?.toUri())
+            viewBinding.avatar.clipToOutline = true
+            viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
+            viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
         }
 
         var show = true
@@ -100,7 +104,7 @@ class ChangeProfileActivity : AppCompatActivity() {
             }
         }
 
-        viewBinding.back1.setOnClickListener {
+        viewBinding.back.setOnClickListener {
             setResult(RESULT_CANCELED)
             finish()
         }
@@ -147,6 +151,18 @@ class ChangeProfileActivity : AppCompatActivity() {
 @Serializable
 data class Image(var image_uri: String)
 
-object ImageStore {
+object ImageStore : SharedObject<Image> {
     lateinit var image_uri: String
+
+    override fun initialized(): Boolean {
+        return ::image_uri.isInitialized
+    }
+
+    override fun defaultInitialization(ctx: Context) {
+        image_uri = Uri.parse("android.resource://com.example.coursework/drawable/avatar").toString()
+    }
+
+    override fun set(ctx: Context, dummy: Image) {
+        this.image_uri = dummy.image_uri
+    }
 }
