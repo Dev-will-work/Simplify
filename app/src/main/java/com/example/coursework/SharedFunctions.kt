@@ -50,6 +50,14 @@ fun leftShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
     return result
 }
 
+fun rightShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
+    val result = arr.take(arr.size - diff) as ArrayList<Double>
+    while (result.size < arr.size) {
+        result.add(0, 0.0)
+    }
+    return result
+}
+
 
 inline fun <reified T> readFile(context: Context, filename: String): T? {
     if (File(filename).exists()) {
@@ -126,15 +134,15 @@ fun retrofitRequest(context: Context, request: String, user_id: String, out_fiel
                     out_field?.setText(HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY))
                 }
                 Counters.simplification_count++
-                val last_elem = Counters.monthly_count.last()
-                Counters.monthly_count[Counters.monthly_count.size-1] = last_elem + 1
+                val lastElem = Counters.monthly_count.last()
+                Counters.monthly_count[Counters.monthly_count.size-1] = lastElem + 1
             }
         }
 
         override fun onFailure(call: Call<SimplifierData?>, t: Throwable) {
             Toast.makeText(
                 context,
-                "An error with network occured",
+                "An error with network occurred",
                 Toast.LENGTH_LONG
             ).show()
         }

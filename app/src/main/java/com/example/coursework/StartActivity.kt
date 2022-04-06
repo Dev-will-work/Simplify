@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityStartBinding
-import com.example.coursework.ui.login.LoginActivity
 
 class StartActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityStartBinding

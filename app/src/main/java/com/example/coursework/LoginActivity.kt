@@ -1,22 +1,13 @@
-package com.example.coursework.ui.login
+package com.example.coursework
 
 import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.text.Editable
 import android.text.InputType.*
-import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityLoginBinding
-import com.example.coursework.R
-import com.example.coursework.checkObjectInitialization
-import com.example.coursework.data.model.CachedUser
-import com.example.coursework.data.model.LoggedInUser
-import com.example.coursework.readFile
-import java.io.File
 
 
 class LoginActivity : AppCompatActivity() {

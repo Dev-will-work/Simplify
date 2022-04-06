@@ -33,12 +33,10 @@ class LanguageAdapter(
      * (custom ViewHolder).
      */
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-        val textView: TextView
+        val textView: TextView = view.findViewById(R.id.textView)
 
         init {
             // Define click listener for the ViewHolder's View.
-            textView = view.findViewById(R.id.textView)
-            val text = textView.text
             view.setOnClickListener(this)
         }
 
@@ -58,7 +56,7 @@ class LanguageAdapter(
 
     private fun configure1(vh: ViewHolder, position: Int) {
         val param = vh.textView.layoutParams as ViewGroup.MarginLayoutParams
-        val dpRatio: Float = vh.textView.context.getResources().getDisplayMetrics().density
+        val dpRatio: Float = vh.textView.context.resources.displayMetrics.density
         val pixelForDp = (38 * dpRatio).toInt()
         param.topMargin = pixelForDp
         vh.textView.layoutParams = param
@@ -84,17 +82,16 @@ class LanguageAdapter(
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val vh1 = viewHolder
         viewHolder.textView.text = dataSet[position]
         when (viewHolder.itemViewType) {
             HEADER_DOWN -> {
-                configure1(vh1, position)
+                configure1(viewHolder, position)
             }
             HEADER -> {
-                configure2(vh1, position)
+                configure2(viewHolder, position)
             }
             SIMPLE -> {
-                configure3(vh1, position)
+                configure3(viewHolder, position)
             }
         }
     }
@@ -103,12 +100,12 @@ class LanguageAdapter(
     override fun getItemCount() = dataSet.size
 
     override fun getItemViewType(position: Int): Int {
-        if (position == 0 && dataSet[position].contains(' ')) {
-            return HEADER
+        return if (position == 0 && dataSet[position].contains(' ')) {
+            HEADER
         } else if (dataSet[position].contains(' ')) {
-            return HEADER_DOWN
+            HEADER_DOWN
         } else {
-            return SIMPLE
+            SIMPLE
         }
     }
 
@@ -118,7 +115,7 @@ class LanguageAdapter(
     }
 
     fun getItem(id: Int): String {
-        return dataSet.get(id)
+        return dataSet[id]
     }
 
     // parent activity will implement this method to respond to click events

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -83,7 +84,7 @@ class PhotoActivity : AppCompatActivity() {
                 override fun
                         onImageSaved(output: ImageCapture.OutputFileResults){
                     val msg = "Photo capture succeeded: ${output.savedUri}"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, msg, LENGTH_SHORT).show()
                     Log.d(TAG, msg)
 
                     val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
@@ -100,11 +101,11 @@ class PhotoActivity : AppCompatActivity() {
                         val result = recognizer.process(image)
                             .addOnSuccessListener { visionText ->
                                 // Task completed successfully
-                                Toast.makeText(baseContext, visionText.text, Toast.LENGTH_SHORT)
+                                Toast.makeText(baseContext, visionText.text, LENGTH_SHORT)
                                     .show()
-                                val res_intent = Intent()
-                                res_intent.putExtra("result", visionText.text)
-                                setResult(1, res_intent)
+                                val resIntent = Intent()
+                                resIntent.putExtra("result", visionText.text)
+                                setResult(1, resIntent)
                                 finish()
                                 //                    val resultText = result.text
 //                    for (block in result.textBlocks) {
@@ -126,6 +127,7 @@ class PhotoActivity : AppCompatActivity() {
                             .addOnFailureListener { e ->
                                 // Task failed with an exception
                                 // ...
+                                Toast.makeText(this@PhotoActivity, "$e", LENGTH_SHORT).show()
                             }
                     }
                 }
@@ -198,7 +200,7 @@ class PhotoActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this,
                     "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT).show()
+                    LENGTH_SHORT).show()
                 finish()
             }
         }

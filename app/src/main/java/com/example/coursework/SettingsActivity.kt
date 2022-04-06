@@ -5,33 +5,16 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ViewGroup.LayoutParams.FILL_PARENT
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.preference.PreferenceManager
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.coursework.SettingsActivity
-import com.example.coursework.data.model.LoggedInUser
 import com.example.coursework.databinding.ActivitySettingsBinding
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import java.io.File
-import java.util.*
 
-import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.res.ResourcesCompat
-import java.io.FileNotFoundException
-import java.io.InputStream
-import android.text.Editable
-
-import android.content.DialogInterface
-import com.example.coursework.data.model.CachedUser
+import com.google.android.material.slider.Slider
 
 
 class MyPreferences(context: Context?) {
@@ -49,11 +32,11 @@ class MyPreferences(context: Context?) {
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySettingsBinding
-    lateinit var adapter1: ToggleOptionsAdapter
-    lateinit var adapter2: SimpleOptionsAdapter
+    private lateinit var adapter1: ToggleOptionsAdapter
+    private lateinit var adapter2: SimpleOptionsAdapter
 
     private fun changeGreeting() {
-        val edittext = MyEditText(this);
+        val edittext = MyEditText(this)
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Change greeting")
 
@@ -135,6 +118,11 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
         val prefix = filesDir
+
+        checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")
+        checkObjectInitialization(ImageStore, this, "$prefix/imagedata.json")
+        checkObjectInitialization(SettingsObject, this, "$prefix/settingsdata.json")
+
         viewBinding.toggleList.layoutManager = LinearLayoutManager(this)
         viewBinding.simpleList.layoutManager = LinearLayoutManager(this)
         adapter1 = ToggleOptionsAdapter()
@@ -142,9 +130,13 @@ class SettingsActivity : AppCompatActivity() {
         viewBinding.toggleList.adapter = adapter1
         viewBinding.simpleList.adapter = adapter2
 
-        checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")
-        checkObjectInitialization(ImageStore, this, "$prefix/imagedata.json")
-        checkObjectInitialization(SettingsObject, this, "$prefix/settingsdata.json")
+
+        viewBinding.sliderFrame.seekBar.addOnChangeListener(Slider.OnChangeListener {
+        slider, value, fromUser ->
+            SettingsObject.usedLanguages = value
+        })
+
+        viewBinding.sliderFrame.seekBar.value = SettingsObject.usedLanguages
 
         viewBinding.avatarFrame.firstText = CachedUser.retrieveUsername()
         viewBinding.avatarFrame.secondText = CachedUser.retrieveEmail()
@@ -200,7 +192,8 @@ class SettingsActivity : AppCompatActivity() {
         val prefix = filesDir
         with(SettingsObject) {
             simpleData = adapter2.dataSet
-            writeFile("$prefix/settingsdata.json", DummySettingsAdapters(toggleData, simpleData, greeting))
+            writeFile("$prefix/settingsdata.json", DummySettingsAdapters(toggleData,
+                simpleData, greeting, usedLanguages))
         }
     }
 }

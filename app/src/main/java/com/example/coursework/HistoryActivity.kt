@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +13,7 @@ import kotlin.collections.ArrayList
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityHistoryBinding
-    lateinit var adapter: HistoryAdapter
+    private lateinit var adapter: HistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +30,7 @@ class HistoryActivity : AppCompatActivity() {
         adapter = HistoryAdapter(HistoryAdapterObject.dataset)
         adapter.setClipboard(clipboard)
         viewBinding.list.adapter = adapter
-        val full_dataSet = HistoryAdapterObject.dataset
+        val fullDataSet = HistoryAdapterObject.dataset
 
         viewBinding.back1.setOnClickListener {
             startActivity(
@@ -47,9 +45,9 @@ class HistoryActivity : AppCompatActivity() {
             changed ->
             if (changed != null) {
                 if (changed.toString() == "") {
-                    adapter.dataSet = full_dataSet
+                    adapter.dataSet = fullDataSet
                 } else {
-                    adapter.dataSet = full_dataSet.filter {
+                    adapter.dataSet = fullDataSet.filter {
                         (it.date?.contains(changed.toString()) == true) or
                                 (it.request?.contains(changed.toString()) == true) or
                                 (it.response?.contains(changed.toString()) == true)

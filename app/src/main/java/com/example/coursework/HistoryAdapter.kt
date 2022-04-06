@@ -55,7 +55,7 @@ class HistoryAdapter(
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>(), Parcelable {
     private val FAVOURITE = 0
     private val SIMPLE = 1
-    lateinit var clipboardManager: ClipboardManager
+    private lateinit var clipboardManager: ClipboardManager
 
     constructor(parcel: Parcel) : this(
         parcel.createTypedArrayList(HistoryData) as ArrayList<HistoryData>
@@ -66,17 +66,10 @@ class HistoryAdapter(
      * (custom ViewHolder).
      */
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val date: TextView
-        val request: MyEditText
-        val response: MyEditText
-        val icon: ImageButton
-
-        init {
-            icon = view.findViewById(R.id.icon)
-            date = view.findViewById(R.id.date)
-            request = view.findViewById(R.id.request)
-            response = view.findViewById(R.id.response)
-        }
+        val date: TextView = view.findViewById(R.id.date)
+        val request: MyEditText = view.findViewById(R.id.request)
+        val response: MyEditText = view.findViewById(R.id.response)
+        val icon: ImageButton = view.findViewById(R.id.icon)
     }
 
     // Create new views (invoked by the layout manager)
@@ -131,10 +124,10 @@ class HistoryAdapter(
     override fun getItemCount() = dataSet.size
 
     override fun getItemViewType(position: Int): Int {
-        if (dataSet[position].is_favourite) {
-            return FAVOURITE
+        return if (dataSet[position].is_favourite) {
+            FAVOURITE
         } else {
-            return SIMPLE
+            SIMPLE
         }
     }
 
@@ -143,12 +136,7 @@ class HistoryAdapter(
     }
 
     fun getItem(id: Int): HistoryData {
-        return dataSet.get(id)
-    }
-
-    // parent activity will implement this method to respond to click events
-    interface ItemClickListener {
-        fun onItemClick(view: View?, position: Int)
+        return dataSet[id]
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

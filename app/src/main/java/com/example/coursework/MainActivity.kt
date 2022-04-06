@@ -6,9 +6,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import com.example.coursework.databinding.ActivityMainBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -17,24 +14,15 @@ import android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS
 import android.widget.Toast.LENGTH_SHORT
 import android.content.*
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.speech.RecognizerIntent
 import androidx.activity.result.ActivityResultLauncher
-import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
-import com.example.coursework.data.model.CachedUser
-import com.example.coursework.data.model.LoggedInUser
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.io.File
+import java.lang.Math.abs
 import kotlin.collections.ArrayList
-import java.util.Calendar.*
-import kotlin.time.ExperimentalTime
 
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var viewBinding: ActivityMainBinding
@@ -44,7 +32,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     //private var videoCapture: VideoCapture<Recorder>? = null
     //private var recording: Recording? = null
 
-    @ExperimentalTime
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -60,7 +48,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         val checkIntent = Intent()
         checkIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
-        val launcher_tts = registerForActivityResult(StartActivityForResult()) {
+        val launcherTts = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
                 CHECK_VOICE_DATA_PASS -> {
                     mTts = TextToSpeech(this, this)
@@ -73,7 +61,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 }
             }
         }
-        launcher_tts.launch(checkIntent)
+        launcherTts.launch(checkIntent)
 
         setClickMoveToActivity(viewBinding.settings, this, SettingsActivity::class)
         setClickMoveToActivity(viewBinding.buttons.bookmarks, this, HistoryActivity::class)
@@ -132,7 +120,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         }
 
-        val launcher_voice = registerForActivityResult(StartActivityForResult()) {
+        val launcherVoice = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
                 RESULT_OK ->
                 {
@@ -149,18 +137,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
         }
         viewBinding.buttons.microphone.setOnClickListener {
-            getSpeechInput(launcher_voice)
+            getSpeechInput(launcherVoice)
         }
 
-        val launcher_language = registerForActivityResult(StartActivityForResult()) {
+        val launcherLanguage = registerForActivityResult(StartActivityForResult()) {
             when (it.resultCode) {
                 RESULT_OK -> {
                     adapter = it.data?.getParcelableExtra("adapter")
                     val language = it.data?.getStringExtra("language")
                     if (language != null) {
                         viewBinding.language.text = language
-                        val embedding_activation_request = "language:" + language.take(2).lowercase(Locale.getDefault())
-                        retrofitRequest(this, embedding_activation_request, CachedUser.retrieveID() , null, true)
+                        val embeddingActivationRequest = "language:" + language.take(2).lowercase(Locale.getDefault())
+                        retrofitRequest(this, embeddingActivationRequest, CachedUser.retrieveID() , null, true)
                     }
                 }
                 else -> {}
@@ -173,7 +161,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
             val currentLanguage = viewBinding.language.text
             i.putExtra("current_language", currentLanguage)
-            launcher_language.launch(i)
+            launcherLanguage.launch(i)
         }
 
         val launcher = registerForActivityResult(StartActivityForResult()) {
@@ -191,7 +179,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
 
         viewBinding.inputFrame.textField.setOnEditorActionListener {
-                textView, actionId, keyEvent ->
+                _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     val input = viewBinding.inputFrame.textField.text.toString()
@@ -243,8 +231,8 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         super.onPause()
         val prefix = filesDir
 
-        val jsonData = Json.encodeToString(DummyCounters(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp))
-        File("$prefix/statistics.json").writeText(jsonData)
+        val statisticsData = DummyCounters(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp)
+        writeFile("$prefix/statistics.json", statisticsData)
 
         val historydata = DummyHistoryAdapter(HistoryAdapterObject.dataset)
         writeFile("$prefix/historydata.json", historydata)
@@ -273,16 +261,22 @@ object Counters : SharedObject<DummyCounters> {
         current_timestamp = Clock.System.now()
     }
 
-    @ExperimentalTime
     override fun set(ctx: Context, dummy: DummyCounters) {
+        dummy.monthly_count.sum()
         simplification_count = dummy.simplification_count
         share_count = dummy.share_count
         current_timestamp = Clock.System.now()
         val diff = current_timestamp - dummy.current_timestamp
-        if (diff.inWholeDays > 0) {
-            monthly_count = leftShift(dummy.monthly_count, diff.inWholeDays.toInt())
-        } else {
-            monthly_count = dummy.monthly_count
+        monthly_count = when {
+            diff.inWholeDays > 0 -> {
+                leftShift(dummy.monthly_count, diff.inWholeDays.toInt())
+            }
+            diff.inWholeDays < 0 -> {
+                rightShift(dummy.monthly_count, kotlin.math.abs(diff.inWholeDays.toInt()))
+            }
+            else -> {
+                dummy.monthly_count
+            }
         }
     }
 }

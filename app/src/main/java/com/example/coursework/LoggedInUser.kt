@@ -1,10 +1,8 @@
-package com.example.coursework.data.model
+package com.example.coursework
 
 import android.content.Context
 import android.util.Patterns
 import android.widget.Toast
-import com.example.coursework.SharedObject
-import com.example.coursework.writeFile
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -20,61 +18,6 @@ data class LoggedInUser(
     var email: String,
     var password: String
 )
-
-class UserController {
-    lateinit var user: LoggedInUser
-
-    private fun customEncryption(password: String): String {
-        val bytePassword = password.encodeToByteArray()
-
-        val result = bytePassword.mapIndexed {
-                i, b ->
-            if (i % 2 == 0) (b + 263).toByte() else (b - 257).toByte()
-        }.toByteArray().decodeToString()
-
-        return result
-    }
-
-    private fun customDecryption(password: String): String {
-        val result = password.mapIndexed {
-                i, b ->
-            if (i % 2 == 0) (b - 263).code.toByte() else (b + 257).code.toByte()
-        }.toByteArray().decodeToString()
-
-        return result
-    }
-
-    fun set(ctx: Context, user: LoggedInUser) {
-        this.user = user
-        this.user.password = customEncryption(user.password)
-
-        val prefix = ctx.filesDir
-        writeFile("$prefix/userData.json", this.user)
-    }
-
-    fun defaultInitialization(ctx: Context) {
-        this.user = LoggedInUser(UUID.randomUUID().toString(), "guest", "example@email.com", "abcdef")
-
-        val prefix = ctx.filesDir
-        writeFile("$prefix/userdata.json", this.user)
-    }
-
-    fun compare(user: LoggedInUser): Boolean {
-        return this.user.email == user.email && customDecryption(this.user.password) == user.password
-    }
-
-    fun getPassword(): String {
-        return customDecryption(this.user.password)
-    }
-
-    fun getID(): String {
-        return this.user.userId
-    }
-
-    fun userInitialized(): Boolean {
-        return this::user.isInitialized
-    }
-}
 
 class Validator {
     fun isEmailValid(email: String): Boolean {
@@ -92,9 +35,32 @@ class Validator {
     }
 }
 
+ class Cryptor {
+    fun customEncryption(password: String): String {
+        val bytePassword = password.encodeToByteArray()
+
+        val result = bytePassword.mapIndexed {
+                i, b ->
+            if (i % 2 == 0) (b + 263).toByte() else (b - 257).toByte()
+        }.toByteArray().decodeToString()
+
+        return result
+    }
+
+    fun customDecryption(password: String): String {
+        val result = password.mapIndexed {
+                i, b ->
+            if (i % 2 == 0) (b - 263).code.toByte() else (b + 257).code.toByte()
+        }.toByteArray().decodeToString()
+
+        return result
+    }
+}
+
 object CachedUser : SharedObject<LoggedInUser>{
-    private var userController = UserController()
+    private lateinit var user: LoggedInUser
     val validator = Validator()
+    private val cryptor = Cryptor()
 
     fun register(ctx: Context, username: String, email: String, password: String, quiet: Boolean = false): Boolean {
         // handle login
@@ -114,7 +80,7 @@ object CachedUser : SharedObject<LoggedInUser>{
             else -> {
                 val newUser =
                     LoggedInUser(UUID.randomUUID().toString(), username, email, password)
-                this.userController.set(ctx, newUser)
+                setCheckedData(ctx, newUser)
                 if (!quiet) Toast.makeText(ctx, "Welcome $username", Toast.LENGTH_LONG).show()
                 return true
             }
@@ -122,7 +88,7 @@ object CachedUser : SharedObject<LoggedInUser>{
     }
 
     fun retrievePassword(): String {
-        val retrievedPassword = this.userController.getPassword()
+        val retrievedPassword = getPassword()
         return if (retrievedPassword != "") {
             "Your password: $retrievedPassword"
         } else {
@@ -131,30 +97,49 @@ object CachedUser : SharedObject<LoggedInUser>{
     }
 
     fun retrieveUsername(): String {
-        return userController.user.displayName
+        return user.displayName
     }
 
     fun retrieveEmail(): String {
-        return userController.user.email
+        return user.email
     }
 
     fun retrieveID(): String {
-        return userController.getID()
+        return user.userId
     }
 
     fun login(email: String, password: String): Boolean {
-        return userController.compare(LoggedInUser("", "", email, password))
-    }
-
-    override fun defaultInitialization(ctx: Context) {
-        userController.defaultInitialization(ctx)
+        return compare(LoggedInUser("", "", email, password))
     }
 
     override fun initialized(): Boolean {
-        return userController.userInitialized()
+        return CachedUser::user.isInitialized
     }
 
     override fun set(ctx: Context, dummy: LoggedInUser) {
         register(ctx, dummy.displayName, dummy.email, dummy.password, true)
+    }
+
+    private fun setCheckedData(ctx: Context, user: LoggedInUser) {
+        CachedUser.user = user
+        CachedUser.user.password = cryptor.customEncryption(user.password)
+
+        val prefix = ctx.filesDir
+        writeFile("$prefix/userData.json", CachedUser.user)
+    }
+
+    override fun defaultInitialization(ctx: Context) {
+        user = LoggedInUser(UUID.randomUUID().toString(), "guest", "example@email.com", "abcdef")
+
+        val prefix = ctx.filesDir
+        writeFile("$prefix/userdata.json", user)
+    }
+
+    private fun compare(user: LoggedInUser): Boolean {
+        return CachedUser.user.email == user.email && cryptor.customDecryption(CachedUser.user.password) == user.password
+    }
+
+    private fun getPassword(): String {
+        return cryptor.customDecryption(user.password)
     }
 }

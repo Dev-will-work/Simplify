@@ -11,14 +11,13 @@ import com.example.coursework.databinding.ActivityLanguageBinding
 import android.content.Intent
 import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
-import java.io.File
 import java.util.ArrayList
 
 
 class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener {
-    lateinit var adapter: LanguageAdapter
+    private lateinit var adapter: LanguageAdapter
     private lateinit var viewBinding: ActivityLanguageBinding
-    lateinit var full_data: ArrayList<String>
+    private lateinit var fullData: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,15 +42,15 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
             finish()
         }
 
-        full_data = adapter.dataSet
+        fullData = adapter.dataSet
 
         viewBinding.searchFrame.editTextTextPersonName.addTextChangedListener {
                 changed ->
             if (changed != null) {
                 if (changed.toString() == "") {
-                    adapter.dataSet = full_data
+                    adapter.dataSet = fullData
                 } else {
-                    adapter.dataSet = full_data.filter {
+                    adapter.dataSet = fullData.filter {
                         it.contains(changed.toString())
                     } as ArrayList<String>
                 }
@@ -60,10 +59,10 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         }
 
         viewBinding.searchFrame.editTextTextPersonName.setOnEditorActionListener {
-                textView, actionID, keyEvent ->
+                _, actionID, _ ->
             when (actionID) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    adapter.dataSet = ArrayList(full_data.filter {
+                    adapter.dataSet = ArrayList(fullData.filter {
                         it.matches(
                             viewBinding.searchFrame.editTextTextPersonName.text.toString()
                                 .toRegex()
@@ -89,35 +88,35 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         return false
     }
 
-    fun checkRestrictedChoices(s: String): Boolean {
+    private fun checkRestrictedChoices(s: String): Boolean {
         return listOf("All languages", "Recently used").contains(s)
     }
 
-    fun pickMostUsedLanguage(elementToAdd: String, position: Int, add_index: Int = 3) {
-        val real_length = full_data.slice(1..add_index).takeWhile { it != "All languages" }.size
-        val mostUsed = full_data.slice(1..real_length)
+    private fun pickMostUsedLanguage(elementToAdd: String, position: Int, add_index: Int = 3) {
+        val realLength = fullData.slice(1..add_index).takeWhile { it != "All languages" }.size
+        val mostUsed = fullData.slice(1..realLength)
 
         if (adapter.added_size == add_index && elementToAdd !in mostUsed) {
-            full_data.removeAt(add_index)
+            fullData.removeAt(add_index)
             adapter.notifyItemRemoved(add_index)
             adapter.added_size--
         }
 
         if (elementToAdd !in mostUsed) {
-            full_data.add(1, elementToAdd)
+            fullData.add(1, elementToAdd)
             adapter.notifyItemInserted(1)
             adapter.added_size++
         } else {
-            full_data[1] = elementToAdd
+            fullData[1] = elementToAdd
             adapter.notifyItemChanged(1)
         }
 
-        var position = 2
+        var changingPosition = 2
         mostUsed.map {
-            if (it != elementToAdd && position <= real_length) {
-                full_data[position] = it
-                adapter.notifyItemChanged(position)
-                position++
+            if (it != elementToAdd && changingPosition <= realLength) {
+                fullData[changingPosition] = it
+                adapter.notifyItemChanged(changingPosition)
+                changingPosition++
             }
         }
 
@@ -131,7 +130,7 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         super.onPause()
         val prefix = filesDir
 
-        val languageData = DummyLanguageAdapter(full_data, adapter.base_size, adapter.added_size)
+        val languageData = DummyLanguageAdapter(fullData, adapter.base_size, adapter.added_size)
         writeFile("$prefix/languagedata.json", languageData)
     }
 
@@ -143,7 +142,7 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
 
         Toast.makeText(
             this,
-            "You clicked " + elementToAdd + " on row number " + position,
+            "You clicked $elementToAdd on row number $position",
             Toast.LENGTH_SHORT
         ).show()
 

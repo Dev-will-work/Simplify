@@ -7,9 +7,7 @@ import android.text.InputType
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
-import com.example.coursework.data.model.CachedUser
 import com.example.coursework.databinding.ActivityRegistrationBinding
-import com.example.coursework.ui.login.*
 
 class RegistrationActivity : AppCompatActivity() {
 

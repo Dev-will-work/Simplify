@@ -27,7 +27,8 @@
             app:thumbColor="@color/main_500"
             app:thumbRadius="8dp"
             app:trackColorActive="@color/main_100"
-            app:trackHeight="4dp" />
+            app:trackHeight="4dp"
+            android:theme="@style/ThemeOverlay.App.Slider"/>
 
         <TextView
             android:id="@+id/textView2"

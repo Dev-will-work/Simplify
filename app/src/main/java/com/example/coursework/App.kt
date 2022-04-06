@@ -4,16 +4,13 @@ import android.app.Application
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import android.os.Build
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.RequiresApi
-import com.example.coursework.data.model.CachedUser
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.NetworkInterface
-import kotlinx.coroutines.*
 
 
 class App : Application() {
@@ -22,31 +19,31 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val ngrok_address = "http://5ee0-178-178-87-188.ngrok.io/"
+        val ngrokAddress = "http://de36-178-178-85-39.ngrok.io/"
 
         val gson = GsonBuilder().setLenient().create()
-        retrofit = Retrofit.Builder().baseUrl(ngrok_address)
+        retrofit = Retrofit.Builder().baseUrl(ngrokAddress)
             .addConverterFactory(GsonConverterFactory.create(gson)).build()
         simplifierApi = retrofit?.create(SimplifierApi::class.java)
 
-        val prefix = filesDir
+//        val prefix = filesDir
 //        clearFile("$prefix/languagedata.json")
 
     }
 
-    fun conectLocallyWithDHCPAssignedIP() {
-        var pc_ip = ""
+    fun connectLocallyWithDHCPAssignedIP() {
+        var pcIP = ""
 
         // temporary workaround to get assigned ip and automatically connect to shared wifi gateway
-        val connection_interface = NetworkInterface.getByName("ap0")
-        if (connection_interface == null) {
-            pc_ip = "127.0.0.1"
+        val connectionInterface = NetworkInterface.getByName("ap0")
+        if (connectionInterface == null) {
+            pcIP = "127.0.0.1"
             Toast.makeText(this, "No connection from other device found, simplification is not available!", LENGTH_LONG).show()
         } else {
-            val full_address =
-                connection_interface.interfaceAddresses[1].address.toString().trim('/')
-            val subnet = full_address.substringBeforeLast('.')
-            val lastbyte = full_address.substringAfterLast('.').toInt()
+            val fullAddress =
+                connectionInterface.interfaceAddresses[1].address.toString().trim('/')
+            val subnet = fullAddress.substringBeforeLast('.')
+            val lastbyte = fullAddress.substringAfterLast('.').toInt()
 
             Thread {
                 val runtime = Runtime.getRuntime()
@@ -58,7 +55,7 @@ class App : Application() {
                         val v = "[0-9](?= rec)".toRegex().find(stdInput.readText())?.value
 
                         if (v == "1" && i != lastbyte) {
-                            pc_ip = "$subnet.$i"
+                            pcIP = "$subnet.$i"
                         }
                     }.start()
                 }
@@ -68,8 +65,8 @@ class App : Application() {
         val gson = GsonBuilder().setLenient().create()
         Thread {
             while (true) {
-                if (pc_ip != "") {
-                    retrofit = Retrofit.Builder().baseUrl("http://$pc_ip/")
+                if (pcIP != "") {
+                    retrofit = Retrofit.Builder().baseUrl("http://$pcIP/")
                         .addConverterFactory(GsonConverterFactory.create(gson)).build()
                     simplifierApi = retrofit?.create(SimplifierApi::class.java)
                     return@Thread

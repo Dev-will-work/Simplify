@@ -10,25 +10,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
-import com.example.coursework.data.model.CachedUser
-import com.example.coursework.data.model.LoggedInUser
 import com.example.coursework.databinding.ActivityProfileBinding
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import java.io.File
 import com.jjoe64.graphview.series.LineGraphSeries
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.time.ExperimentalTime
 
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityProfileBinding
 
-    @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
@@ -99,10 +92,10 @@ class ProfileActivity : AppCompatActivity() {
             val series = LineGraphSeries(points)
 
             series.setOnDataPointTapListener { _, dataPoint ->
-                val formatted_X = viewBinding.graph.gridLabelRenderer.labelFormatter.formatLabel(dataPoint.x, true)
+                val formattedX = viewBinding.graph.gridLabelRenderer.labelFormatter.formatLabel(dataPoint.x, true)
                 Toast.makeText(
                     this,
-                    "$formatted_X: ${dataPoint.y.toInt()}",
+                    "$formattedX: ${dataPoint.y.toInt()}",
                     LENGTH_SHORT
                 ).show()
             }

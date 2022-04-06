@@ -32,7 +32,7 @@ class OnboardingActivity1 : AppCompatActivity() {
         }
     }
 
-    @ExperimentalTime
+    @OptIn(ExperimentalTime::class)
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
