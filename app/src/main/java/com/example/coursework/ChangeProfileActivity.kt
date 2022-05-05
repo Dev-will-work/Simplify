@@ -53,10 +53,10 @@ class ChangeProfileActivity : AppCompatActivity() {
 
         checkObjectInitialization(ImageStore, this, "$prefix/imagedata.json")
 
-        viewBinding.avatar.setImageURI(ImageStore.image_uri.toUri())
-        viewBinding.avatar.clipToOutline = true
-        viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
-        viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
+//        viewBinding.avatar.setImageURI(ImageStore.image_uri.toUri())
+//        viewBinding.avatar.clipToOutline = true
+//        viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
+//        viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
 
         var show = true
         viewBinding.password.eye.setOnClickListener {
@@ -79,13 +79,13 @@ class ChangeProfileActivity : AppCompatActivity() {
         launcherImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
                 RESULT_OK -> {
-                    viewBinding.avatar.setImageURI(it.data?.data)
-                    it.data?.data?.let { uri ->
-                        resultUri = uri
-                    }
-                    viewBinding.avatar.clipToOutline = true
-                    viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
-                    viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
+//                    viewBinding.avatar.setImageURI(it.data?.data)
+//                    it.data?.data?.let { uri ->
+//                        resultUri = uri
+//                    }
+//                    viewBinding.avatar.clipToOutline = true
+//                    viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
+//                    viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
                 }
                 else -> {}
             }
@@ -96,9 +96,9 @@ class ChangeProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        viewBinding.avatar.setOnClickListener {
-            checkPermissionForImage()
-        }
+//        viewBinding.avatar.setOnClickListener {
+//            checkPermissionForImage()
+//        }
 
         viewBinding.save.setOnClickListener {
             checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")

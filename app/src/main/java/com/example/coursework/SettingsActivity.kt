@@ -141,10 +141,10 @@ class SettingsActivity : AppCompatActivity() {
         viewBinding.avatarFrame.firstText = CachedUser.retrieveUsername()
         viewBinding.avatarFrame.secondText = CachedUser.retrieveEmail()
 
-        viewBinding.avatarFrame.avatar1 = Uri.parse(ImageStore.image_uri).toString()
-        viewBinding.avatarFrame.avatar.clipToOutline = true
-        viewBinding.avatarFrame.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
-        viewBinding.avatarFrame.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
+//        viewBinding.avatarFrame.avatar1 = Uri.parse(ImageStore.image_uri).toString()
+//        viewBinding.avatarFrame.avatar.clipToOutline = true
+//        viewBinding.avatarFrame.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
+//        viewBinding.avatarFrame.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
 
         viewBinding.avatarFrame.rightIcon.setOnClickListener {
             CachedUser.defaultInitialization(this)
@@ -160,29 +160,11 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         checkTheme()
-        viewBinding.themeFrame.rightIcon.setOnClickListener {
-            chooseThemeDialog()
-        }
-        viewBinding.themeFrame.avatar.setOnClickListener {
-            chooseThemeDialog()
-        }
-        viewBinding.themeFrame.email.setOnClickListener {
-            chooseThemeDialog()
-        }
-        viewBinding.themeFrame.nameSurname.setOnClickListener {
+        viewBinding.themeFrame.root.setOnClickListener {
             chooseThemeDialog()
         }
 
-        viewBinding.greetingFrame.rightIcon.setOnClickListener {
-            changeGreeting()
-        }
-        viewBinding.greetingFrame.avatar.setOnClickListener {
-            changeGreeting()
-        }
-        viewBinding.greetingFrame.email.setOnClickListener {
-            changeGreeting()
-        }
-        viewBinding.greetingFrame.nameSurname .setOnClickListener {
+        viewBinding.greetingFrame.root.setOnClickListener {
             changeGreeting()
         }
     }

@@ -1,5 +1,7 @@
 package com.example.coursework
 
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
@@ -16,6 +18,7 @@ import android.content.*
 import android.content.Intent
 import android.os.Build
 import android.speech.RecognizerIntent
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.databinding.DataBindingUtil
 import kotlinx.datetime.Clock
@@ -31,7 +34,6 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var mTts: TextToSpeech? = null
     //private var videoCapture: VideoCapture<Recorder>? = null
     //private var recording: Recording? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,7 +148,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     adapter = it.data?.getParcelableExtra("adapter")
                     val language = it.data?.getStringExtra("language")
                     if (language != null) {
-                        viewBinding.language.text = language
+                        viewBinding.language.secondText = language
                         val embeddingActivationRequest = "language:" + language.take(2).lowercase(Locale.getDefault())
                         retrofitRequest(this, embeddingActivationRequest, CachedUser.retrieveID() , null, true)
                     }
@@ -154,12 +156,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 else -> {}
             }
         }
-        viewBinding.language.setOnClickListener {
+        viewBinding.language.root.setOnClickListener {
             val i = Intent(this, LanguageActivity::class.java)
             if (adapter != null) {
                 i.putExtra("adapter", adapter)
             }
-            val currentLanguage = viewBinding.language.text
+            val currentLanguage = viewBinding.language.secondText
             i.putExtra("current_language", currentLanguage)
             launcherLanguage.launch(i)
         }
@@ -231,7 +233,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         super.onPause()
         val prefix = filesDir
 
-        val statisticsData = DummyCounters(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp)
+        val statisticsData = DummyCounters(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp, Counters.old_timestamp)
         writeFile("$prefix/statistics.json", statisticsData)
 
         val historydata = DummyHistoryAdapter(HistoryAdapterObject.dataset)
@@ -241,16 +243,18 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
 @Serializable
 data class DummyCounters(val simplification_count: Int, val share_count: Int,
-                         val monthly_count: ArrayList<Double>, val current_timestamp: Instant)
+                         val monthly_count: ArrayList<Double>, val current_timestamp: Instant,
+                         val old_timestamp: Instant,)
 
 object Counters : SharedObject<DummyCounters> {
     var simplification_count: Int = 0
     var share_count: Int = 0
     lateinit var monthly_count: ArrayList<Double>
     lateinit var current_timestamp: Instant
+    lateinit var old_timestamp: Instant
 
     override fun initialized(): Boolean {
-        return ::monthly_count.isInitialized && ::current_timestamp.isInitialized
+        return ::monthly_count.isInitialized && ::current_timestamp.isInitialized && ::old_timestamp.isInitialized
     }
 
     override fun defaultInitialization(ctx: Context) {
@@ -259,14 +263,16 @@ object Counters : SharedObject<DummyCounters> {
         monthly_count = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0,0.0, 0.0, 0.0, 0.0, 0.0)
         current_timestamp = Clock.System.now()
+        old_timestamp = Clock.System.now()
     }
 
     override fun set(ctx: Context, dummy: DummyCounters) {
         dummy.monthly_count.sum()
         simplification_count = dummy.simplification_count
         share_count = dummy.share_count
+        old_timestamp = dummy.current_timestamp
         current_timestamp = Clock.System.now()
-        val diff = current_timestamp - dummy.current_timestamp
+        val diff = current_timestamp - old_timestamp
         monthly_count = when {
             diff.inWholeDays > 0 -> {
                 leftShift(dummy.monthly_count, diff.inWholeDays.toInt())

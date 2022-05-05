@@ -1,26 +1,50 @@
 package com.example.coursework
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
+import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.PopupMenu
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.net.toUri
+import androidx.annotation.MenuRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityProfileBinding
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
-import java.lang.IllegalArgumentException
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityProfileBinding
+
+    private fun showMenu(v: View, @MenuRes menuRes: Int, launcher: ActivityResultLauncher<Intent>) {
+        val popup = PopupMenu(applicationContext, v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            // Respond to menu item click.
+            when (menuItem.title) {
+                "Edit profile" -> {
+                    val i = Intent(this, ChangeProfileActivity::class.java)
+                    launcher.launch(i)
+                    true
+                }
+                else -> { true }
+            }
+        }
+        popup.setOnDismissListener {
+            // Respond to popup being dismissed.
+        }
+        // Show the popup menu.
+        popup.show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,14 +60,16 @@ class ProfileActivity : AppCompatActivity() {
                     viewBinding.nameSurname.text = CachedUser.retrieveUsername()
                     viewBinding.email.text = CachedUser.retrieveEmail()
 
-                    viewBinding.avatar.setImageURI(ImageStore.image_uri.toUri())
-                    viewBinding.avatar.clipToOutline = true
-                    viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
-                    viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
                 }
                 else -> {}
             }
         }
+
+        viewBinding.settings.setOnClickListener {
+            showMenu(it, R.menu.popup_menu, launcher)
+        }
+
+
 
         viewBinding.back1.setOnClickListener {
             startActivity(
@@ -65,11 +91,6 @@ class ProfileActivity : AppCompatActivity() {
 
         viewBinding.nameSurname.text = CachedUser.retrieveUsername()
         viewBinding.email.text = CachedUser.retrieveEmail()
-
-        viewBinding.avatar.setImageURI(ImageStore.image_uri.toUri())
-        viewBinding.avatar.clipToOutline = true
-        viewBinding.avatar.scaleType = ImageView.ScaleType.CENTER_CROP
-        viewBinding.avatar.background = AppCompatResources.getDrawable(this, R.drawable.rounded)
 
         viewBinding.numberTabLeft.myEditText.setText(Counters.simplification_count.toString())
         viewBinding.numberTabRight.myEditText.setText(Counters.share_count.toString())
