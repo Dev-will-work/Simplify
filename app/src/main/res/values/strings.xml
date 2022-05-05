@@ -45,35 +45,39 @@
     <string name="avatar_image">avatar image</string>
     <string name="change_info">Change info</string>
     <string name="name_surname">Name Surname</string>
-    <string name="email">Email</string>
+    <string name="email" translatable="false">Email</string>
     <string name="join_our_community">Join our community</string>
     <string name="receive_advertisements">Receive advertisements</string>
     <string name="log_in">Log in</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_up">Sign up</string>
     <string name="settings">Settings</string>
-    <string name="simplify">Simplify</string>
-    <string name="simplify_icon">simplify icon</string>
+    <string name="simplify" translatable="false">Simplify</string>
+    <string name="simplify_icon" translatable="false">simplify icon</string>
     <string name="continue_as_guest">Continue as guest</string>
-    <string name="text_button">text button</string>
-    <string name="microphone_button">microphone button</string>
-    <string name="camera_button">camera button</string>
-    <string name="bookmarks_button">bookmarks button</string>
+    <string name="text_button" translatable="false">text button</string>
+    <string name="microphone_button" translatable="false">microphone button</string>
+    <string name="camera_button" translatable="false">camera button</string>
+    <string name="bookmarks_button" translatable="false">bookmarks button</string>
     <string name="right_icon">right icon</string>
     <string name="bookmark_icon">bookmark icon</string>
-    <string name="sample_date">13-March-2022 14:15</string>
+    <string name="sample_date" translatable="false">13-March-2022 14:15</string>
     <string name="this_was_an_awesome_experience">This was an awesome experience.</string>
     <string name="this_is_my_amazing_day">This is my amazing day.</string>
     <string name="input_field">Input field</string>
     <string name="enter_something_here">Enter something here</string>
-    <string name="copy_button">copy button</string>
-    <string name="speak_button">speak button</string>
-    <string name="share_button">share button</string>
-    <string name="clear_button">clear button</string>
-    <string name="textview">TextView</string>
-    <string name="sample_int">5</string>
+    <string name="copy_button" translatable="false">copy button</string>
+    <string name="speak_button" translatable="false">speak button</string>
+    <string name="share_button" translatable="false">share button</string>
+    <string name="clear_button" translatable="false">clear button</string>
+    <string name="textview" translatable="false">TextView</string>
+    <string name="sample_int" translatable="false">5</string>
     <string name="simplified_text_will_be_here">Simplified text will be here</string>
     <string name="output_field">Output field</string>
-    <string name="eye_button">eye button</string>
+    <string name="eye_button" translatable="false">eye button</string>
     <string name="choose_theme_text">Choose theme</string>
+
+    <string name="option_1">Edit profile</string>
+    <string name="option_2">About app</string>
+    <string name="option_3">Logout</string>
 </resources>
