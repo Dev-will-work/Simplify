@@ -1,6 +1,9 @@
 package com.example.coursework
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -8,25 +11,75 @@ import android.os.Build
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.RequiresApi
+import androidx.work.Data
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.NetworkInterface
+import java.util.concurrent.TimeUnit
 
 
 class App : Application() {
     private var retrofit: Retrofit? = null
+
+    private fun createNotificationChannel(name: String, description: String, importance: Int, channel_id: String) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channel_id, name, importance).apply {
+                this.description = description
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun createInputData(): Data {
+        return Data.Builder()
+            .putString("last_timestamp", Counters.old_timestamp.toString())
+            .putBoolean("disable_notifications", SettingsObject.isPropertyToggled("notifications"))
+            .build()
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate() {
         super.onCreate()
 
         val ngrokAddress = "http://de36-178-178-85-39.ngrok.io/"
+        val channelId = "another"
+        val prefix = filesDir
 
         val gson = GsonBuilder().setLenient().create()
         retrofit = Retrofit.Builder().baseUrl(ngrokAddress)
             .addConverterFactory(GsonConverterFactory.create(gson)).build()
         simplifierApi = retrofit?.create(SimplifierApi::class.java)
 
-//        val prefix = filesDir
+        checkObjectInitialization(SettingsObject, this, "$prefix/settingsdata.json")
+        checkObjectInitialization(Counters, this, "$prefix/statistics.json")
+
+        createNotificationChannel(
+            "Urgent",
+            "Channel for urgent messages",
+            NotificationManager.IMPORTANCE_HIGH,
+            channelId
+        )
+
+        val uploadWorkRequest: WorkRequest =
+            PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.DAYS)
+                .setInputData(createInputData())
+                .build()
+
+        WorkManager
+            .getInstance(this.applicationContext).cancelAllWorkByTag("com.example.coursework.NotificationWorker")
+
+        WorkManager
+            .getInstance(this.applicationContext)
+            .enqueue(uploadWorkRequest)
+
 //        clearFile("$prefix/languagedata.json")
 
     }
