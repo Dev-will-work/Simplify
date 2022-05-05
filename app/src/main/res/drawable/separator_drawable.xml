@@ -3,5 +3,5 @@
     android:shape="rectangle"
     android:padding="10dp">
 
-    <solid android:color="@color/base_50" />
+    <solid android:color="@color/adaptive_separator" />
 </shape>

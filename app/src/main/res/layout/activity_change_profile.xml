@@ -74,7 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="96dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
             app:hint="@{ &quot;Username&quot; }"
@@ -82,7 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/change_photo"
+            app:layout_constraintTop_toBottomOf="@+id/back"
             app:title="@{ &quot;New username&quot; }" />
 
         <Button
@@ -94,29 +94,6 @@
             android:textAppearance="@style/Button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_marginTop="40dp"
-            android:contentDescription="@string/avatar_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/back"
-            app:srcCompat="@drawable/avatar" />
-
-        <TextView
-            android:id="@+id/change_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Change photo"
-            android:textAppearance="@style/Caption"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.473"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

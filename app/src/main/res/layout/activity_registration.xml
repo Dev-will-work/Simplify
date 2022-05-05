@@ -46,19 +46,6 @@
             app:srcCompat="@drawable/ic_dots_vertical"
             android:contentDescription="@string/three_black_dots" />
 
-        <CheckBox
-            android:id="@+id/checkbox_advertisements"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:buttonTint="@color/main_500"
-            android:checked="true"
-            android:text="@string/receive_advertisements"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password"
-            android:textAppearance="@style/Subtitle"/>
-
         <Button
             android:id="@+id/sign_up"
             style="@style/primary_button"
@@ -67,12 +54,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:text="@string/sign_up"
+            android:textAppearance="@style/Button"
             app:layout_constraintBottom_toTopOf="@+id/login"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checkbox_advertisements"
-            app:layout_constraintVertical_bias="1.0"
-            android:textAppearance="@style/Button"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/already_account"
@@ -107,7 +92,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
             app:hint="@{ &quot;Email&quot; }"
@@ -124,7 +109,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
             app:hint="@{ &quot;Password&quot; }"
@@ -140,7 +125,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="80dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
             app:hint="@{ &quot;Username&quot; }"

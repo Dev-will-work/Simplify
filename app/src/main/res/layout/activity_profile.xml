@@ -70,17 +70,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/number_tab_left" />
 
-        <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:layout_marginTop="40dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/back1"
-            app:srcCompat="@drawable/avatar"
-            android:contentDescription="@string/avatar_image" />
-
         <Button
             android:id="@+id/change_info"
             style="@style/secondary_button"
@@ -98,12 +87,12 @@
             android:id="@+id/name_surname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="125dp"
             android:text="@string/name_surname"
+            android:textAppearance="@style/Body_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/avatar"
-            android:textAppearance="@style/Body_1"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/email"

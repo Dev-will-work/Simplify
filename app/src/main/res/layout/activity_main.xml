@@ -46,38 +46,22 @@
             app:srcCompat="@drawable/ic_cog"
             android:contentDescription="@string/settings_icon" />
 
-        <Button
-            android:id="@+id/language"
-            style="@style/text_button"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:drawableEnd="@drawable/ic_chevron_right"
-            android:text="@string/english"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:textAppearance="@style/Body_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile" />
-
         <include
             android:id="@+id/input_frame"
             layout="@layout/input_text_frame"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="7dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/language"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/language" />
 
         <include
             android:id="@+id/output_frame"
             layout="@layout/output_text_frame"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="13dp"
             android:layout_marginEnd="16dp"
@@ -98,6 +82,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/output_frame"
             app:layout_constraintVertical_bias="1.0" />
+
+        <include
+            android:id="@+id/language"
+            layout="@layout/chevron_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:avatar1="@{null}"
+            app:firstText="@{&quot;Selected language&quot;}"
+            app:secondText="@{@string/english}"
+            app:layout_constraintBottom_toTopOf="@+id/input_frame"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile"
+            app:layout_constraintVertical_bias="0.096"
+            app:rightIcon1="@{@drawable/ic_chevron_right}"
+            app:visibility="@{android.view.View.GONE}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -16,8 +16,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/text_field_drawable"
+            android:layout_height="180dp"
+            android:background="@drawable/output_frame_drawable"
             android:minWidth="313dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,13 +41,13 @@
                 android:hint="@string/simplified_text_will_be_here"
                 android:inputType="textMultiLine"
                 android:maxLines="4"
+                android:textAppearance="@style/Body_1"
                 android:textColorHint="@color/base_500"
                 app:layout_constraintBottom_toTopOf="@+id/copy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                android:textAppearance="@style/Body_1"/>
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageButton
                 android:id="@+id/copy"
@@ -56,39 +56,39 @@
                 android:layout_height="24dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/copy_button"
                 android:maxWidth="24dp"
                 android:maxHeight="24dp"
-                app:tint="@color/base_900"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_content_copy"
-                android:contentDescription="@string/copy_button" />
+                app:tint="@color/base_900" />
 
             <ImageButton
                 android:id="@+id/speak"
                 style="@style/image_button"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                app:tint="@color/base_900"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/speak_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/copy"
                 app:srcCompat="@drawable/ic_volume_high"
-                android:contentDescription="@string/speak_button" />
+                app:tint="@color/base_900" />
 
             <ImageButton
                 android:id="@+id/share"
                 style="@style/image_button"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                app:tint="@color/base_900"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="16dp"
+                android:contentDescription="@string/share_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/speak"
                 app:srcCompat="@drawable/ic_share"
-                android:contentDescription="@string/share_button" />
+                app:tint="@color/base_900" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
