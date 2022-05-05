@@ -44,6 +44,12 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
 
         fullData = adapter.dataSet
 
+        while (SettingsObject.usedLanguages < adapter.added_size) {
+            fullData.removeAt(adapter.added_size)
+            adapter.notifyItemRemoved(adapter.added_size)
+            adapter.added_size--
+        }
+
         viewBinding.searchFrame.editTextTextPersonName.addTextChangedListener {
                 changed ->
             if (changed != null) {
@@ -131,6 +137,7 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         val prefix = filesDir
 
         val languageData = DummyLanguageAdapter(fullData, adapter.base_size, adapter.added_size)
+        LanguageObject.set(this, languageData)
         writeFile("$prefix/languagedata.json", languageData)
     }
 
@@ -146,6 +153,6 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
             Toast.LENGTH_SHORT
         ).show()
 
-        pickMostUsedLanguage(elementToAdd, position)
+        pickMostUsedLanguage(elementToAdd, position, SettingsObject.usedLanguages.toInt())
     }
 }
