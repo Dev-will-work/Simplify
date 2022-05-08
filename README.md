@@ -82,7 +82,10 @@
 
 This project is designed to help all people effectively communicate and organize their speech in order to reach better understanding of each other 🙂
 <br />
-[![Simplify App Screen Shot][product-screenshot]](https://example.com)
+### Onboarding screenshots
+[![Simplify App Screen Shot][product-screenshot1]](https://example.com)
+[![Simplify App Screen Shot][product-screenshot2]](https://example.com)
+[![Simplify App Screen Shot][product-screenshot3]](https://example.com)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -228,4 +231,6 @@ Project Link: [https://github.com/Dev-will-work/Simplify](https://github.com/Dev
 [stars-url]: https://github.com/Dev-will-work/Simplify/stargazers
 [issues-shield]: https://img.shields.io/github/issues/Dev-will-work/Simplify.svg?style=for-the-badge
 [issues-url]: https://github.com/Dev-will-work/Simplify/issues
-[product-screenshot]: images/screenshot.png
+[product-screenshot1]: images/screenshot1.png
+[product-screenshot2]: images/screenshot2.png
+[product-screenshot3]: images/screenshot3.png
