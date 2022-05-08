@@ -81,7 +81,8 @@
 ## About The Project
 
 This project is designed to help all people effectively communicate and organize their speech in order to reach better understanding of each other 🙂
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+<br />
+[![Simplify App Screen Shot][product-screenshot]](https://example.com)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
