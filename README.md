@@ -21,8 +21,6 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -83,7 +81,7 @@
 ## About The Project
 
 This project is designed to help all people effectively communicate and organize their speech in order to reach better understanding of each other 🙂
-[![Product Name Screen Shot][product-screenshot]()]
+[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
