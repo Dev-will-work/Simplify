@@ -83,7 +83,7 @@
 ## About The Project
 
 This project is designed to help all people effectively communicate and organize their speech in order to reach better understanding of each other 🙂
-[![Product Name Screen Shot][product-screenshot]]
+[![Product Name Screen Shot][product-screenshot]()]
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -214,10 +214,6 @@ Project Link: [https://github.com/Dev-will-work/Simplify](https://github.com/Dev
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
-* []()
-* []()
-* []()
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
