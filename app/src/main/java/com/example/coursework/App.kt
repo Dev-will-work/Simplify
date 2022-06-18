@@ -20,10 +20,27 @@ import java.io.InputStreamReader
 import java.net.NetworkInterface
 import java.util.concurrent.TimeUnit
 
-
+/**
+ * class App is the main class of the Simplify application where
+ * all the preparations before the rendering are done.
+ * @property retrofit
+ * Main instance of retrofit which responsible for connection with the Flask server backend.
+ */
 class App : Application() {
     private var retrofit: Retrofit? = null
 
+    /**
+     * Function which creates new notification channels.
+     *
+     * @param name
+     * Name of new notification channel
+     * @param description
+     * Extended description of new notification channel
+     * @param importance
+     * Importance of new notification channel. @see [NotificationManager] IMPORTANCE constants.
+     * @param channel_id
+     * Unique id for the new channel.
+     */
     private fun createNotificationChannel(name: String, description: String, importance: Int, channel_id: String) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -38,6 +55,11 @@ class App : Application() {
         }
     }
 
+    /**
+     * Function which used for throwing necessary data into the notification worker.
+     *
+     * @return Data class with all needed data of simple types.
+     */
     private fun createInputData(): Data {
         return Data.Builder()
             .putString("last_timestamp", Counters.old_timestamp.toString())
@@ -45,6 +67,11 @@ class App : Application() {
             .build()
     }
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * This function initializes retrofit interface and setups periodical app notifications.
+     */
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate() {
         super.onCreate()
@@ -84,6 +111,10 @@ class App : Application() {
 
     }
 
+    /**
+     * Old utility function responsible for finding the ip of server backend,
+     * hosted on the connected by wifi PC
+     */
     fun connectLocallyWithDHCPAssignedIP() {
         var pcIP = ""
 
@@ -128,6 +159,13 @@ class App : Application() {
         }.start()
     }
 
+    /**
+     * Anonymous object with link on retrofit API interface.
+     * @property simplifierApi
+     * getter for retrofit API interface.
+     * @property api
+     * Shortened getter for retrofit API interface.
+     */
     companion object {
         private var simplifierApi: SimplifierApi? = null
         val api: SimplifierApi?

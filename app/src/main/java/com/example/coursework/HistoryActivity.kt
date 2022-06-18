@@ -11,10 +11,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coursework.databinding.ActivityHistoryBinding
 import kotlin.collections.ArrayList
 
+/**
+ * Class, that handles history screen and list of previous requests.
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ * @property adapter
+ * Adapter class for storing and rendering previous requests.
+ */
 class HistoryActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityHistoryBinding
     private lateinit var adapter: HistoryAdapter
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * Setups history list and other interactive behaviour on the history screen.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_history)
@@ -59,6 +74,12 @@ class HistoryActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Lifecycle function, which executes when the app is out of focus.
+     * @receiver
+     * Serializes data from previous requests list.
+     *
+     */
     override fun onPause() {
         super.onPause()
         val prefix = filesDir

@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.PopupMenu
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -21,9 +19,25 @@ import com.jjoe64.graphview.series.LineGraphSeries
 import java.util.*
 
 
+/**
+ * This class handles profile screen and its actions.
+ *
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ */
 class ProfileActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityProfileBinding
 
+    /**
+     * Function which constructs and shows dropdown menu window.
+     *
+     * @param v
+     * Abstract View, representing menu element.
+     * @param menuRes
+     * Menu resource ID.
+     * @param launcher
+     * launcher of another actiivty to move at.
+     */
     private fun showMenu(v: View, @MenuRes menuRes: Int, launcher: ActivityResultLauncher<Intent>) {
         val popup = PopupMenu(applicationContext, v)
         popup.menuInflater.inflate(menuRes, popup.menu)
@@ -46,6 +60,14 @@ class ProfileActivity : AppCompatActivity() {
         popup.show()
     }
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * This function handles statistics representation and profile screen behaviour.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_profile)

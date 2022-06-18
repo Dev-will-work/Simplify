@@ -1,32 +1,32 @@
 package com.example.coursework
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.databinding.DataBindingUtil
-import androidx.work.Data
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.example.coursework.databinding.ActivityOnboarding1Binding
-import kotlinx.datetime.Clock
-import java.util.concurrent.TimeUnit
 import kotlin.time.ExperimentalTime
 
 
+/**
+ * This class handles first onboarding screen and its actions.
+ *
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ */
 class OnboardingActivity1 : AppCompatActivity() {
     private lateinit var viewBinding: ActivityOnboarding1Binding
 
-    @OptIn(ExperimentalTime::class)
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * This function handles greeting and first onboarding screen behaviour.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

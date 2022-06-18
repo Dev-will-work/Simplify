@@ -13,6 +13,18 @@ import android.os.Parcelable
 import android.widget.ImageButton
 import kotlinx.serialization.Serializable
 
+/**
+ * Class, representing one previous user request. Also implements Parcelable interface.
+ *
+ * @property date
+ * Timestamp of this previous request
+ * @property request
+ * Input text of the request
+ * @property response
+ * Simplified text of the request
+ * @property is_favourite
+ * Bool, representing is this request pinned or not.
+ */
 @Serializable
 data class HistoryData(
     val date: String?,
@@ -27,6 +39,14 @@ data class HistoryData(
         parcel.readByte() != 0.toByte()
     )
 
+    /**
+     * Function which writes data to Parcelable object.
+     *
+     * @param parcel
+     * Input parcel instance.
+     * @param flags
+     * Special flags for additional manipulations.
+     */
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(date)
         parcel.writeString(request)
@@ -34,10 +54,19 @@ data class HistoryData(
         parcel.writeByte(if (is_favourite) 1 else 0)
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable instance's
+     * marshaled representation.
+     * @return
+     * Number, representing Parcelable contents.
+     */
     override fun describeContents(): Int {
         return 0
     }
 
+    /**
+     * Special companion object, that generates Parcelable instances.
+     */
     companion object CREATOR : Parcelable.Creator<HistoryData> {
         override fun createFromParcel(parcel: Parcel): HistoryData {
             return HistoryData(parcel)
@@ -50,6 +79,18 @@ data class HistoryData(
 }
 
 
+/**
+ * Adapter class for manipulations with history list.
+ *
+ * @property dataSet
+ * Raw data of previous requests, which will be rendered in the list.
+ * @property FAVOURITE
+ * Constant, representing that selected list item is important for user.
+ * @property SIMPLE
+ * Constant, representing that selected list item is not important for user.
+ * @property clipboardManager
+ * Object, that handles copy and paste operations.
+ */
 class HistoryAdapter(
     var dataSet: ArrayList<HistoryData>) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>(), Parcelable {
@@ -64,6 +105,12 @@ class HistoryAdapter(
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
+     *
+     * @constructor
+     * Initializes all fields of list item.
+     *
+     * @param view
+     * View, that will be injected into this Viewholder.
      */
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val date: TextView = view.findViewById(R.id.date)
@@ -72,7 +119,14 @@ class HistoryAdapter(
         val icon: ImageButton = view.findViewById(R.id.icon)
     }
 
-    // Create new views (invoked by the layout manager)
+    /**
+     * Create new views (invoked by the layout manager)
+     *
+     * @param viewGroup
+     * parent object, containing necessary context.
+     * @param viewType
+     * @return Viewholder object containing view.
+     */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
@@ -81,7 +135,14 @@ class HistoryAdapter(
         return ViewHolder(view)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    /**
+     * Replace the contents of a view (invoked by the layout manager)
+     *
+     * @param viewHolder
+     * abstract object, representing one list item.
+     * @param position
+     * position of the corresponding list item.
+     */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
         // Get element from your dataset at this position and replace the
@@ -120,9 +181,20 @@ class HistoryAdapter(
         }
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    /**
+     * Returns the size of your dataset (invoked by the layout manager)
+     *
+     * @return size of list data.
+     */
     override fun getItemCount() = dataSet.size
 
+    /**
+     * Function, that returns type of selected list item.
+     *
+     * @param position
+     * position of item, which type we need to get.
+     * @return Integer, representing type of list item.
+     */
     override fun getItemViewType(position: Int): Int {
         return if (dataSet[position].is_favourite) {
             FAVOURITE
@@ -131,22 +203,52 @@ class HistoryAdapter(
         }
     }
 
+    /**
+     * Function, that puts instance of clipboard manager into adapter.
+     *
+     * @param clipboard
+     * Instance of ClipboardManager to put in adapter.
+     */
     fun setClipboard(clipboard: ClipboardManager) {
         clipboardManager = clipboard
     }
 
+    /**
+     * Function for random access to previous requests list.
+     *
+     * @param id
+     * Number of previous request.
+     * @return previous request with selected id.
+     */
     fun getItem(id: Int): HistoryData {
         return dataSet[id]
     }
 
+    /**
+     * Function which writes data to Parcelable object.
+     *
+     * @param parcel
+     * Input parcel instance.
+     * @param flags
+     * Special flags for additional manipulations.
+     */
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeTypedList(dataSet)
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable instance's
+     * marshaled representation.
+     * @return
+     * Number, representing Parcelable contents.
+     */
     override fun describeContents(): Int {
         return 0
     }
 
+    /**
+     * Special companion object, that generates Parcelable instances.
+     */
     companion object CREATOR : Parcelable.Creator<HistoryAdapter> {
         override fun createFromParcel(parcel: Parcel): HistoryAdapter {
             return HistoryAdapter(parcel)
@@ -159,20 +261,58 @@ class HistoryAdapter(
 
 }
 
+/**
+ * Util class for serialization of old user requests data.
+ *
+ * @property dataset
+ * Serializable data of previous requests.
+ */
 @Serializable
 data class DummyHistoryAdapter(val dataset: ArrayList<HistoryData>)
 
+/**
+ * Object that provides data of previous user requests to simplify text
+ * to another components.
+ * Compliant to SharedObject interface.
+ * @property dataset
+ * Data of previous requests.
+ */
 object HistoryAdapterObject : SharedObject<DummyHistoryAdapter> {
     lateinit var dataset: ArrayList<HistoryData>
 
+    /**
+     * Function which tells if this object is ready to use.
+     * @receiver
+     * returns true if previous requests data is initialized.
+     *
+     * @return Bool, that determines if this object properties are fully initialized and ready.
+     */
     override fun initialized(): Boolean {
         return ::dataset.isInitialized
     }
 
+    /**
+     * This function sets deserialized data to object for further use.
+     * @receiver
+     * sets all previous requests data from deserialized object.
+     *
+     * @param ctx
+     * Context of the application.
+     * @param dummy
+     * Class of the similar structure, needed for serialization.
+     */
     override fun set(ctx: Context, dummy: DummyHistoryAdapter) {
         dataset = dummy.dataset
     }
 
+    /**
+     * Function for setting default values if the last state is missing.
+     * @receiver
+     * Sets empty arrayList.
+     *
+     * @param ctx
+     * Context of the application.
+     */
     override fun defaultInitialization(ctx: Context) {
         dataset = arrayListOf()
     }

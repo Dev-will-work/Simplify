@@ -9,10 +9,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityRegistrationBinding
 
+/**
+ * This class handles registration screen and its actions.
+ *
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ */
 class RegistrationActivity : AppCompatActivity() {
-
     private lateinit var viewBinding: ActivityRegistrationBinding
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * This function handles all registration process and other registration screen behaviour.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_registration)

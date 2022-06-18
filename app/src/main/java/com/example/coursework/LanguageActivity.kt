@@ -13,12 +13,29 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
 import java.util.ArrayList
 
-
+/**
+ * Class, that handles language screen and list of previous requests.
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ * @property adapter
+ * Adapter class for storing and rendering languages.
+ * @property fullData
+ * ArrayList with languages.
+ *
+ */
 class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener {
     private lateinit var adapter: LanguageAdapter
     private lateinit var viewBinding: ActivityLanguageBinding
     private lateinit var fullData: ArrayList<String>
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * Setups language list and other interactive behaviour on the history screen.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_language)
@@ -81,6 +98,15 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         }
     }
 
+    /**
+     * Util function that checks if the language is already ranked.
+     *
+     * @param dataset
+     * List of languages.
+     * @param s
+     * Language, that we check.
+     * @return Bool, representing if language [s] is ranked or not.
+     */
     fun checkAlreadyCached(dataset: List<String>?, s: String): Boolean {
         if (dataset != null) {
             for (cache in dataset) {
@@ -94,10 +120,27 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         return false
     }
 
+    /**
+     * Util function, that checks if input string is definitely a language, instead of header.
+     *
+     * @param s
+     * String with language to check.
+     * @return true if string [s] is language, false if separator or header
+     */
     private fun checkRestrictedChoices(s: String): Boolean {
         return listOf("All languages", "Recently used").contains(s)
     }
 
+    /**
+     * Function which adds language from the list to the ranked list part.
+     *
+     * @param elementToAdd
+     * Language to add.
+     * @param position
+     * position of selected element.
+     * @param add_index
+     * Integer, representing index of element, where ranking part is ended.
+     */
     private fun pickMostUsedLanguage(elementToAdd: String, position: Int, add_index: Int = 3) {
         val realLength = fullData.slice(1..add_index).takeWhile { it != "All languages" }.size
         val mostUsed = fullData.slice(1..realLength)
@@ -132,6 +175,12 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         finish()
     }
 
+    /**
+     * Lifecycle function, which executes when the app is out of focus.
+     * @receiver
+     * Serializes data from language list.
+     *
+     */
     override fun onPause() {
         super.onPause()
         val prefix = filesDir
@@ -141,17 +190,25 @@ class LanguageActivity : AppCompatActivity(), LanguageAdapter.ItemClickListener 
         writeFile("$prefix/languagedata.json", languageData)
     }
 
+    /**
+     * Function, which adds selected language to ranked list part.
+     *
+     * @param view
+     * Selected element casted to the View.
+     * @param position
+     * position of the element we clicked on.
+     */
     override fun onItemClick(view: View?, position: Int) {
         val elementToAdd = adapter.getItem(position)
         if (checkRestrictedChoices(elementToAdd)) {
             return
         }
 
-        Toast.makeText(
-            this,
-            "You clicked $elementToAdd on row number $position",
-            Toast.LENGTH_SHORT
-        ).show()
+//        Toast.makeText(
+//            this,
+//            "You clicked $elementToAdd on row number $position",
+//            Toast.LENGTH_SHORT
+//        ).show()
 
         pickMostUsedLanguage(elementToAdd, position, SettingsObject.usedLanguages.toInt())
     }

@@ -8,6 +8,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 
 
+/**
+ * My custom extension of EditText class, allowing to easily configure action buttons
+ * while these fields are selected, their bounds, and newline syntax.
+ *
+ */
 class MyEditText : androidx.appcompat.widget.AppCompatEditText {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -17,6 +22,12 @@ class MyEditText : androidx.appcompat.widget.AppCompatEditText {
         defStyle
     )
 
+    /**
+     * Function, which make it simpler to observe text changes in input field.
+     *
+     * @param afterTextChanged
+     * Function, which needs to be executed with the text when it is changed.
+     */
     fun afterTextChanged(afterTextChanged: (String) -> Unit) {
         this.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
@@ -29,6 +40,13 @@ class MyEditText : androidx.appcompat.widget.AppCompatEditText {
         })
     }
 
+    /**
+     * Function, allowing to add custom ime Options to text field without overwrites.
+     *
+     * @param outAttrs
+     * Object with ime options we need to add.
+     * @return InputConnection object
+     */
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection {
         val conn = super.onCreateInputConnection(outAttrs)
         if (conn != null) {
@@ -39,6 +57,21 @@ class MyEditText : androidx.appcompat.widget.AppCompatEditText {
         }
     }
 
+    /**
+     * Function which observes changes in text and make some actions to it.
+     *
+     * @receiver
+     * Adds opportunity to make a new line if two '#' symbols are entered sequentially.
+     *
+     * @param text
+     * whole text.
+     * @param start
+     * start of changed text position.
+     * @param lengthBefore
+     * Old length of the text.
+     * @param lengthAfter
+     * New length of the text.
+     */
     override fun onTextChanged(
         text: CharSequence?,
         start: Int,

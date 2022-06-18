@@ -1,7 +1,5 @@
 package com.example.coursework
 
-import android.app.job.JobInfo
-import android.app.job.JobScheduler
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
@@ -18,15 +16,30 @@ import android.content.*
 import android.content.Intent
 import android.os.Build
 import android.speech.RecognizerIntent
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.databinding.DataBindingUtil
+import com.example.coursework.Counters.current_timestamp
+import com.example.coursework.Counters.monthly_count
+import com.example.coursework.Counters.old_timestamp
+import com.example.coursework.Counters.share_count
+import com.example.coursework.Counters.simplification_count
+import com.example.coursework.ImageStore.image_uri
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import java.lang.Math.abs
 import kotlin.collections.ArrayList
 
+/**
+ * Class, that handles main screen and its interactive parts.
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ * @property adapter
+ * Adapter class for storing and rendering languages.
+ * @property cameraExecutor
+ * Object, responsive for making photos and access to the camera.
+ * @property mTts
+ * Object, responsive for Text to Speech service.
+ */
 class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private lateinit var viewBinding: ActivityMainBinding
     private lateinit var cameraExecutor: ExecutorService
@@ -35,6 +48,14 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     //private var videoCapture: VideoCapture<Recorder>? = null
     //private var recording: Recording? = null
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * Setups camera, text fields and other interactive behaviour on the main screen.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -193,18 +214,40 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    /**
+     * Function for capturing video, not used now and plays role of a mock for future.
+     *
+     */
     private fun captureVideo() {}
 
+    /**
+     * Lifecycle function, which executes when the app is going to die.
+     * @receiver
+     * Executes safe shutdown for camera and Text To Speech service.
+     *
+     */
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
         mTts?.shutdown()
     }
 
+    /**
+     * Function which executes some actions when Text to Speech service is ready.
+     *
+     * @param p0
+     * Integer, representing status of Text to Speech service?
+     */
     override fun onInit(p0: Int) {
-        Toast.makeText(applicationContext, "Initialized!", LENGTH_SHORT).show()
+//        Toast.makeText(applicationContext, "Initialized!", LENGTH_SHORT).show()
     }
 
+    /**
+     * Function which starts speech recognition.
+     *
+     * @param launcher
+     * launcher to execute special intent.
+     */
     private fun getSpeechInput(launcher: ActivityResultLauncher<Intent>)
     {
         val intent = Intent(RecognizerIntent
@@ -229,6 +272,12 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    /**
+     * Lifecycle function, which executes when the app is out of focus.
+     * @receiver
+     * Serializes statistics and previous requests data.
+     *
+     */
     override fun onPause() {
         super.onPause()
         val prefix = filesDir
@@ -241,11 +290,39 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     }
 }
 
+/**
+ * Util class for serialization of statistics data.
+ *
+ * @property simplification_count
+ * Integer, representing how many times user requested the simplified text.
+ * @property share_count
+ * Integer, representing how many times user shared the simplified text.
+ * @property monthly_count
+ * Array with integers, representing user activity for last 20 days
+ * @property current_timestamp
+ * timestamp that is equal to now at this moment.
+ * @property old_timestamp
+ * timestamp of the last time user used the application.
+ */
 @Serializable
 data class DummyCounters(val simplification_count: Int, val share_count: Int,
                          val monthly_count: ArrayList<Double>, val current_timestamp: Instant,
                          val old_timestamp: Instant,)
 
+/**
+ * Object that provides statistics and timestamps to another components.
+ * Compliant to SharedObject interface.
+ * @property simplification_count
+ * Integer, representing how many times user requested the simplified text.
+ * @property share_count
+ * Integer, representing how many times user shared the simplified text.
+ * @property monthly_count
+ * Array with integers, representing user activity for last 20 days
+ * @property current_timestamp
+ * timestamp that is equal to now at this moment.
+ * @property old_timestamp
+ * timestamp of the last time user used the application.
+ */
 object Counters : SharedObject<DummyCounters> {
     var simplification_count: Int = 0
     var share_count: Int = 0
@@ -253,10 +330,26 @@ object Counters : SharedObject<DummyCounters> {
     lateinit var current_timestamp: Instant
     lateinit var old_timestamp: Instant
 
+    /**
+     * Function which tells if this object is ready to use.
+     * @receiver
+     * returns true if monthly count and timestamps are initialized.
+     *
+     * @return Bool, that determines if this object properties are fully initialized and ready.
+     *
+     */
     override fun initialized(): Boolean {
         return ::monthly_count.isInitialized && ::current_timestamp.isInitialized && ::old_timestamp.isInitialized
     }
 
+    /**
+     * Function for setting default values if the last state is missing.
+     * @receiver
+     * sets statistics counts to 0 and timestamps to now.
+     *
+     * @param ctx
+     * Context of the application.
+     */
     override fun defaultInitialization(ctx: Context) {
         simplification_count = 0
         share_count = 0
@@ -266,6 +359,16 @@ object Counters : SharedObject<DummyCounters> {
         old_timestamp = Clock.System.now()
     }
 
+    /**
+     * This function sets deserialized data to object for further use.
+     * @receiver
+     * Sets statistics and timestamps from dummy to provider object.
+     *
+     * @param ctx
+     * Context of the application.
+     * @param dummy
+     * Class of the similar structure, needed for serialization.
+     */
     override fun set(ctx: Context, dummy: DummyCounters) {
         dummy.monthly_count.sum()
         simplification_count = dummy.simplification_count

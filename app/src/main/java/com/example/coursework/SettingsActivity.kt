@@ -16,7 +16,15 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.slider.Slider
 
-
+/**
+ * Util helper class, used for handling color theme changes.
+ *
+ * @constructor
+ * Takes application context, depends on PreferenceManager.
+ *
+ * @param context
+ * Application context.
+ */
 class MyPreferences(context: Context?) {
 
     companion object {
@@ -24,17 +32,30 @@ class MyPreferences(context: Context?) {
     }
 
     private val preferences = context?.let { PreferenceManager.getDefaultSharedPreferences(it) }
-
     var darkMode = preferences?.getInt(DARK_STATUS, 0)
         set(value) = value?.let { preferences?.edit()?.putInt(DARK_STATUS, it)?.apply() }!!
 
 }
 
+/**
+ * This class handles settings screen and its actions.
+ *
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ * @property adapter1
+ * Adapter for the list of toggle options.
+ * @property adapter2
+ * Adapter for the list of options with action by click.
+ */
 class SettingsActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivitySettingsBinding
     private lateinit var adapter1: ToggleOptionsAdapter
     private lateinit var adapter2: SimpleOptionsAdapter
 
+    /**
+     * Function, that creates modal window to change greeting contents.
+     *
+     */
     private fun changeGreeting() {
         val edittext = MyEditText(this)
         val builder = AlertDialog.Builder(this)
@@ -53,6 +74,10 @@ class SettingsActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    /**
+     * Function, that creates modal window to change color theme.
+     *
+     */
     private fun chooseThemeDialog() {
 
         val builder = AlertDialog.Builder(this)
@@ -94,6 +119,10 @@ class SettingsActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    /**
+     * Function, that checks current color theme, depending on MyPreferences object.
+     *
+     */
     private fun checkTheme() {
         when (MyPreferences(this).darkMode) {
             0 -> {
@@ -114,6 +143,14 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * This function handles settings lists initialization and other settings behaviour.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
@@ -169,6 +206,12 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Lifecycle function, which executes when the app is out of focus.
+     * @receiver
+     * Serializes settings data from SettingsObject.
+     *
+     */
     override fun onPause() {
         super.onPause()
         val prefix = filesDir

@@ -28,7 +28,10 @@ import kotlin.reflect.KClass
 //viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_x)
 
 /**
- * Extension function to simplify setting an afterTextChanged action to EditText components.
+ * Function, which make it simpler to observe text changes in input field.
+ *
+ * @param afterTextChanged
+ * Function, which needs to be executed with the text when it is changed.
  */
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     this.addTextChangedListener(object : TextWatcher {
@@ -42,6 +45,16 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
     })
 }
 
+/**
+ * Util function, that moves all array elements to the left on [diff] positions,
+ * removing first [diff] elements.
+ *
+ * @param arr
+ * Array to change.
+ * @param diff
+ * Number, representing shift to left of each element.
+ * @return ArrayList with shifted elements.
+ */
 fun leftShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
     val result = arr.takeLast(arr.size - diff) as ArrayList<Double>
     while (result.size < arr.size) {
@@ -50,6 +63,16 @@ fun leftShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
     return result
 }
 
+/**
+ * Util function, that moves all array elements to the right on [diff] positions,
+ * removing last [diff] elements.
+ *
+ * @param arr
+ * Array to change.
+ * @param diff
+ * Number, representing shift to right of each element.
+ * @return ArrayList with shifted elements.
+ */
 fun rightShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
     val result = arr.take(arr.size - diff) as ArrayList<Double>
     while (result.size < arr.size) {
@@ -58,30 +81,64 @@ fun rightShift(arr: ArrayList<Double>, diff: Int): ArrayList<Double> {
     return result
 }
 
-
+/**
+ * Function, which reads [T] class data from serialized file.
+ *
+ * @param T
+ * Class with data, which we try to decode.
+ * @param context
+ * Application context.
+ * @param filename
+ * @return [T] instance if the file is decoded successfully, else null.
+ */
 inline fun <reified T> readFile(context: Context, filename: String): T? {
     if (File(filename).exists()) {
         return try {
             Json.decodeFromString<T>(File(filename).readText())
         } catch (e: Exception) {
             Toast.makeText(context, "Can't decode $filename data", Toast.LENGTH_SHORT).show()
-            return null
+            null
         }
     }
     return null
 }
 
+/**
+ * Function, which reads [T] class data from serialized file.
+ *
+ * @param T
+ * Type of the class, which data we will write to file.
+ * @param filename
+ * Name of the file with serialized data.
+ * @param instance
+ * Instance of the class, which needs to be serialized.
+ */
 inline fun <reified T> writeFile(filename: String, instance: T) {
     val jsonData = Json.encodeToString(instance)
     File(filename).writeText(jsonData)
 }
 
+/**
+ * Util function, which deletes wrong serialized file.
+ *
+ * @param filename
+ * Name of the file to delete.
+ */
 fun clearFile(filename: String) {
     if (File(filename).exists()) {
         File(filename).delete()
     }
 }
 
+/**
+ * Function, which
+ *
+ * @param context
+ * @param request
+ * @param user_id
+ * @param out_field
+ * @param is_service_request
+ */
 fun retrofitRequest(context: Context, request: String, user_id: String, out_field: MyEditText? = null, is_service_request: Boolean = false) {
     App.api?.getSimplifiedText(request, user_id)?.enqueue(object : Callback<SimplifierData?> {
         override fun onResponse(
@@ -150,6 +207,12 @@ fun retrofitRequest(context: Context, request: String, user_id: String, out_fiel
     })
 }
 
+/**
+ * Function that shows user greeting if it is on in settings.
+ *
+ * @param ctx
+ * application context.
+ */
 fun greeting(ctx: Context) {
     if (!SettingsObject.toggleData.filter {
             it.option_name.contains("greeting")
@@ -158,6 +221,16 @@ fun greeting(ctx: Context) {
     }
 }
 
+/**
+ * Function, that simplifies move to another [dest] activity from the current.
+ *
+ * @param view
+ * View, on which we set click listener with move to another activity.
+ * @param ctx
+ * application Context.
+ * @param dest
+ * Another activity we want to move at.
+ */
 fun setClickMoveToActivity(view: View, ctx: Context, dest: KClass<*>) {
     view.setOnClickListener {
         ContextCompat.startActivity(
@@ -170,12 +243,53 @@ fun setClickMoveToActivity(view: View, ctx: Context, dest: KClass<*>) {
     }
 }
 
+/**
+ * Interface, which templates the behaviour of  objects, that share data between components.
+ *
+ * @param T
+ * Type of the class, that is used by the object as a dummy for serialization.
+ */
 interface SharedObject<T> {
+    /**
+     * Function for setting default values if the last state is missing.
+     *
+     * @param ctx
+     * Context of the application.
+     */
     fun defaultInitialization(ctx: Context)
+
+    /**
+     * This function sets deserialized data to object for further use.
+     *
+     * @param ctx
+     * Context of the application.
+     * @param dummy
+     * Class of the similar structure, needed for serialization.
+     */
     fun set(ctx: Context, dummy: T)
+
+    /**
+     * Function which tells if this object is ready to use.
+     *
+     * @return Bool, that determines if this object properties are fully initialized and ready.
+     *
+     */
     fun initialized(): Boolean
 }
 
+/**
+ * Helper function, which takes the data sharing object and checks if it is ready to work.
+ *
+ * @param T
+ * Type of the class that we will try to decode from serialized file with [filename],
+ * which is very similar by structure to [obj] data.
+ * @param obj
+ * Sharing data object, that we check on readiness
+ * @param ctx
+ * Application context.
+ * @param filename
+ * Name of the file with object serialized data that we will try to decode.
+ */
 inline fun <reified T> checkObjectInitialization(obj: SharedObject<T>, ctx: Context, filename: String) {
     if (!obj.initialized()) {
         val data = readFile<T>(ctx, filename)

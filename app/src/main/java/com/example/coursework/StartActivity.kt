@@ -7,8 +7,23 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityStartBinding
 
+/**
+ * This class handles start screen and its actions.
+ *
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ */
 class StartActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityStartBinding
+
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * This function handles start screen behaviour.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this, R.layout.activity_start)

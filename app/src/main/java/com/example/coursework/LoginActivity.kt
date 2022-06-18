@@ -10,10 +10,23 @@ import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityLoginBinding
 
 
+/**
+ * Class, that handles main screen and its interactive parts.
+ * @property binding
+ * Util object, that simplifies access to activity parts.
+ */
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * Setups login process and other interactive behaviour on the login screen.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)

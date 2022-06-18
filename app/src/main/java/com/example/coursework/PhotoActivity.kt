@@ -26,11 +26,26 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * This class handles photo screen and its actions.
+ *
+ * @property viewBinding
+ * Util object, that simplifies access to activity parts.
+ * @property imageCapture
+ * Late initialized object, responsible for taking photos.
+ */
 class PhotoActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityPhotoBinding
-
     private var imageCapture: ImageCapture? = null
 
+    /**
+     * Function, executed when the application is opened first time.
+     * @receiver
+     * This function handles photo creation and other photo screen behaviour.
+     *
+     * @param savedInstanceState
+     * Bundle with simple types, can be used for temporal storage
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityPhotoBinding.inflate(layoutInflater)
@@ -49,6 +64,10 @@ class PhotoActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Function that takes new photo.
+     *
+     */
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
@@ -135,6 +154,9 @@ class PhotoActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Anonymous object with specific data, needed for Camera API.
+     */
     companion object {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
@@ -150,6 +172,10 @@ class PhotoActivity : AppCompatActivity() {
             }.toTypedArray()
     }
 
+    /**
+     * Function that initializes Camera API.
+     *
+     */
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
@@ -185,11 +211,29 @@ class PhotoActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
+    /**
+     * Util function, that checks whether all permissions are provided or not.
+     *
+     * @return Bool, representing if all required permissions are granted or not.
+     */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
+    /**
+     * TODO
+     *
+     * @receiver
+     * Requests number of permissions, needed for camera usage and handles request results.
+     *
+     * @param requestCode
+     * Request code, which was connected with our request.
+     * @param permissions
+     * Array of required permissions.
+     * @param grantResults
+     * Array with states of each permission?
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
         IntArray) {
