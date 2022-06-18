@@ -57,6 +57,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#onboarding-screenshots">Onboarding screenshots</a></li>
       </ul>
     </li>
     <li>
@@ -109,7 +110,7 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* Android studio
+* Android studio  
 Go to https://developer.android.com/studio and install the latest version of Android Studio.
 * Android device
 
