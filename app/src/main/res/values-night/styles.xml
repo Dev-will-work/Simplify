@@ -60,11 +60,12 @@
     </style>
     <style name="primary_button" parent="my_base_button">
         <item name="android:background">@null</item>
-        <item name="backgroundTint">@color/main_500</item>
+        <item name="backgroundTint">@color/main_300</item>
+        <item name="android:textColor">@color/base_900</item>
     </style>
     <style name="secondary_button" parent="my_base_button">
         <item name="android:background">@null</item>
-        <item name="backgroundTint">@color/base_0</item>
+        <item name="backgroundTint">@color/night_mode_black</item>
         <item name="strokeColor">@color/main_500</item>
         <item name="strokeWidth">2dp</item>
     </style>

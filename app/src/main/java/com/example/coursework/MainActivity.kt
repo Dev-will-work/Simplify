@@ -28,6 +28,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * Class, that handles main screen and its interactive parts.
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, viewBinding.inputFrame.textField.text.toString())
             startActivity(Intent.createChooser(shareIntent, "Share using"))
-            Counters.share_count++
+            share_count++
         }
 
         viewBinding.outputFrame.share.setOnClickListener {
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_TEXT, viewBinding.outputFrame.textField.text.toString())
             startActivity(Intent.createChooser(shareIntent, "Share using"))
-            Counters.share_count++
+            share_count++
         }
 
         viewBinding.outputFrame.copy.setOnClickListener {
@@ -164,13 +165,21 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
 
         val launcherLanguage = registerForActivityResult(StartActivityForResult()) {
+            val languageCodes = HashMap<String, String>()
+            val languages = applicationContext.resources.getStringArray(R.array.languages)
+                .filter { predicate -> !predicate.contains(' ') }
+            val codes = arrayListOf("ar", "bg", "ca", "cs", "da", "nl", "en", "fi", "fr", "de",
+                "hu", "id", "it", "no", "pl", "pt", "ro", "ru", "es", "sv", "tr", "uk")
+            for ((language, code) in languages.zip(codes))
+                languageCodes[language] = code
+
             when (it.resultCode) {
                 RESULT_OK -> {
                     adapter = it.data?.getParcelableExtra("adapter")
                     val language = it.data?.getStringExtra("language")
                     if (language != null) {
                         viewBinding.language.secondText = language
-                        val embeddingActivationRequest = "language:" + language.take(2).lowercase(Locale.getDefault())
+                        val embeddingActivationRequest = "language:" + languageCodes[language]
                         retrofitRequest(this, embeddingActivationRequest, CachedUser.retrieveID() , null, true)
                     }
                 }
@@ -282,7 +291,7 @@ class MainActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         super.onPause()
         val prefix = filesDir
 
-        val statisticsData = DummyCounters(Counters.simplification_count, Counters.share_count, Counters.monthly_count, Counters.current_timestamp, Counters.old_timestamp)
+        val statisticsData = DummyCounters(simplification_count, share_count, monthly_count, current_timestamp, old_timestamp)
         writeFile("$prefix/statistics.json", statisticsData)
 
         val historydata = DummyHistoryAdapter(HistoryAdapterObject.dataset)

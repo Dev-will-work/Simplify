@@ -14,12 +14,13 @@
 
         <TextView
             android:id="@+id/my_profile"
-            android:textAppearance="@style/Body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
+            android:layout_marginBottom="6dp"
             android:text="@string/my_profile"
+            android:textAppearance="@style/Body_1"
             app:layout_constraintBottom_toBottomOf="@+id/back1"
             app:layout_constraintEnd_toStartOf="@+id/settings"
             app:layout_constraintStart_toEndOf="@+id/back1"
@@ -50,38 +51,27 @@
             android:id="@+id/graph"
             android:layout_width="match_parent"
             android:layout_height="200dip"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/simplification_frequency" />
+            app:layout_constraintTop_toBottomOf="@+id/simplification_frequency"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/simplification_frequency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/your_simplification_frequency"
             android:textAppearance="@style/Body_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/number_tab_left" />
-
-        <Button
-            android:id="@+id/change_info"
-            style="@style/secondary_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/change_info"
-            android:textColor="@color/base_900"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/email"
-            android:textAppearance="@style/Button"/>
 
         <TextView
             android:id="@+id/name_surname"
@@ -110,26 +100,26 @@
             layout="@layout/number_tab"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="64dp"
+            app:label="@{@string/total_simplified}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/number_tab_right"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/change_info"
-            app:layout_constraintVertical_bias="0.0"
-            app:label="@{&quot;total simplified&quot;}"/>
+            app:layout_constraintTop_toBottomOf="@+id/email"
+            app:layout_constraintVertical_bias="0.0" />
 
         <include
             android:id="@+id/number_tab_right"
             layout="@layout/number_tab"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="64dp"
+            app:label="@{@string/shared_texts}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/number_tab_left"
-            app:layout_constraintTop_toBottomOf="@+id/change_info"
-            app:layout_constraintVertical_bias="0.0"
-            app:label="@{&quot;shared texts&quot;}"/>
+            app:layout_constraintTop_toBottomOf="@+id/email"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

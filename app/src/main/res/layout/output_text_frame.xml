@@ -53,16 +53,16 @@
                 android:id="@+id/copy"
                 style="@style/image_button"
                 android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_height="26dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="16dp"
                 android:contentDescription="@string/copy_button"
                 android:maxWidth="24dp"
-                android:maxHeight="24dp"
+                android:maxHeight="26dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/ic_content_copy"
-                app:tint="@color/base_900" />
+                app:tint="@color/base_600" />
 
             <ImageButton
                 android:id="@+id/speak"
@@ -75,7 +75,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/copy"
                 app:srcCompat="@drawable/ic_volume_high"
-                app:tint="@color/base_900" />
+                app:tint="@color/base_600" />
 
             <ImageButton
                 android:id="@+id/share"
@@ -88,24 +88,25 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/speak"
                 app:srcCompat="@drawable/ic_share"
-                app:tint="@color/base_900" />
+                app:tint="@color/base_600" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/title1"
-            android:textAppearance="@style/Body_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
+            android:maxLength="2000"
+            android:maxLines="4"
+            android:singleLine="false"
             android:text="@string/output_field"
+            android:textAppearance="@style/Body_2"
+            android:textColor="@color/base_500"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:singleLine="false"
-            android:maxLength="2000"
-            android:maxLines="4" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -215,7 +215,7 @@ fun retrofitRequest(context: Context, request: String, user_id: String, out_fiel
  */
 fun greeting(ctx: Context) {
     if (!SettingsObject.toggleData.filter {
-            it.option_name.contains("greeting")
+            it.option_name.contains(ctx.getString(R.string.greeting_request_check_part))
         }[0].toggle_state) {
         Toast.makeText(ctx, SettingsObject.greeting, Toast.LENGTH_LONG).show()
     }

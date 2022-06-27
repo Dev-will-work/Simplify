@@ -14,12 +14,13 @@
 
         <TextView
             android:id="@+id/simplify"
-            android:textAppearance="@style/Body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
+            android:layout_marginBottom="6dp"
             android:text="@string/simplify"
+            android:textAppearance="@style/Body_1"
             app:layout_constraintBottom_toBottomOf="@+id/profile"
             app:layout_constraintEnd_toStartOf="@+id/settings"
             app:layout_constraintStart_toEndOf="@+id/profile"
@@ -90,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:avatar1="@{null}"
-            app:firstText="@{&quot;Selected language&quot;}"
+            app:firstText="@{@string/selected_language}"
             app:secondText="@{@string/english}"
             app:layout_constraintBottom_toTopOf="@+id/input_frame"
             app:layout_constraintEnd_toEndOf="parent"

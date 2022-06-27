@@ -7,7 +7,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityOnboarding1Binding
-import kotlin.time.ExperimentalTime
 
 
 /**
@@ -37,7 +36,7 @@ class OnboardingActivity1 : AppCompatActivity() {
 
         greeting(this)
 
-        val disableOnboarding = SettingsObject.isPropertyToggled("onboarding")
+        val disableOnboarding = SettingsObject.isPropertyToggled(getString(R.string.onboarding_request_check_part))
         if (disableOnboarding) {
             startActivity(
                 Intent(

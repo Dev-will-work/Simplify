@@ -1,7 +1,11 @@
 package com.example.coursework
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -10,7 +14,9 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityProfileBinding
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter
@@ -28,6 +34,36 @@ import java.util.*
 class ProfileActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityProfileBinding
 
+    private fun askLogout() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.logout_ask_title))
+
+        builder.setPositiveButton(
+            getString(R.string.cancel_answer)
+        ) { dialog, _ -> //What ever you want to do with the value
+            dialog.dismiss()
+        }
+        builder.setNegativeButton(
+            getString(R.string.exit_answer)
+        ) { _, _ -> //What ever you want to do with the value
+            val prefix = filesDir
+            clearFile("$prefix/userdata.json")
+            startActivity(
+                Intent(this, StartActivity::class.java)
+            )
+            finish()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+            ?.setTextColor(ContextCompat.getColor(this, R.color.completed_200))
+
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+            ?.setTextColor(ContextCompat.getColor(this, R.color.red))
+    }
+
     /**
      * Function which constructs and shows dropdown menu window.
      *
@@ -40,14 +76,28 @@ class ProfileActivity : AppCompatActivity() {
      */
     private fun showMenu(v: View, @MenuRes menuRes: Int, launcher: ActivityResultLauncher<Intent>) {
         val popup = PopupMenu(applicationContext, v)
+
         popup.menuInflater.inflate(menuRes, popup.menu)
+
+        val lastInd = popup.menu.size() - 1
+        val str = SpannableString(popup.menu.getItem(lastInd).title)
+        str.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.red)), 0, str.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        popup.menu.getItem(lastInd).title = str
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             // Respond to menu item click.
-            when (menuItem.title) {
-                "Edit profile" -> {
+            when (menuItem.title.toString()) {
+                getString(R.string.option_1) -> {
                     val i = Intent(this, ChangeProfileActivity::class.java)
                     launcher.launch(i)
+                    true
+                }
+                getString(R.string.option_2) -> {
+                    Toast.makeText(this, "Not implemented yet!", LENGTH_SHORT).show()
+                    true
+                }
+                getString(R.string.option_3) -> {
+                    askLogout()
                     true
                 }
                 else -> { true }
@@ -102,11 +152,6 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        viewBinding.changeInfo.setOnClickListener {
-            val i = Intent(this, ChangeProfileActivity::class.java)
-            launcher.launch(i)
-        }
-
         checkObjectInitialization(CachedUser, this, "$prefix/userdata.json")
         checkObjectInitialization(ImageStore, this, "$prefix/imagedata.json")
         checkObjectInitialization(Counters, this, "$prefix/statistics.json")
@@ -145,6 +190,9 @@ class ProfileActivity : AppCompatActivity() {
 
             viewBinding.graph.gridLabelRenderer.labelFormatter = DateAsXAxisLabelFormatter(this)
             viewBinding.graph.gridLabelRenderer.numHorizontalLabels = 2
+            viewBinding.graph.gridLabelRenderer.horizontalLabelsColor = ContextCompat.getColor(this, R.color.base_400)
+            viewBinding.graph.gridLabelRenderer.verticalLabelsColor = ContextCompat.getColor(this, R.color.base_400)
+
 
             val max = Counters.monthly_count.maxOrNull()
 

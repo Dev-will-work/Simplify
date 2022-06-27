@@ -26,12 +26,13 @@
             android:id="@+id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
             android:text="@string/settings"
+            android:textAppearance="@style/Body_1"
             app:layout_constraintBottom_toBottomOf="@+id/back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/back"
-            android:textAppearance="@style/Body_1"/>
+            app:layout_constraintTop_toTopOf="@+id/back" />
 
         <include
             android:id="@+id/avatar_frame"
@@ -56,7 +57,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/avatar_frame"
-            app:firstText="@{&quot;Color theme&quot;}"
+            app:firstText="@{@string/color_theme_title}"
             app:avatar1="@{null}"
             app:rightIcon1="@{@drawable/ic_chevron_right}"
             app:visibility="@{android.view.View.GONE}"/>
@@ -82,8 +83,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toggle_list"
-            app:firstText="@{&quot;Greeting content&quot;}"
-            app:secondText="@{&quot;Hello, Name! Have a nice day!&quot;}"
+            app:firstText="@{@string/change_greeting_title}"
+            app:secondText="@{@string/change_greeting_content}"
             app:avatar1="@{null}"
             app:rightIcon1="@{@drawable/ic_chevron_right}"
             app:visibility="@{android.view.View.GONE}"/>
@@ -106,7 +107,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/greeting_frame"
-            app:sliderLabel="@{&quot;Recently used languages count&quot;}"/>
+            app:sliderLabel="@{@string/top_languages}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

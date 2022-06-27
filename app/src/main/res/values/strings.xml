@@ -72,12 +72,79 @@
     <string name="clear_button" translatable="false">clear button</string>
     <string name="textview" translatable="false">TextView</string>
     <string name="sample_int" translatable="false">5</string>
-    <string name="simplified_text_will_be_here">Simplified text will be here</string>
+    <string name="simplified_text_will_be_here"></string>
     <string name="output_field">Output field</string>
     <string name="eye_button" translatable="false">eye button</string>
     <string name="choose_theme_text">Choose theme</string>
-
     <string name="option_1">Edit profile</string>
     <string name="option_2">About app</string>
     <string name="option_3">Logout</string>
+    <string name="notification_title">Come here!</string>
+    <string name="notification_content">You have not used our app for %d days, visit us please!</string>
+    <string name="password_title">Password</string>
+    <string name="email_title">Email</string>
+    <string name="username_title">Username</string>
+    <string name="new_password_title">New password</string>
+    <string name="new_email_title">New email</string>
+    <string name="new_username_title">New username</string>
+    <string name="selected_language">Selected language</string>
+    <string name="total_simplified">total simplified</string>
+    <string name="shared_texts">shared texts</string>
+    <string name="top_languages">Recently used languages count</string>
+    <string name="change_greeting_title">Greeting content</string>
+    <string name="change_greeting_content">Hello, %s! Have a nice day!</string>
+    <string name="color_theme_title">Color theme</string>
+    <string name="search_language_title">Search language</string>
+    <string name="search_bookmark_title">Search a bookmark</string>
+    <string name="notification_request_check_part">notifications</string>
+    <string name="greeting_request_check_part">greeting</string>
+    <string name="onboarding_request_check_part">onboarding</string>
+    <string name="profile_change">Profile change</string>
+    <string name="save">Save</string>
+    <string name="exit_answer">Yes, exit from profile</string>
+    <string name="cancel_answer">No, cancel</string>
+    <string name="logout_ask_title">Are you sure you want to logout?</string>
+
+    <string-array name="clickable_options">
+        <item>About us</item>
+        <item>Feedback</item>
+        <item>Help</item>
+        <item>Rate our app</item>
+    </string-array>
+
+    <string-array name="toggle_options">
+        <item>Autodetect language</item>
+        <item>Improve simplification</item>
+        <item>Disable input hints</item>
+        <item>Disable onboarding preview</item>
+        <item>Disable notifications</item>
+        <item>Disable greeting</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Recently used</item>
+        <item>All languages</item>
+        <item>Arabic</item>
+        <item>Bulgarian</item>
+        <item>Catalan</item>
+        <item>Czech</item>
+        <item>Danish</item>
+        <item>Dutch</item>
+        <item>English</item>
+        <item>Finnish</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Hungarian</item>
+        <item>Indonesian</item>
+        <item>Italian</item>
+        <item>Norwegian</item>
+        <item>Polish</item>
+        <item>Portuguese</item>
+        <item>Romanian</item>
+        <item>Russian</item>
+        <item>Spanish</item>
+        <item>Swedish</item>
+        <item>Turkish</item>
+        <item>Ukrainian</item>
+    </string-array>
 </resources>

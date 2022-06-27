@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
-            android:text="Profile change"
+            android:layout_marginBottom="6dp"
+            android:text="@string/profile_change"
             android:textAppearance="@style/Body_1"
             app:layout_constraintBottom_toBottomOf="@+id/back"
             app:layout_constraintEnd_toStartOf="@+id/save"
@@ -44,13 +45,13 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Email&quot; }"
+            app:hint="@{@string/email_title}"
             app:icon="@{null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/username"
-            app:title="@{ &quot;New email&quot; }" />
+            app:title="@{@string/new_email_title}" />
 
         <include
             android:id="@+id/password"
@@ -61,12 +62,12 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Password&quot; }"
+            app:hint="@{@string/password_title}"
             app:icon="@{@drawable/ic_eye_outline}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email"
-            app:title="@{ &quot;New password&quot; }" />
+            app:title="@{@string/new_password_title}" />
 
         <include
             android:id="@+id/username"
@@ -77,20 +78,20 @@
             android:layout_marginTop="96dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Username&quot; }"
+            app:hint="@{@string/username_title}"
             app:icon="@{null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/back"
-            app:title="@{ &quot;New username&quot; }" />
+            app:title="@{@string/new_username_title}" />
 
         <Button
             android:id="@+id/save"
             style="@style/text_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
+            android:text="@string/save"
             android:textAppearance="@style/Button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -296,16 +296,15 @@ object SettingsObject : SharedObject<DummySettingsAdapters> {
      * Context of the application.
      */
     override fun defaultInitialization(ctx: Context) {
-        toggleData = arrayListOf(
-            ToggleOptionsData("Autodetect language", false),
-            ToggleOptionsData("Improve simplification", true),
-            ToggleOptionsData("Disable input hints", false),
-            ToggleOptionsData("Disable onboarding preview", false),
-            ToggleOptionsData("Disable notifications", false),
-            ToggleOptionsData("Disable greeting", true)
-        )
-        simpleData = arrayListOf("About us", "Feedback", "Help", "Rate our app")
-        greeting = "Hello, User! Have a nice day!"
+        val prefix = ctx.filesDir
+        checkObjectInitialization(CachedUser, ctx, "$prefix/userdata.json")
+        val strings = ctx.resources.getStringArray(R.array.toggle_options)
+        val toggleOptions = strings.map { ToggleOptionsData(it, false) }
+        toggleOptions[1].toggle_state = true
+        toggleOptions[5].toggle_state = true
+        toggleData = toggleOptions as ArrayList<ToggleOptionsData>
+        simpleData = ctx.resources.getStringArray(R.array.clickable_options).toCollection(ArrayList())
+        greeting = ctx.getString(R.string.change_greeting_content, CachedUser.retrieveUsername())
         usedLanguages = 3.0f
     }
 

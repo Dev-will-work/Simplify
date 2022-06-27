@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.example.coursework.databinding.ActivityLanguageBinding
 

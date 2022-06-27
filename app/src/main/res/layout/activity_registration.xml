@@ -14,12 +14,13 @@
 
         <TextView
             android:id="@+id/join_community"
-            android:textAppearance="@style/Body_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="109dp"
             android:layout_marginEnd="109dp"
+            android:layout_marginBottom="6dp"
             android:text="@string/join_our_community"
+            android:textAppearance="@style/Body_1"
             app:layout_constraintBottom_toBottomOf="@+id/back"
             app:layout_constraintEnd_toStartOf="@+id/settings"
             app:layout_constraintStart_toEndOf="@+id/back"
@@ -95,13 +96,13 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Email&quot; }"
+            app:hint="@{@string/email_title}"
             app:icon="@{null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/username"
-            app:title="@{ &quot;Email&quot; }" />
+            app:title="@{@string/email_title}" />
 
         <include
             android:id="@+id/password"
@@ -112,12 +113,12 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Password&quot; }"
+            app:hint="@{@string/password_title}"
             app:icon="@{@drawable/ic_eye_outline}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email"
-            app:title="@{ &quot;Password&quot; }" />
+            app:title="@{@string/password_title}" />
 
         <include
             android:id="@+id/username"
@@ -128,13 +129,13 @@
             android:layout_marginTop="80dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Username&quot; }"
+            app:hint="@{@string/username_title}"
             app:icon="@{null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/back"
-            app:title="@{ &quot;Username&quot; }" />
+            app:title="@{@string/username_title}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

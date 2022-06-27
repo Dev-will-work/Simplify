@@ -1,16 +1,21 @@
 package com.example.coursework
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
-import android.os.Parcel
-import android.os.Parcelable
-import com.example.coursework.ImageStore.image_uri
+import com.example.coursework.LanguageObject.added_size
+import com.example.coursework.LanguageObject.base_size
+import com.example.coursework.LanguageObject.dataset
 import kotlinx.serialization.Serializable
+
 
 /**
  * Adapter class for manipulations with language list.
@@ -309,10 +314,7 @@ object LanguageObject : SharedObject<DummyLanguageAdapter> {
      * Context of the application.
      */
     override fun defaultInitialization(ctx: Context) {
-        dataset = arrayListOf("Recently used", "All languages", "Arabic", "Bulgarian", "Catalan", "Czech", "Danish", "Dutch",
-            "English", "Finnish", "French", "German", "Hungarian", "Indonesian", "Italian",
-            "Norwegian", "Polish", "Portuguese", "Romanian", "Russian", "Spanish", "Swedish",
-            "Turkish", "Ukrainian")
+        dataset = ctx.resources.getStringArray(R.array.languages).toCollection(ArrayList())
         added_size = 0
         base_size = 24
 

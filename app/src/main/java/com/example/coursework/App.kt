@@ -11,10 +11,7 @@ import android.os.Build
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.annotation.RequiresApi
-import androidx.work.Data
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
+import androidx.work.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.NetworkInterface
@@ -63,7 +60,7 @@ class App : Application() {
     private fun createInputData(): Data {
         return Data.Builder()
             .putString("last_timestamp", Counters.old_timestamp.toString())
-            .putBoolean("disable_notifications", SettingsObject.isPropertyToggled("notifications"))
+            .putBoolean("disable_notifications", SettingsObject.isPropertyToggled(getString(R.string.notification_request_check_part)))
             .build()
     }
 
@@ -95,19 +92,22 @@ class App : Application() {
             channelId
         )
 
-        val uploadWorkRequest: WorkRequest =
+        val uploadWorkRequest: PeriodicWorkRequest =
             PeriodicWorkRequestBuilder<NotificationWorker>(1, TimeUnit.DAYS)
                 .setInputData(createInputData())
+                .setInitialDelay(6, TimeUnit.HOURS)
                 .build()
 
-        WorkManager
-            .getInstance(this.applicationContext).cancelAllWorkByTag("com.example.coursework.NotificationWorker")
+//        WorkManager
+//            .getInstance(this.applicationContext).cancelAllWorkByTag("com.example.coursework.NotificationWorker")
 
         WorkManager
             .getInstance(this.applicationContext)
-            .enqueue(uploadWorkRequest)
+            .enqueueUniquePeriodicWork("Notification work", ExistingPeriodicWorkPolicy.KEEP, uploadWorkRequest)
 
+//        clearFile("$prefix/userdata.json")
 //        clearFile("$prefix/languagedata.json")
+//        clearFile("$prefix/settingsdata.json")
 
     }
 

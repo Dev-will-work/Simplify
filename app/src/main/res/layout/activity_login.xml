@@ -37,12 +37,12 @@
             android:layout_marginTop="90dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Email&quot; }"
+            app:hint="@{@string/email_title}"
             app:icon="@{null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/back"
-            app:title="@{ &quot;Email&quot; }" />
+            app:title="@{@string/email_title}" />
 
         <include
             android:id="@+id/password"
@@ -53,12 +53,12 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             app:helper="@{&quot;&quot;}"
-            app:hint="@{ &quot;Password&quot; }"
+            app:hint="@{@string/password_title}"
             app:icon="@{@drawable/ic_eye_outline}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email"
-            app:title="@{ &quot;Password&quot; }" />
+            app:title="@{@string/password_title}" />
 
         <Button
             android:id="@+id/forgot_password"

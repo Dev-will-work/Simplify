@@ -70,11 +70,14 @@
     <color name="night_mode_black">#FF121212</color>
 
     <color name="adaptive_900000">@color/base_900</color>
+    <color name="adaptive_000900">@color/base_0</color>
     <color name="adaptive_700300">@color/base_700</color>
     <color name="adaptive_launcher">@color/base_0</color>
     <color name="adaptive_input_frame">@color/base_50</color>
     <color name="adaptive_output_frame">@color/base_200</color>
     <color name="adaptive_buttons_frame">@color/base_0</color>
     <color name="adaptive_separator">@color/base_50</color>
+
+    <color name="red">#DF3434</color>
 
 </resources>

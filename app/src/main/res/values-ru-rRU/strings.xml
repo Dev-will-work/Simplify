@@ -59,5 +59,76 @@
     <string name="enter_something_here">Введите что-нибудь</string>
     <string name="output_field">Поле вывода</string>
     <string name="choose_theme_text">Выбрать цветовую тему</string>
-    <string name="simplified_text_will_be_here">Упрощенный текст будет здесь</string>
+    <string name="simplified_text_will_be_here"></string>
+
+    <string-array name="clickable_options">
+        <item>О нас</item>
+        <item>Обратная связь</item>
+        <item>Помощь</item>
+        <item>Оценить приложение</item>
+    </string-array>
+
+    <string-array name="toggle_options">
+        <item>Автоопределять язык</item>
+        <item>Улучшить предсказания</item>
+        <item>Отключить подсказки ввода</item>
+        <item>Отключить экраны онбординга</item>
+        <item>Отключить уведомления</item>
+        <item>Отключить приветствие</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Часто используемые</item>
+        <item>Все языки</item>
+        <item>Арабский</item>
+        <item>Болгарский</item>
+        <item>Каталанский</item>
+        <item>Чешский</item>
+        <item>Датский</item>
+        <item>Немецкий</item>
+        <item>Английский</item>
+        <item>Финский</item>
+        <item>Французский</item>
+        <item>Германский</item>
+        <item>Ангарский</item>
+        <item>Индонезийский</item>
+        <item>Итальянский</item>
+        <item>Норвежский</item>
+        <item>Польский</item>
+        <item>Португальский</item>
+        <item>Романский</item>
+        <item>Русский</item>
+        <item>Испанский</item>
+        <item>Шведский</item>
+        <item>Турецкий</item>
+        <item>Украинский</item>
+    </string-array>
+    <string name="option_1">Изменить профиль</string>
+    <string name="option_2">О приложении</string>
+    <string name="option_3">Выйти из аккаунта</string>
+    <string name="notification_title">Возвращайтесь!</string>
+    <string name="notification_content">Вы не использовали приложение %d дней</string>
+    <string name="password_title">Пароль</string>
+    <string name="email_title">Электронная почта</string>
+    <string name="username_title">Имя пользователя</string>
+    <string name="selected_language">Выбранный язык</string>
+    <string name="total_simplified">Всего упрощено</string>
+    <string name="shared_texts">Поделились текстами</string>
+    <string name="top_languages">Количество часто используемых языков</string>
+    <string name="change_greeting_title">Содержание приветствия</string>
+    <string name="change_greeting_content">Привет, %s! Хорошего дня!</string>
+    <string name="color_theme_title">Цветовая схема</string>
+    <string name="search_language_title">Найти язык</string>
+    <string name="search_bookmark_title">Найти запрос</string>
+    <string name="notification_request_check_part">уведомления</string>
+    <string name="greeting_request_check_part">приветствие</string>
+    <string name="onboarding_request_check_part">онбординг</string>
+    <string name="new_password_title">Новый пароль</string>
+    <string name="new_email_title">Новая электронная почта</string>
+    <string name="new_username_title">Новое имя пользователя</string>
+    <string name="save">Сохранить</string>
+    <string name="profile_change">Изменение профиля</string>
+    <string name="exit_answer">Да, выйти из профиля</string>
+    <string name="cancel_answer">Нет, отменить</string>
+    <string name="logout_ask_title">Вы уверены, что хотите выйти из профиля?</string>
 </resources>

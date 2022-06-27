@@ -137,12 +137,13 @@ class ChangeProfileActivity : AppCompatActivity() {
                 val newPassword = viewBinding.password.textField1.text.toString()
                 // ID managed internally later
                 CachedUser.set(this, LoggedInUser("", newUsername, newEmail, newPassword))
+                setResult(RESULT_OK)
+            } else {
+                setResult(RESULT_CANCELED)
             }
 
-            val imageData = Image(resultUri.toString())
-            writeFile("$prefix/imagedata.json", imageData)
-
-            setResult(RESULT_OK)
+//            val imageData = Image(resultUri.toString())
+//            writeFile("$prefix/imagedata.json", imageData)
             finish()
         }
     }

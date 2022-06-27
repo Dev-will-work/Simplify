@@ -50,8 +50,8 @@ class NotificationWorker(appContext: Context, workerParams: WorkerParameters):
 
                     val builder = NotificationCompat.Builder(this.applicationContext, "another")
                         .setSmallIcon(R.mipmap.ic_launcher_round)
-                        .setContentTitle("Come here!")
-                        .setContentText("You have not used our app for $diff days, visit us please!")
+                        .setContentTitle(applicationContext.getString(R.string.notification_title))
+                        .setContentText(applicationContext.getString(R.string.notification_content, diff))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true)

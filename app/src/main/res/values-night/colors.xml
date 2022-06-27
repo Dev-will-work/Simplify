@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="adaptive_900000">@color/base_0</color>
+    <color name="adaptive_000900">@color/base_900</color>
     <color name="adaptive_700300">@color/base_300</color>
     <color name="adaptive_launcher">@color/night_mode_black</color>
     <color name="adaptive_input_frame">@color/base_600</color>
